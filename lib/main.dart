@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.poppinsTextTheme(),
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyTestPage(),
     );
   }
