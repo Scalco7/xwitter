@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:xwitter/common/consts/style.consts.dart';
 import 'package:xwitter/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/common/widgets/create_tweet_button.widget.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ColorConsts.primaryColor),
+        textTheme: GoogleFonts.poppinsTextTheme(),
         useMaterial3: true,
       ),
       home: const MyTestPage(),
@@ -30,6 +32,9 @@ class MyTestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      body: Center(
+        child: Text("teste de texto"),
+      ),
       floatingActionButton: CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(currentIndex: 1),
     );
