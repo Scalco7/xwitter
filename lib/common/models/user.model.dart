@@ -1,4 +1,5 @@
 class UserModel {
+  final String id;
   final String name;
   final String nickname;
   final String avatarPath;
@@ -7,6 +8,7 @@ class UserModel {
   final int numberOfFollowings;
 
   UserModel({
+    required this.id,
     required this.name,
     required this.nickname,
     required this.avatarPath,
