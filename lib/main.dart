@@ -44,12 +44,12 @@ class MyTestPage extends StatelessWidget {
     numberOfFollowings: 10,
   );
   static TweetModel tweet = TweetModel(
-    id: "001",
-    user: user,
-    tweet:
-        "UXR/UX: You can only bring one item to a remote island to assist your research of native use of tools and usability. What do you bring? #TellMeAboutYou",
-    likes: 2069,
-  );
+      id: "001",
+      user: user,
+      tweet:
+          "UXR/UX: You can only bring one item to a remote island to assist your research of native use of tools and usability. What do you bring? #TellMeAboutYou",
+      likes: 2069,
+      liked: true);
 
   @override
   Widget build(BuildContext context) {
