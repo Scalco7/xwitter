@@ -7,18 +7,24 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      shadowColor: ColorConsts.secondaryColor,
-      title: Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: Image.asset(
-          "assets/icons/xwitter_logo.png",
-          width: 27,
-          fit: BoxFit.contain,
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: ColorConsts.secondaryColor, width: 1),
         ),
       ),
-      centerTitle: true,
+      child: AppBar(
+        backgroundColor: Colors.white,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Image.asset(
+            "assets/icons/xwitter_logo.png",
+            width: 27,
+            fit: BoxFit.contain,
+          ),
+        ),
+        centerTitle: true,
+      ),
     );
   }
 
