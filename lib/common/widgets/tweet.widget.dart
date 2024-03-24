@@ -34,7 +34,7 @@ class TweetWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              "assets/avatars/batman.png",
+              tweet.user.avatarPath,
               width: avatarWidth,
               fit: BoxFit.contain,
             ),
