@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
     numberOfFollowings: 10,
   );
 
-  static TweetModel tweet = TweetModel(
+  static TweetModel tweet1 = TweetModel(
     id: "001",
     user: user,
     tweet:
@@ -70,15 +70,40 @@ class MyApp extends StatelessWidget {
     liked: true,
   );
 
+  static TweetModel tweet4 = TweetModel(
+    id: "004",
+    user: user2,
+    tweet:
+        "Interesting Nicola that not one reply or tag on this #UX talent shout out in the 24hrs since your tweet here......🤔",
+    likes: 1010,
+    liked: true,
+  );
+
+  static TweetModel tweet5 = TweetModel(
+    id: "005",
+    user: user,
+    tweet:
+        "Quickly create a low-fi wireframe version of your web projects with ready-to-use layouts of Scheme Constructor.",
+    likes: 0,
+    liked: true,
+  );
+
+  static TweetModel tweet6 = TweetModel(
+    id: "006",
+    user: user3,
+    tweet:
+        "When we first launched Vector Mockups, I had wrote that in 2018 our free product downloads was 28K+ and we had set a goal to double this figure by the end of 2019. Today our team and I are glad to announce tgat we aave easily hit our goals with 47k+ downloads in 2019.",
+    likes: 859,
+    liked: true,
+  );
+
   static List<TweetModel> tweets = [
-    tweet,
+    tweet1,
     tweet2,
     tweet3,
-    tweet,
-    tweet2,
-    tweet,
-    tweet2,
-    tweet3
+    tweet4,
+    tweet5,
+    tweet6
   ];
   // This widget is the root of your application.
   @override
@@ -95,7 +120,11 @@ class MyApp extends StatelessWidget {
       routes: {
         "/home": (context) => HomeScreen(tweets: tweets),
         "/search": (context) => const SearchScreen(),
-        "/user": (context) => const UserScreen(),
+        "/user": (context) => UserScreen(
+              user: user,
+              postTweets: tweets.where((t) => t.user.id == user.id).toList(),
+              likedTweets: tweets.where((t) => t.liked).toList(),
+            ),
         "/create-tweet": (context) => const CreateTweetScreen(),
       },
     );

@@ -5,7 +5,7 @@ class TweetModel {
   final UserModel user;
   final String tweet;
   final int likes;
-  final bool liked;
+  bool liked;
   final List<TweetModel>? comments;
 
   TweetModel({
