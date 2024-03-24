@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xwitter/common/consts/style.consts.dart';
+import 'package:xwitter/common/helpers/format_quantity.dart';
 import 'package:xwitter/common/models/tweet.model.dart';
 
-class TweetWidget extends StatelessWidget {
+class TweetWidget extends StatefulWidget {
   const TweetWidget({super.key, required this.tweet});
   final TweetModel tweet;
 
-  String formatQuantity(int quantity) {
-    final result = quantity.toString().replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ');
-    return result;
+  @override
+  State<StatefulWidget> createState() => _TweetWidget();
+}
+
+class _TweetWidget extends State<TweetWidget> {
+  void likeTweet() {
+    setState(() {
+      widget.tweet.liked = !widget.tweet.liked;
+    });
   }
 
   @override
@@ -34,7 +40,7 @@ class TweetWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              tweet.user.avatarPath,
+              widget.tweet.user.avatarPath,
               width: avatarWidth,
               fit: BoxFit.contain,
             ),
@@ -48,13 +54,13 @@ class TweetWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      tweet.user.name,
+                      widget.tweet.user.name,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '@${tweet.user.nickname}',
+                      '@${widget.tweet.user.nickname}',
                       style: const TextStyle(
                         fontSize: 16,
                         color: ColorConsts.secondaryColor,
@@ -65,7 +71,7 @@ class TweetWidget extends StatelessWidget {
                 SizedBox(
                   width: tweetWidth,
                   child: Text(
-                    tweet.tweet,
+                    widget.tweet.tweet,
                     overflow: TextOverflow.clip,
                     softWrap: true,
                   ),
@@ -78,19 +84,21 @@ class TweetWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () => print("curtiu"),
+                      onTap: () => likeTweet(),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Image.asset(
-                            "assets/icons/heart_icon.png",
+                            widget.tweet.liked
+                                ? "assets/icons/heart_fill_icon.png"
+                                : "assets/icons/heart_icon.png",
                             fit: BoxFit.contain,
                             width: 15,
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            formatQuantity(tweet.likes),
+                            formatQuantity(widget.tweet.likes),
                             style: const TextStyle(
                               color: ColorConsts.secondaryColor,
                               fontSize: 12,
@@ -113,7 +121,7 @@ class TweetWidget extends StatelessWidget {
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            formatQuantity(tweet.comments?.length ?? 0),
+                            formatQuantity(widget.tweet.comments?.length ?? 0),
                             style: const TextStyle(
                               color: ColorConsts.secondaryColor,
                               fontSize: 12,
