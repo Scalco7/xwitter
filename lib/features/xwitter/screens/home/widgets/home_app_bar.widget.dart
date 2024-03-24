@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/common/consts/style.consts.dart';
 
 class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBarWidget({super.key});
@@ -8,7 +9,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
-      shadowColor: Colors.blueGrey,
+      shadowColor: ColorConsts.secondaryColor,
       title: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Image.asset(
