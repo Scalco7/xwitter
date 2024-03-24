@@ -6,8 +6,11 @@ import 'package:xwitter/common/models/user.model.dart';
 import 'package:xwitter/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/common/widgets/tweet.widget.dart';
+import 'package:xwitter/features/xwitter/screens/create_tweet/screens/create_tweet.screen.dart';
 import 'package:xwitter/features/xwitter/screens/home/screens/home.screen.dart';
 import 'package:xwitter/features/xwitter/screens/home/widgets/home_app_bar.widget.dart';
+import 'package:xwitter/features/xwitter/screens/search/screens/search.screen.dart';
+import 'package:xwitter/features/xwitter/screens/user/screens/user.screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -71,6 +74,16 @@ class MyApp extends StatelessWidget {
     liked: true,
   );
 
+  static List<TweetModel> tweets = [
+    tweet,
+    tweet2,
+    tweet3,
+    tweet,
+    tweet2,
+    tweet,
+    tweet2,
+    tweet3
+  ];
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -82,16 +95,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(tweets: [
-        tweet,
-        tweet2,
-        tweet3,
-        tweet,
-        tweet2,
-        tweet,
-        tweet2,
-        tweet3,
-      ]),
+      initialRoute: "/home",
+      routes: {
+        "/home": (context) => HomeScreen(tweets: tweets),
+        "/search": (context) => const SearchScreen(),
+        "/user": (context) => const UserScreen(),
+        "/create-tweet": (context) => const CreateTweetScreen(),
+      },
     );
   }
 }

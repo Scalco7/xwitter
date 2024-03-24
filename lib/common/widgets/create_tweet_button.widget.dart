@@ -14,7 +14,7 @@ class CreateTweetButtonWidget extends StatelessWidget {
         fit: BoxFit.contain,
         width: 23,
       ),
-      onPressed: () => Navigator.pushNamed(context, "/create_tweet"),
+      onPressed: () => Navigator.pushNamed(context, "/create-tweet"),
     );
   }
 }
