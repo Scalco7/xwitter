@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/consts/style.consts.dart';
 import 'package:xwitter/common/models/tweet.model.dart';
 import 'package:xwitter/common/models/user.model.dart';
 import 'package:xwitter/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/common/widgets/tweet.widget.dart';
+import 'package:xwitter/features/xwitter/screens/user/widgets/change_section_button.widget.dart';
 import 'package:xwitter/features/xwitter/screens/user/widgets/user_data.widget.dart';
-
-enum ESection { tweets, likes }
 
 class UserScreen extends StatefulWidget {
   const UserScreen({
@@ -29,17 +27,19 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreen extends State<UserScreen> {
-  late ESection selectedSection;
+  late List<TweetModel> tweetsList;
 
-  void changeSelectedSection(ESection state) {
+  void setTweetsList(EListTweetsSection state) {
     setState(() {
-      selectedSection = state;
+      tweetsList = state == EListTweetsSection.publishedtTweets
+          ? widget.postTweets
+          : widget.likedTweets;
     });
   }
 
   @override
   void initState() {
-    selectedSection = ESection.tweets;
+    tweetsList = widget.postTweets;
     super.initState();
   }
 
@@ -48,10 +48,6 @@ class _UserScreen extends State<UserScreen> {
     final double screenWidth = MediaQuery.of(context).size.width;
     const double headerHeight = 80;
     const double avatarHeight = 70;
-
-    List<TweetModel> tweetsList = selectedSection == ESection.tweets
-        ? widget.postTweets
-        : widget.likedTweets;
 
     return Scaffold(
       appBar: AppBar(
@@ -86,75 +82,8 @@ class _UserScreen extends State<UserScreen> {
                   editUser: widget.editUser,
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => changeSelectedSection(ESection.tweets),
-                        child: Container(
-                          width: double.maxFinite,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: selectedSection == ESection.tweets
-                                  ? const BorderSide(
-                                      width: 2,
-                                      color: ColorConsts.primaryColor,
-                                    )
-                                  : const BorderSide(
-                                      width: 1,
-                                      color: ColorConsts.secondaryColor,
-                                    ),
-                            ),
-                          ),
-                          child: Text(
-                            "Tweets",
-                            style: TextStyle(
-                              color: selectedSection == ESection.tweets
-                                  ? ColorConsts.primaryColor
-                                  : ColorConsts.secondaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => changeSelectedSection(ESection.likes),
-                        child: Container(
-                          width: double.maxFinite,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: selectedSection == ESection.likes
-                                  ? const BorderSide(
-                                      width: 2,
-                                      color: ColorConsts.primaryColor,
-                                    )
-                                  : const BorderSide(
-                                      width: 1,
-                                      color: ColorConsts.secondaryColor,
-                                    ),
-                            ),
-                          ),
-                          child: Text(
-                            "Likes",
-                            style: TextStyle(
-                              color: selectedSection == ESection.likes
-                                  ? ColorConsts.primaryColor
-                                  : ColorConsts.secondaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                ChangeSectionButtonWidget(
+                  onChange: setTweetsList,
                 ),
                 Expanded(
                   child: ListView.separated(
