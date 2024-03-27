@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:xwitter/common/consts/style.consts.dart';
-import 'package:xwitter/common/helpers/format_quantity.dart';
-import 'package:xwitter/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/helpers/format_quantity.dart';
+import 'package:xwitter/app/common/models/tweet.model.dart';
 
 class TweetWidget extends StatefulWidget {
   const TweetWidget({super.key, required this.tweet});

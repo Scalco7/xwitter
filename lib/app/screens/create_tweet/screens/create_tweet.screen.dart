@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/consts/style.consts.dart';
-import 'package:xwitter/features/xwitter/screens/create_tweet/widgets/tweet_button.widget.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
   const CreateTweetScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
 
 class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBarWidget({super.key});

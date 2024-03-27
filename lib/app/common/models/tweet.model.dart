@@ -1,4 +1,4 @@
-import 'package:xwitter/common/models/user.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 
 class TweetModel {
   final String id;

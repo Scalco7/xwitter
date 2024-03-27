@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/models/tweet.model.dart';
-import 'package:xwitter/common/models/user.model.dart';
-import 'package:xwitter/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/common/widgets/create_tweet_button.widget.dart';
-import 'package:xwitter/common/widgets/tweet.widget.dart';
-import 'package:xwitter/features/xwitter/screens/user/widgets/change_section_button.widget.dart';
-import 'package:xwitter/features/xwitter/screens/user/widgets/user_data.widget.dart';
+import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
+import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
+import 'package:xwitter/app/common/widgets/tweet.widget.dart';
+import 'package:xwitter/app/screens/user/widgets/change_section_button.widget.dart';
+import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({

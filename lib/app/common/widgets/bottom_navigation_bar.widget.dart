@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({super.key, required this.currentIndex});

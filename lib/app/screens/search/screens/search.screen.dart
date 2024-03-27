@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/common/widgets/create_tweet_button.widget.dart';
+import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
+import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
