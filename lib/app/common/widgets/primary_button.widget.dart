@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 
-class EditUserButtonWidget extends StatelessWidget {
-  const EditUserButtonWidget({super.key, required this.editUser});
-  final Function() editUser;
+class PrimaryButtonWidget extends StatelessWidget {
+  const PrimaryButtonWidget({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
+  final String text;
+  final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => editUser(),
+      onPressed: () => onPressed(),
       style: ButtonStyle(
         elevation: const MaterialStatePropertyAll<double>(0),
         backgroundColor: const MaterialStatePropertyAll(Colors.white),

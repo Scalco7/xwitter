@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
-import 'package:xwitter/app/screens/user/widgets/edit_user_button.widget.dart';
+import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
 
 class UserDataWidget extends StatelessWidget {
   const UserDataWidget({
@@ -46,7 +46,10 @@ class UserDataWidget extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              EditUserButtonWidget(editUser: editUser)
+              PrimaryButtonWidget(
+                text: "ediatr",
+                onPressed: editUser,
+              ),
             ],
           ),
           Text(
