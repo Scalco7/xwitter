@@ -4,6 +4,7 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
+import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
@@ -121,6 +122,7 @@ class Xwitter extends StatelessWidget {
               postTweets: tweets.where((t) => t.user.id == user.id).toList(),
               likedTweets: tweets.where((t) => t.liked).toList(),
             ),
+        "/edit-user": (context) => EditUserScreen(user: user),
         "/create-tweet": (context) => const CreateTweetScreen(),
       },
     );

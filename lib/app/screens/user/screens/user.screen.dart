@@ -18,10 +18,6 @@ class UserScreen extends StatefulWidget {
   final List<TweetModel> postTweets;
   final List<TweetModel> likedTweets;
 
-  void editUser() {
-    print("ta editando");
-  }
-
   @override
   State<UserScreen> createState() => _UserScreen();
 }
@@ -35,6 +31,10 @@ class _UserScreen extends State<UserScreen> {
           ? widget.postTweets
           : widget.likedTweets;
     });
+  }
+
+  void openEditUsercreen() {
+    Navigator.of(context).pushNamed("/edit-user");
   }
 
   @override
@@ -51,7 +51,7 @@ class _UserScreen extends State<UserScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: const Color.fromRGBO(31, 31, 31, 1),
         toolbarHeight: 0,
       ),
       body: Stack(
@@ -60,7 +60,9 @@ class _UserScreen extends State<UserScreen> {
             width: screenWidth,
             height: headerHeight,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: Colors.black),
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(31, 31, 31, 1),
+            ),
             child: Text(
               "@${widget.user.nickname}",
               style: TextStyle(
@@ -79,7 +81,7 @@ class _UserScreen extends State<UserScreen> {
                 UserDataWidget(
                   user: widget.user,
                   avatarHeight: avatarHeight,
-                  editUser: widget.editUser,
+                  editUser: openEditUsercreen,
                 ),
                 const SizedBox(height: 20),
                 ChangeSectionButtonWidget(

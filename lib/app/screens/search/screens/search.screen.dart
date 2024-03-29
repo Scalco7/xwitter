@@ -24,7 +24,8 @@ class SearchScreen extends StatelessWidget {
   }
 
   void goToUserScreen(UserModel user) {
-    print("indo para a conta do - ${user.name}");
+    print(
+        "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - ${user.name}");
   }
 
   @override
