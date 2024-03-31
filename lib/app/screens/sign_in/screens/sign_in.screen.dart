@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -9,6 +10,9 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  String nickname = "";
+  String password = "";
+
   static const InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(50)),
     borderSide: BorderSide(
@@ -16,6 +20,10 @@ class _SignInScreenState extends State<SignInScreen> {
       width: 0,
     ),
   );
+
+  void disableKeyboard() {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +43,26 @@ class _SignInScreenState extends State<SignInScreen> {
               width: 60,
               fit: BoxFit.contain,
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Apelido / E-mail"),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: Text("Apelido / E-mail"),
+                ),
                 TextField(
-                  style: TextStyle(fontSize: 14),
-                  decoration: InputDecoration(
+                  onTapOutside: (event) => disableKeyboard(),
+                  onChanged: (value) => nickname = value,
+                  keyboardType: TextInputType.emailAddress,
+                  style: const TextStyle(fontSize: 14),
+                  decoration: const InputDecoration(
+                    isDense: true,
                     filled: true,
+                    hintText: "felipe",
                     fillColor: ColorConsts.backgroundColor,
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                        EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                     disabledBorder: inputBorder,
                     border: inputBorder,
                     errorBorder: inputBorder,
@@ -55,6 +71,44 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: Text("Senha"),
+                ),
+                TextField(
+                  onTapOutside: (event) => disableKeyboard(),
+                  onChanged: (value) => password = value,
+                  style: const TextStyle(fontSize: 14),
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    filled: true,
+                    fillColor: ColorConsts.backgroundColor,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    disabledBorder: inputBorder,
+                    border: inputBorder,
+                    errorBorder: inputBorder,
+                    enabledBorder: inputBorder,
+                    focusedBorder: inputBorder,
+                  ),
+                ),
+              ],
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed("/sign-up"),
+              child: Text("Criar conta"),
+            ),
+            PrimaryButtonWidget(
+              onPressed: () =>
+                  Navigator.of(context).pushReplacementNamed("home"),
+              text: "Entrar",
             ),
           ],
         ),

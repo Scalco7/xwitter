@@ -8,6 +8,7 @@ import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/sign_in/screens/sign_in.screen.dart';
+import 'package:xwitter/app/screens/sign_in/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 
 class Xwitter extends StatelessWidget {
@@ -114,9 +115,10 @@ class Xwitter extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: "/login",
+      initialRoute: "/sign-in",
       routes: {
-        "/login": (context) => const SignInScreen(),
+        "/sign-in": (context) => const SignInScreen(),
+        "/sign-up": (context) => const SignUpScreen(),
         "/home": (context) => HomeScreen(tweets: tweets),
         "/search": (context) => const SearchScreen(),
         "/user": (context) => UserScreen(
