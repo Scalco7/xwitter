@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/consts/avatars_path.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
+import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
+import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dart';
 import 'package:xwitter/app/screens/edit_user/widgets/edit_user_app_bar.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
@@ -41,6 +44,10 @@ class _EditUserScreen extends State<EditUserScreen> {
       FocusScope.of(context).requestFocus(FocusNode());
     }
 
+    void onSave() {
+      print("salvando");
+    }
+
     return Scaffold(
       appBar: EditUserAppBarWidget(
         height: headerHeight,
@@ -52,7 +59,11 @@ class _EditUserScreen extends State<EditUserScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 100), //Carrousel
+            AvatarCarouselWidget(
+              list: AvatarPathConsts.avatarPaths,
+              initialPage: AvatarPathConsts.avatarPaths
+                  .indexWhere((ap) => ap == widget.user.avatarPath),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
@@ -115,6 +126,19 @@ class _EditUserScreen extends State<EditUserScreen> {
                         enabledBorder: inputBorder,
                       ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  PrimaryButtonWidget(
+                    text: "Save",
+                    onPressed: onSave,
                   ),
                 ],
               ),

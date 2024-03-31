@@ -47,7 +47,7 @@ class UserDataWidget extends StatelessWidget {
                 ),
               ),
               PrimaryButtonWidget(
-                text: "ediatr",
+                text: "Editar",
                 onPressed: editUser,
               ),
             ],

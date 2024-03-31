@@ -29,9 +29,9 @@ class PrimaryButtonWidget extends StatelessWidget {
           EdgeInsets.symmetric(horizontal: 15, vertical: 2),
         ),
       ),
-      child: const Text(
-        "Editar",
-        style: TextStyle(
+      child: Text(
+        text,
+        style: const TextStyle(
           fontSize: 14,
           color: ColorConsts.primaryColor,
         ),
