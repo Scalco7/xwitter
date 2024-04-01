@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
-import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
+import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -105,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
               onPressed: () => Navigator.of(context).pushNamed("/sign-up"),
               child: Text("Criar conta"),
             ),
-            PrimaryButtonWidget(
+            AuthButtonWidget(
               onPressed: () =>
                   Navigator.of(context).pushReplacementNamed("home"),
               text: "Entrar",
