@@ -15,6 +15,8 @@ class AuthButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => onPressed(),
       style: ButtonStyle(
+        minimumSize: MaterialStatePropertyAll<Size>(
+            Size(MediaQuery.of(context).size.width * 0.7, 40)),
         elevation: const MaterialStatePropertyAll<double>(0),
         backgroundColor: const MaterialStatePropertyAll(Colors.white),
         shape: MaterialStatePropertyAll(

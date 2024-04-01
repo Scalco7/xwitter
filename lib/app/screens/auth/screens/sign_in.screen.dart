@@ -36,79 +36,115 @@ class _SignInScreenState extends State<SignInScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Image.asset(
               "assets/icons/xwitter_logo.png",
               width: 60,
               fit: BoxFit.contain,
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  child: Text("Apelido / E-mail"),
-                ),
-                TextField(
-                  onTapOutside: (event) => disableKeyboard(),
-                  onChanged: (value) => nickname = value,
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(fontSize: 14),
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    filled: true,
-                    hintText: "felipe",
-                    fillColor: ColorConsts.backgroundColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    disabledBorder: inputBorder,
-                    border: inputBorder,
-                    errorBorder: inputBorder,
-                    enabledBorder: inputBorder,
-                    focusedBorder: inputBorder,
+            SizedBox(
+              height: 280,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            child: Text("Apelido / E-mail"),
+                          ),
+                          TextField(
+                            onTapOutside: (event) => disableKeyboard(),
+                            onChanged: (value) => nickname = value,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(fontSize: 14),
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              filled: true,
+                              hintText: "felipe",
+                              fillColor: ColorConsts.backgroundColor,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 8),
+                              disabledBorder: inputBorder,
+                              border: inputBorder,
+                              errorBorder: inputBorder,
+                              enabledBorder: inputBorder,
+                              focusedBorder: inputBorder,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            child: Text("Senha"),
+                          ),
+                          TextField(
+                            onTapOutside: (event) => disableKeyboard(),
+                            onChanged: (value) => password = value,
+                            style: const TextStyle(fontSize: 14),
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              filled: true,
+                              fillColor: ColorConsts.backgroundColor,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 8),
+                              disabledBorder: inputBorder,
+                              border: inputBorder,
+                              errorBorder: inputBorder,
+                              enabledBorder: inputBorder,
+                              focusedBorder: inputBorder,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed("/sign-up"),
+                        child: RichText(
+                          text: const TextSpan(
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: "Criar",
+                                style: TextStyle(
+                                  color: ColorConsts.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              TextSpan(text: " conta")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  child: Text("Senha"),
-                ),
-                TextField(
-                  onTapOutside: (event) => disableKeyboard(),
-                  onChanged: (value) => password = value,
-                  style: const TextStyle(fontSize: 14),
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    filled: true,
-                    fillColor: ColorConsts.backgroundColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    disabledBorder: inputBorder,
-                    border: inputBorder,
-                    errorBorder: inputBorder,
-                    enabledBorder: inputBorder,
-                    focusedBorder: inputBorder,
+                  AuthButtonWidget(
+                    onPressed: () =>
+                        Navigator.of(context).pushReplacementNamed("/home"),
+                    text: "Entrar",
                   ),
-                ),
-              ],
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pushNamed("/sign-up"),
-              child: Text("Criar conta"),
-            ),
-            AuthButtonWidget(
-              onPressed: () =>
-                  Navigator.of(context).pushReplacementNamed("home"),
-              text: "Entrar",
+                ],
+              ),
             ),
           ],
         ),
