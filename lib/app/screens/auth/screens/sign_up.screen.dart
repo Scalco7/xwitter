@@ -46,8 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               width: 60,
               fit: BoxFit.contain,
             ),
-            SizedBox(
-              height: 520,
+            SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
