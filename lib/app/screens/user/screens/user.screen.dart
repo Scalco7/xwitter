@@ -34,6 +34,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreen extends State<UserScreen> {
   late List<TweetModel> tweetsList;
   late String buttonText;
+  late int indexNavBar;
 
   void setTweetsList(EListTweetsSection state) {
     setState(() {
@@ -76,12 +77,15 @@ class _UserScreen extends State<UserScreen> {
     switch (widget.accountOption) {
       case EUserInteraction.myAccount:
         buttonText = "Editar";
+        indexNavBar = 2;
         break;
       case EUserInteraction.following:
         buttonText = "Deixar de seguir";
+        indexNavBar = 0;
         break;
       case EUserInteraction.common:
         buttonText = "Seguir";
+        indexNavBar = 0;
         break;
     }
 
@@ -149,7 +153,10 @@ class _UserScreen extends State<UserScreen> {
         ],
       ),
       floatingActionButton: const CreateTweetButtonWidget(),
-      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentIndex: indexNavBar,
+        user: widget.user,
+      ),
     );
   }
 }

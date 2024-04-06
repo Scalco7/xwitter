@@ -8,7 +8,7 @@ import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dar
 import 'package:xwitter/app/screens/edit_user/widgets/edit_user_app_bar.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
-  EditUserScreen({super.key, required this.user});
+  const EditUserScreen({super.key, required this.user});
   final UserModel user;
 
   @override
@@ -147,7 +147,10 @@ class _EditUserScreen extends State<EditUserScreen> {
         ),
       ),
       floatingActionButton: const CreateTweetButtonWidget(),
-      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentIndex: 2,
+        user: widget.user,
+      ),
     );
   }
 }

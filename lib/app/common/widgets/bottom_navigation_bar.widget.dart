@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
-  const BottomNavigationBarWidget({super.key, required this.currentIndex});
+  const BottomNavigationBarWidget({
+    super.key,
+    required this.currentIndex,
+    required this.user,
+  });
   final int currentIndex;
+  final UserModel user;
 
   void onChangeTab(BuildContext context, int index) {
     if (index == currentIndex) {
@@ -18,7 +24,11 @@ class BottomNavigationBarWidget extends StatelessWidget {
         Navigator.pushReplacementNamed(context, "/home");
         break;
       case 2:
-        Navigator.pushReplacementNamed(context, "/user");
+        Navigator.pushReplacementNamed(
+          context,
+          "/user",
+          arguments: user,
+        );
         break;
     }
   }

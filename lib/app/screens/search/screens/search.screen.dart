@@ -7,14 +7,15 @@ import 'package:xwitter/app/screens/search/widgets/search.widget.dart';
 import 'package:xwitter/app/screens/search/widgets/user.widget.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, required this.user});
+  final UserModel user;
 
-  static UserModel user = UserModel(
-    id: "001",
-    name: "Felipe Scalco",
-    nickname: "Scalco",
-    avatarPath: "assets/avatars/batman.png",
-    bio: "Olá eu sou o felipe",
+  static UserModel searchUser = UserModel(
+    id: "002",
+    name: "Raphael Dias",
+    nickname: "rapha",
+    avatarPath: "assets/avatars/man_1.png",
+    bio: "Olá eu sou o Rapha",
     numberOfFollowers: 209,
     numberOfFollowings: 10,
   );
@@ -23,14 +24,16 @@ class SearchScreen extends StatelessWidget {
     print("pesquisando - $searchText");
   }
 
-  void goToUserScreen(UserModel user) {
-    print(
-        "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - ${user.name}");
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
+
+    void goToUserScreen(UserModel acessedUser) {
+      print(
+          "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - ${acessedUser.name}");
+
+      Navigator.of(context).pushNamed("/user", arguments: acessedUser);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -59,12 +62,15 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
             ),
-            UserWidget(user: user, onTapUser: goToUserScreen)
+            UserWidget(user: searchUser, onTapUser: goToUserScreen),
           ],
         ),
       ),
       floatingActionButton: const CreateTweetButtonWidget(),
-      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 0),
+      bottomNavigationBar: BottomNavigationBarWidget(
+        currentIndex: 0,
+        user: user,
+      ),
     );
   }
 }
