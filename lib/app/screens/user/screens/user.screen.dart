@@ -7,13 +7,22 @@ import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/change_section_button.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
 
+enum EUserInteraction {
+  myAccount,
+  following,
+  common,
+}
+
 class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
     required this.user,
     required this.postTweets,
     required this.likedTweets,
+    required this.accountOption,
   });
+
+  final EUserInteraction accountOption;
   final UserModel user;
   final List<TweetModel> postTweets;
   final List<TweetModel> likedTweets;
@@ -24,6 +33,7 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreen extends State<UserScreen> {
   late List<TweetModel> tweetsList;
+  late String buttonText;
 
   void setTweetsList(EListTweetsSection state) {
     setState(() {
@@ -33,13 +43,48 @@ class _UserScreen extends State<UserScreen> {
     });
   }
 
+  void onClickButton() {
+    switch (widget.accountOption) {
+      case EUserInteraction.myAccount:
+        openEditUsercreen();
+        break;
+      case EUserInteraction.following:
+        unfollowUser();
+        break;
+      case EUserInteraction.common:
+        followUser();
+        break;
+    }
+  }
+
   void openEditUsercreen() {
     Navigator.of(context).pushNamed("/edit-user");
+  }
+
+  void followUser() {
+    print("Você começou a seguir o ${widget.user.name}");
+  }
+
+  void unfollowUser() {
+    print("Você deixou de seguir o ${widget.user.name}");
   }
 
   @override
   void initState() {
     tweetsList = widget.postTweets;
+
+    switch (widget.accountOption) {
+      case EUserInteraction.myAccount:
+        buttonText = "Editar";
+        break;
+      case EUserInteraction.following:
+        buttonText = "Deixar de seguir";
+        break;
+      case EUserInteraction.common:
+        buttonText = "Seguir";
+        break;
+    }
+
     super.initState();
   }
 
@@ -81,7 +126,8 @@ class _UserScreen extends State<UserScreen> {
                 UserDataWidget(
                   user: widget.user,
                   avatarHeight: avatarHeight,
-                  editUser: openEditUsercreen,
+                  editUser: onClickButton,
+                  buttonText: buttonText,
                 ),
                 const SizedBox(height: 20),
                 ChangeSectionButtonWidget(

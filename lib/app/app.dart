@@ -104,7 +104,7 @@ class Xwitter extends StatelessWidget {
     tweet5,
     tweet6
   ];
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -125,6 +125,7 @@ class Xwitter extends StatelessWidget {
               user: user,
               postTweets: tweets.where((t) => t.user.id == user.id).toList(),
               likedTweets: tweets.where((t) => t.liked).toList(),
+              accountOption: EUserInteraction.common,
             ),
         "/edit-user": (context) => EditUserScreen(user: user),
         "/create-tweet": (context) => const CreateTweetScreen(),

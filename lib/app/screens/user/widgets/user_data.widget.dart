@@ -10,8 +10,10 @@ class UserDataWidget extends StatelessWidget {
     required this.user,
     required this.avatarHeight,
     required this.editUser,
+    required this.buttonText,
   });
 
+  final String buttonText;
   final UserModel user;
   final double avatarHeight;
   final Function() editUser;
@@ -47,7 +49,7 @@ class UserDataWidget extends StatelessWidget {
                 ),
               ),
               PrimaryButtonWidget(
-                text: "Editar",
+                text: buttonText,
                 onPressed: editUser,
               ),
             ],
