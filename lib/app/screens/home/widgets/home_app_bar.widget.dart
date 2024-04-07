@@ -10,7 +10,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: ColorConsts.secondaryColor, width: 1),
+          bottom: BorderSide(color: ColorConsts.borderColor, width: 0.7),
         ),
       ),
       child: AppBar(
