@@ -12,21 +12,19 @@ class BottomNavigationBarWidget extends StatelessWidget {
   final UserModel user;
 
   void onChangeTab(BuildContext context, int index) {
-    if (index == currentIndex) {
-      return;
-    }
-
     switch (index) {
       case 0:
-        Navigator.pushReplacementNamed(context, "/search");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/search", (route) => false);
         break;
       case 1:
-        Navigator.pushReplacementNamed(context, "/home");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/home", (route) => false);
         break;
       case 2:
-        Navigator.pushReplacementNamed(
-          context,
+        Navigator.of(context).pushNamedAndRemoveUntil(
           "/user",
+          (route) => false,
           arguments: user,
         );
         break;
