@@ -21,7 +21,11 @@ class HomeScreen extends StatelessWidget {
       appBar: const HomeAppBarWidget(),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
-          return TweetWidget(tweet: tweets[index]);
+          return GestureDetector(
+            onTap: () => Navigator.of(context)
+                .pushNamed("/tweet", arguments: tweets[index]),
+            child: TweetWidget(tweet: tweets[index]),
+          );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
         itemCount: tweets.length,

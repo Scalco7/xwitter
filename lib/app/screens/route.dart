@@ -7,6 +7,7 @@ import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dar
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
+import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 
 class XWitterRoute extends StatelessWidget {
@@ -162,6 +163,13 @@ class XWitterRoute extends StatelessWidget {
         if (settings.name == "/create-tweet") {
           return MaterialPageRoute(
             builder: (context) => const CreateTweetScreen(),
+          );
+        }
+        if (settings.name == "/tweet") {
+          return MaterialPageRoute(
+            builder: (context) => TweetScreen(
+              tweet: settings.arguments as TweetModel,
+            ),
           );
         }
 

@@ -140,7 +140,11 @@ class _UserScreen extends State<UserScreen> {
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (BuildContext context, int index) {
-                      return TweetWidget(tweet: tweetsList[index]);
+                      return GestureDetector(
+                        onTap: () => Navigator.of(context)
+                            .pushNamed("/tweet", arguments: tweetsList[index]),
+                        child: TweetWidget(tweet: tweetsList[index]),
+                      );
                     },
                     separatorBuilder: (BuildContext context, int index) =>
                         const Divider(),
