@@ -172,10 +172,6 @@ class XWitterRoute extends StatelessWidget {
             ),
           );
         }
-
-        return MaterialPageRoute(
-          builder: (context) => Container(),
-        );
       },
     );
   }

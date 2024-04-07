@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
+import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
 
 class TweetScreen extends StatelessWidget {
   const TweetScreen({super.key, required this.tweet});
@@ -9,17 +10,7 @@ class TweetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Tweet",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 17,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ),
+      appBar: const TweetAppBarWidget(),
       body: Center(
         child: Text(tweet.tweet),
       ),
