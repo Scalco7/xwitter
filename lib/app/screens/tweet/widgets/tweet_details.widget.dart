@@ -22,6 +22,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
+        color: Colors.white,
         border: Border.symmetric(
           horizontal: BorderSide(
             width: 0.7,

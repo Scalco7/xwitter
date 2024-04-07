@@ -42,6 +42,16 @@ class XWitterRoute extends StatelessWidget {
     numberOfFollowers: 209,
     numberOfFollowings: 10,
   );
+  static TweetModel comment01 = TweetModel(
+      id: "01",
+      user: user2,
+      tweet: "I prefer UX(I am Gay)",
+      likes: 07,
+      liked: false);
+  static TweetModel comment02 = TweetModel(
+      id: "02", user: user3, tweet: "I Hate gays", likes: 999, liked: true);
+  static TweetModel comment03 = TweetModel(
+      id: "03", user: user2, tweet: "Fuck You", likes: 1, liked: false);
   static TweetModel tweet1 = TweetModel(
     id: "001",
     user: user,
@@ -49,6 +59,17 @@ class XWitterRoute extends StatelessWidget {
         "UXR/UX: You can only bring one item to a remote island to assist your research of native use of tools and usability. What do you bring? #TellMeAboutYou",
     likes: 2069,
     liked: true,
+    comments: [
+      comment01,
+      comment02,
+      comment03,
+      comment01,
+      comment02,
+      comment03,
+      comment01,
+      comment02,
+      comment03
+    ],
   );
   static TweetModel tweet2 = TweetModel(
     id: "002",
