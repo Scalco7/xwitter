@@ -4,6 +4,7 @@ import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
+import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/change_section_button.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
 
@@ -95,13 +96,14 @@ class _UserScreen extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    const double headerHeight = 80;
+    const double appBarHeight = 64;
+    const double headerHeight = 16;
     const double avatarHeight = 70;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(31, 31, 31, 1),
-        toolbarHeight: 0,
+      appBar: UserAppBarWidget(
+        nickname: widget.user.nickname,
+        height: appBarHeight,
       ),
       body: Stack(
         children: <Widget>[
@@ -112,47 +114,34 @@ class _UserScreen extends State<UserScreen> {
             decoration: const BoxDecoration(
               color: Color.fromRGBO(31, 31, 31, 1),
             ),
-            child: Text(
-              "@${widget.user.nickname}",
-              style: TextStyle(
-                color: Colors.blueGrey.shade50,
-                fontSize: 21,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: headerHeight - (avatarHeight / 3),
-            ),
-            child: Column(
-              children: <Widget>[
-                UserDataWidget(
-                  user: widget.user,
-                  avatarHeight: avatarHeight,
-                  editUser: onClickButton,
-                  buttonText: buttonText,
+          Column(
+            children: <Widget>[
+              UserDataWidget(
+                user: widget.user,
+                avatarHeight: avatarHeight,
+                editUser: onClickButton,
+                buttonText: buttonText,
+              ),
+              const SizedBox(height: 20),
+              ChangeSectionButtonWidget(
+                onChange: setTweetsList,
+              ),
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () => Navigator.of(context)
+                          .pushNamed("/tweet", arguments: tweetsList[index]),
+                      child: TweetWidget(tweet: tweetsList[index]),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(),
+                  itemCount: tweetsList.length,
                 ),
-                const SizedBox(height: 20),
-                ChangeSectionButtonWidget(
-                  onChange: setTweetsList,
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () => Navigator.of(context)
-                            .pushNamed("/tweet", arguments: tweetsList[index]),
-                        child: TweetWidget(tweet: tweetsList[index]),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
-                    itemCount: tweetsList.length,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

@@ -4,8 +4,8 @@ import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
+import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dart';
-import 'package:xwitter/app/screens/edit_user/widgets/edit_user_app_bar.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key, required this.user});
@@ -49,7 +49,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     }
 
     return Scaffold(
-      appBar: EditUserAppBarWidget(
+      appBar: UserAppBarWidget(
         height: headerHeight,
         nickname: widget.user.nickname,
       ),

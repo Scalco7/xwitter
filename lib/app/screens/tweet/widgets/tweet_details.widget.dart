@@ -38,7 +38,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           children: <Widget>[
             GestureDetector(
               onTap: () => Navigator.of(context)
-                  .pushReplacementNamed("/user", arguments: widget.tweet.user),
+                  .pushNamed("/user", arguments: widget.tweet.user),
               child: UserWidget(user: widget.tweet.user),
             ),
             Padding(
