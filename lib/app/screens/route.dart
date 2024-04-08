@@ -156,16 +156,19 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               UserModel navigationUser = settings.arguments as UserModel;
+              int indexNavBar = 0;
 
               EUserInteraction accountOption =
                   EUserInteraction.common; //pgar se segue o cara pela api
 
               if (user == navigationUser) {
                 accountOption = EUserInteraction.myAccount;
+                indexNavBar = 2;
               }
 
               return UserScreen(
                 user: navigationUser,
+                indexNavBar: indexNavBar,
                 postTweets: tweets
                     .where((t) => t.user.id == navigationUser.id)
                     .toList(),
