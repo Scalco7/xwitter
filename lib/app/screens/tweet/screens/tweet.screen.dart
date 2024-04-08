@@ -15,6 +15,23 @@ class TweetScreen extends StatefulWidget {
 }
 
 class _TweetScreen extends State<TweetScreen> {
+  String commentText = "";
+  InputBorder inputBorder = const OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(30)),
+    borderSide: BorderSide(
+      color: Colors.transparent,
+      width: 0,
+    ),
+  );
+
+  void disableKeyboard() {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  void commentOnTweet(String text) {
+    print("Comentou: $text");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,27 +41,85 @@ class _TweetScreen extends State<TweetScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            TweetDetailsWidget(tweet: widget.tweet),
-            Visibility(
-              visible: widget.tweet.comments != null,
-              child: Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  decoration: const BoxDecoration(color: Colors.white),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: widget.tweet.comments?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      TweetModel comment = widget.tweet.comments![index];
-                      return GestureDetector(
-                        onTap: () => Navigator.of(context)
-                            .pushNamed("/user", arguments: comment.user),
-                        child: TweetWidget(tweet: comment),
-                      );
-                    },
+            Flexible(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TweetDetailsWidget(tweet: widget.tweet),
+                  Visibility(
+                    visible: widget.tweet.comments != null,
+                    child: Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: widget.tweet.comments?.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            TweetModel comment = widget.tweet.comments![index];
+                            return GestureDetector(
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed("/user", arguments: comment.user),
+                              child: TweetWidget(tweet: comment),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      onTapOutside: (event) => disableKeyboard(),
+                      onChanged: (value) => commentText = value,
+                      onSubmitted: (value) => commentOnTweet(value),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "Comentar",
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 0),
+                        filled: true,
+                        fillColor: ColorConsts.backgroundColor,
+                        border: inputBorder,
+                        errorBorder: inputBorder,
+                        enabledBorder: inputBorder,
+                        focusedBorder: inputBorder,
+                        disabledBorder: inputBorder,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    onPressed: () => commentOnTweet(commentText),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          ColorConsts.primaryColor),
+                    ),
+                    icon: const Icon(
+                      Icons.add_comment_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
