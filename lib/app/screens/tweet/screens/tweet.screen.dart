@@ -36,7 +36,12 @@ class _TweetScreen extends State<TweetScreen> {
                     shrinkWrap: true,
                     itemCount: widget.tweet.comments?.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return TweetWidget(tweet: widget.tweet.comments![index]);
+                      TweetModel comment = widget.tweet.comments![index];
+                      return GestureDetector(
+                        onTap: () => Navigator.of(context)
+                            .pushNamed("/user", arguments: comment.user),
+                        child: TweetWidget(tweet: comment),
+                      );
                     },
                   ),
                 ),
