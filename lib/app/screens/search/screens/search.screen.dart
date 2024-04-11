@@ -7,8 +7,10 @@ import 'package:xwitter/app/screens/search/widgets/search.widget.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key, required this.user});
+  const SearchScreen(
+      {super.key, required this.user, required this.goToUserScreen});
   final UserModel user;
+  final void Function(UserModel user) goToUserScreen;
 
   static UserModel searchUser = UserModel(
     id: "002",
@@ -28,11 +30,11 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    void goToUserScreen(UserModel acessedUser) {
+    void onClickUser(UserModel acessedUser) {
       print(
           "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - ${acessedUser.name}");
 
-      Navigator.of(context).pushNamed("/user", arguments: acessedUser);
+      goToUserScreen(acessedUser);
     }
 
     return Scaffold(
@@ -63,7 +65,7 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () => goToUserScreen(searchUser),
+              onTap: () => onClickUser(searchUser),
               child: UserWidget(user: searchUser),
             ),
           ],

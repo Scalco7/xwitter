@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_details.widget.dart';
 
 class TweetScreen extends StatefulWidget {
-  const TweetScreen({super.key, required this.tweet});
+  const TweetScreen({
+    super.key,
+    required this.tweet,
+    required this.goToUserScreen,
+    required this.routePop,
+  });
   final TweetModel tweet;
+  final void Function(UserModel user) goToUserScreen;
+  final void Function() routePop;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
@@ -36,7 +44,7 @@ class _TweetScreen extends State<TweetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConsts.backgroundColor,
-      appBar: const TweetAppBarWidget(),
+      appBar: TweetAppBarWidget(routePop: widget.routePop),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -49,7 +57,10 @@ class _TweetScreen extends State<TweetScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  TweetDetailsWidget(tweet: widget.tweet),
+                  TweetDetailsWidget(
+                    tweet: widget.tweet,
+                    goToUserScreen: widget.goToUserScreen,
+                  ),
                   Visibility(
                     visible: widget.tweet.comments != null,
                     child: Expanded(
@@ -62,8 +73,7 @@ class _TweetScreen extends State<TweetScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             TweetModel comment = widget.tweet.comments![index];
                             return GestureDetector(
-                              onTap: () => Navigator.of(context)
-                                  .pushNamed("/user", arguments: comment.user),
+                              onTap: () => widget.goToUserScreen(comment.user),
                               child: TweetWidget(tweet: comment),
                             );
                           },

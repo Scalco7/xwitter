@@ -3,7 +3,13 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({
+    super.key,
+    required this.goToSignUpScreen,
+    required this.goToHomeScreen,
+  });
+  final void Function() goToSignUpScreen;
+  final void Function() goToHomeScreen;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -114,8 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       TextButton(
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed("/sign-up"),
+                        onPressed: widget.goToSignUpScreen,
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(
@@ -139,8 +144,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   AuthButtonWidget(
-                    onPressed: () =>
-                        Navigator.of(context).pushReplacementNamed("/home"),
+                    onPressed: widget.goToHomeScreen,
                     text: "Entrar",
                   ),
                 ],

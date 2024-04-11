@@ -8,8 +8,13 @@ import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
-  const EditUserScreen({super.key, required this.user});
+  const EditUserScreen({
+    super.key,
+    required this.user,
+    required this.routePop,
+  });
   final UserModel user;
+  final void Function() routePop;
 
   @override
   State<StatefulWidget> createState() => _EditUserScreen();
@@ -52,6 +57,7 @@ class _EditUserScreen extends State<EditUserScreen> {
       appBar: UserAppBarWidget(
         height: headerHeight,
         nickname: widget.user.nickname,
+        routePop: widget.routePop,
       ),
       body: SizedBox(
         width: screenWidth,

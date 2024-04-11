@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class TweetDetailsWidget extends StatefulWidget {
-  const TweetDetailsWidget({super.key, required this.tweet});
+  const TweetDetailsWidget({
+    super.key,
+    required this.tweet,
+    required this.goToUserScreen,
+  });
   final TweetModel tweet;
+  final void Function(UserModel user) goToUserScreen;
 
   @override
   State<TweetDetailsWidget> createState() => _TweetDetailsWidgetState();
@@ -37,8 +43,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             GestureDetector(
-              onTap: () => Navigator.of(context)
-                  .pushNamed("/user", arguments: widget.tweet.user),
+              onTap: () => widget.goToUserScreen(widget.tweet.user),
               child: UserWidget(user: widget.tweet.user),
             ),
             Padding(

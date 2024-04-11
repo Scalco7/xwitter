@@ -5,9 +5,11 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.height,
     required this.nickname,
+    required this.routePop,
   });
   final double height;
   final String nickname;
+  final void Function() routePop;
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -30,7 +32,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         visible: Navigator.of(context).canPop(),
         child: IconButton(
           alignment: Alignment.center,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: routePop,
           icon: Container(
             width: 32,
             height: 32,

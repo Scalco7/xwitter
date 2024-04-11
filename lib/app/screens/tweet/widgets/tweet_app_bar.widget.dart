@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 
 class TweetAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const TweetAppBarWidget({super.key});
+  const TweetAppBarWidget({super.key, required this.routePop});
+  final void Function() routePop;
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
@@ -14,7 +15,7 @@ class TweetAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: IconButton(
         alignment: Alignment.center,
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: routePop,
         icon: const Icon(
           Icons.chevron_left_rounded,
           color: ColorConsts.primaryColor,

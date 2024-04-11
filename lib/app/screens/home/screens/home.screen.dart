@@ -11,9 +11,11 @@ class HomeScreen extends StatelessWidget {
     super.key,
     required this.tweets,
     required this.user,
+    required this.goToTweetDetailsScreen,
   });
   final UserModel user;
   final List<TweetModel> tweets;
+  final void Function(TweetModel tweet) goToTweetDetailsScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,7 @@ class HomeScreen extends StatelessWidget {
       body: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-            onTap: () => Navigator.of(context)
-                .pushNamed("/tweet", arguments: tweets[index]),
+            onTap: () => goToTweetDetailsScreen(tweets[index]),
             child: TweetWidget(tweet: tweets[index]),
           );
         },

@@ -22,6 +22,9 @@ class UserScreen extends StatefulWidget {
     required this.indexNavBar,
     required this.likedTweets,
     required this.accountOption,
+    required this.goToTweetDetailsScreen,
+    required this.goToEditUserScreen,
+    required this.routePop,
   });
 
   final EUserInteraction accountOption;
@@ -29,6 +32,9 @@ class UserScreen extends StatefulWidget {
   final int indexNavBar;
   final List<TweetModel> postTweets;
   final List<TweetModel> likedTweets;
+  final void Function(TweetModel tweet) goToTweetDetailsScreen;
+  final void Function() goToEditUserScreen;
+  final void Function() routePop;
 
   @override
   State<UserScreen> createState() => _UserScreen();
@@ -49,7 +55,7 @@ class _UserScreen extends State<UserScreen> {
   void onClickButton() {
     switch (widget.accountOption) {
       case EUserInteraction.myAccount:
-        openEditUsercreen();
+        widget.goToEditUserScreen();
         break;
       case EUserInteraction.following:
         unfollowUser();
@@ -58,10 +64,6 @@ class _UserScreen extends State<UserScreen> {
         followUser();
         break;
     }
-  }
-
-  void openEditUsercreen() {
-    Navigator.of(context).pushNamed("/edit-user");
   }
 
   void followUser() {
@@ -102,6 +104,7 @@ class _UserScreen extends State<UserScreen> {
       appBar: UserAppBarWidget(
         nickname: widget.user.nickname,
         height: appBarHeight,
+        routePop: widget.routePop,
       ),
       body: Stack(
         children: <Widget>[
@@ -129,8 +132,8 @@ class _UserScreen extends State<UserScreen> {
                 child: ListView.separated(
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      onTap: () => Navigator.of(context)
-                          .pushNamed("/tweet", arguments: tweetsList[index]),
+                      onTap: () =>
+                          widget.goToTweetDetailsScreen(tweetsList[index]),
                       child: TweetWidget(tweet: tweetsList[index]),
                     );
                   },
