@@ -12,9 +12,11 @@ class EditUserScreen extends StatefulWidget {
     super.key,
     required this.user,
     required this.routePop,
+    required this.bottomNavigationRoutes,
   });
   final UserModel user;
   final void Function() routePop;
+  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   State<StatefulWidget> createState() => _EditUserScreen();
@@ -156,6 +158,7 @@ class _EditUserScreen extends State<EditUserScreen> {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 2,
         user: widget.user,
+        bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );
   }

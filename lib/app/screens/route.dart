@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
@@ -125,6 +126,31 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BottomNavigationRoutesModel bottomNavigationRoutes =
+        BottomNavigationRoutesModel(
+      goToSearchScreen: () => Navigator.of(context)
+          .pushNamedAndRemoveUntil("/search", (route) => false),
+      goToHomeScreen: () => Navigator.of(context)
+          .pushNamedAndRemoveUntil("/home", (route) => false),
+      goToUserScreen: (UserModel user) =>
+          Navigator.of(context).pushNamedAndRemoveUntil(
+        "/user",
+        (route) => false,
+        arguments: user,
+      ),
+    );
+
+    routePop(BuildContext context) => Navigator.of(context).pop();
+
+    goToUserScreen(BuildContext context, UserModel user) =>
+        Navigator.of(context).pushNamed("/user", arguments: user);
+
+    goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
+        Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+
+    goToHomeScreen(BuildContext context) => Navigator.of(context)
+        .pushNamedAndRemoveUntil("/home", (route) => false);
+
     return Navigator(
       initialRoute: "/sign-in",
       onGenerateRoute: (settings) {
@@ -133,17 +159,15 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) => SignInScreen(
               goToSignUpScreen: () =>
                   Navigator.of(context).pushNamed("/sign-up"),
-              goToHomeScreen: () =>
-                  Navigator.of(context).pushReplacementNamed("/home"),
+              goToHomeScreen: () => goToHomeScreen(context),
             ),
           );
         }
         if (settings.name == "/sign-up") {
           return MaterialPageRoute(
             builder: (context) => SignUpScreen(
-              routePop: () => Navigator.of(context).pop(),
-              goToHomeScreen: () => Navigator.of(context)
-                  .pushNamedAndRemoveUntil("/home", (route) => false),
+              routePop: () => routePop(context),
+              goToHomeScreen: () => goToHomeScreen(context),
             ),
           );
         }
@@ -153,7 +177,8 @@ class XWitterRoute extends StatelessWidget {
               tweets: tweets,
               user: user,
               goToTweetDetailsScreen: (tweet) =>
-                  Navigator.of(context).pushNamed("/tweet", arguments: tweet),
+                  goToTweetDetailsScreen(context, tweet),
+              bottomNavigationRoutes: bottomNavigationRoutes,
             ),
           );
         }
@@ -161,8 +186,8 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => SearchScreen(
               user: user,
-              goToUserScreen: (user) =>
-                  Navigator.of(context).pushNamed("/user", arguments: user),
+              goToUserScreen: (user) => goToUserScreen(context, user),
+              bottomNavigationRoutes: bottomNavigationRoutes,
             ),
           );
         }
@@ -191,10 +216,11 @@ class XWitterRoute extends StatelessWidget {
                     tweets.where((t) => t.liked).toList(), //trocar isso
                 accountOption: accountOption,
                 goToTweetDetailsScreen: (tweet) =>
-                    Navigator.of(context).pushNamed("/tweet", arguments: tweet),
+                    goToTweetDetailsScreen(context, tweet),
                 goToEditUserScreen: () =>
                     Navigator.of(context).pushNamed("/edit-user"),
-                routePop: () => Navigator.of(context).pop(),
+                routePop: () => routePop(context),
+                bottomNavigationRoutes: bottomNavigationRoutes,
               );
             },
           );
@@ -203,7 +229,8 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => EditUserScreen(
               user: user,
-              routePop: () => Navigator.of(context).pop(),
+              routePop: () => routePop(context),
+              bottomNavigationRoutes: bottomNavigationRoutes,
             ),
           );
         }
@@ -216,9 +243,9 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => TweetScreen(
               tweet: settings.arguments as TweetModel,
-              goToUserScreen: (user) =>
-                  Navigator.of(context).pushNamed("/user", arguments: user),
-              routePop: () => Navigator.of(context).pop(),
+              goToUserScreen: (user) => goToUserScreen(context, user),
+              routePop: () => routePop(context),
+              bottomNavigationRoutes: bottomNavigationRoutes,
             ),
           );
         }

@@ -7,10 +7,15 @@ import 'package:xwitter/app/screens/search/widgets/search.widget.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen(
-      {super.key, required this.user, required this.goToUserScreen});
+  const SearchScreen({
+    super.key,
+    required this.user,
+    required this.goToUserScreen,
+    required this.bottomNavigationRoutes,
+  });
   final UserModel user;
   final void Function(UserModel user) goToUserScreen;
+  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   static UserModel searchUser = UserModel(
     id: "002",
@@ -75,6 +80,7 @@ class SearchScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 0,
         user: user,
+        bottomNavigationRoutes: bottomNavigationRoutes,
       ),
     );
   }

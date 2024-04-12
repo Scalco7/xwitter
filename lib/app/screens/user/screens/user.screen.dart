@@ -25,6 +25,7 @@ class UserScreen extends StatefulWidget {
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
     required this.routePop,
+    required this.bottomNavigationRoutes,
   });
 
   final EUserInteraction accountOption;
@@ -35,6 +36,7 @@ class UserScreen extends StatefulWidget {
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final void Function() goToEditUserScreen;
   final void Function() routePop;
+  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   State<UserScreen> createState() => _UserScreen();
@@ -150,6 +152,7 @@ class _UserScreen extends State<UserScreen> {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: widget.indexNavBar,
         user: widget.user,
+        bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );
   }

@@ -2,14 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 
+class BottomNavigationRoutesModel {
+  final void Function() goToSearchScreen;
+  final void Function() goToHomeScreen;
+  final void Function(UserModel user) goToUserScreen;
+
+  const BottomNavigationRoutesModel({
+    required this.goToSearchScreen,
+    required this.goToHomeScreen,
+    required this.goToUserScreen,
+  });
+}
+
 class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({
     super.key,
     required this.currentIndex,
     required this.user,
+    required this.bottomNavigationRoutes,
   });
   final int currentIndex;
   final UserModel user;
+  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   void onChangeTab(BuildContext context, int index) {
     switch (index) {

@@ -12,10 +12,12 @@ class HomeScreen extends StatelessWidget {
     required this.tweets,
     required this.user,
     required this.goToTweetDetailsScreen,
+    required this.bottomNavigationRoutes,
   });
   final UserModel user;
   final List<TweetModel> tweets;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
+  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 1,
         user: user,
+        bottomNavigationRoutes: bottomNavigationRoutes,
       ),
     );
   }
