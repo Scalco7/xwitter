@@ -196,7 +196,6 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => HomeScreen(
               tweets: tweets,
-              user: user,
               goToTweetDetailsScreen: (tweet) =>
                   goToTweetDetailsScreen(context, tweet),
               bottomNavigationRoutes: bottomNavigationRoutes,
@@ -206,7 +205,6 @@ class XWitterRoute extends StatelessWidget {
         if (settings.name == "/search") {
           return MaterialPageRoute(
             builder: (context) => SearchScreen(
-              user: user,
               goToUserScreen: (user) => goToUserScreen(context, user),
               bottomNavigationRoutes: bottomNavigationRoutes,
             ),
@@ -221,7 +219,7 @@ class XWitterRoute extends StatelessWidget {
               EUserInteraction accountOption =
                   EUserInteraction.common; //pgar se segue o cara pela api
 
-              if (user == navigationUser) {
+              if (user.nickname == navigationUser.nickname) {
                 accountOption = EUserInteraction.myAccount;
               }
 

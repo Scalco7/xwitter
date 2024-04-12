@@ -9,11 +9,9 @@ import 'package:xwitter/app/common/widgets/user.widget.dart';
 class SearchScreen extends StatelessWidget {
   const SearchScreen({
     super.key,
-    required this.user,
     required this.goToUserScreen,
     required this.bottomNavigationRoutes,
   });
-  final UserModel user;
   final void Function(UserModel user) goToUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
@@ -79,7 +77,6 @@ class SearchScreen extends StatelessWidget {
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 0,
-        user: user,
         bottomNavigationRoutes: bottomNavigationRoutes,
       ),
     );

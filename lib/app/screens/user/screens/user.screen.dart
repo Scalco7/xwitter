@@ -151,7 +151,6 @@ class _UserScreen extends State<UserScreen> {
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: widget.indexNavBar,
-        user: widget.user,
         bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );

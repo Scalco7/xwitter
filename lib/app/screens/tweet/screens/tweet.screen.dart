@@ -141,7 +141,6 @@ class _TweetScreen extends State<TweetScreen> {
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: widget.indexNavBar,
-        user: widget.tweet.user,
         bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );

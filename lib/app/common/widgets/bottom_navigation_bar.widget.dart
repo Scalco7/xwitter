@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 
 class BottomNavigationRoutesModel {
   final void Function(BuildContext context) goToSearchScreen;
@@ -18,11 +17,9 @@ class BottomNavigationBarWidget extends StatelessWidget {
   const BottomNavigationBarWidget({
     super.key,
     required this.currentIndex,
-    required this.user,
     required this.bottomNavigationRoutes,
   });
   final int currentIndex;
-  final UserModel user;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   void onChangeTab(BuildContext context, int index) {

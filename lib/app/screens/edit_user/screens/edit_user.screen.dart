@@ -157,7 +157,6 @@ class _EditUserScreen extends State<EditUserScreen> {
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 2,
-        user: widget.user,
         bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );

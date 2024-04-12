@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
@@ -10,11 +9,9 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
     required this.tweets,
-    required this.user,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
   });
-  final UserModel user;
   final List<TweetModel> tweets;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
@@ -36,7 +33,6 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 1,
-        user: user,
         bottomNavigationRoutes: bottomNavigationRoutes,
       ),
     );
