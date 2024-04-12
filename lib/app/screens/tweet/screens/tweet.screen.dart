@@ -11,11 +11,13 @@ class TweetScreen extends StatefulWidget {
   const TweetScreen({
     super.key,
     required this.tweet,
+    required this.indexNavBar,
     required this.goToUserScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
   final TweetModel tweet;
+  final int indexNavBar;
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
@@ -138,7 +140,7 @@ class _TweetScreen extends State<TweetScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: 1,
+        currentIndex: widget.indexNavBar,
         user: widget.tweet.user,
         bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),

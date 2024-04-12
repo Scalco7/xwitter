@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({
     super.key,
     required this.goToSignUpScreen,
-    required this.goToHomeScreen,
+    required this.onSignIn,
   });
   final void Function() goToSignUpScreen;
-  final void Function() goToHomeScreen;
+  final void Function(UserModel user) onSignIn;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  static UserModel user = UserModel(
+    id: "001",
+    name: "Felipe Scalco",
+    nickname: "Scalco",
+    avatarPath: "assets/avatars/batman.png",
+    bio: "Olá eu sou o felipe",
+    numberOfFollowers: 209,
+    numberOfFollowings: 10,
+  );
+
   String nickname = "";
   String password = "";
 
@@ -144,7 +155,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   AuthButtonWidget(
-                    onPressed: widget.goToHomeScreen,
+                    onPressed: () => widget.onSignIn(user),
                     text: "Entrar",
                   ),
                 ],

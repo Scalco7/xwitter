@@ -3,9 +3,9 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 
 class BottomNavigationRoutesModel {
-  final void Function() goToSearchScreen;
-  final void Function() goToHomeScreen;
-  final void Function(UserModel user) goToUserScreen;
+  final void Function(BuildContext context) goToSearchScreen;
+  final void Function(BuildContext context) goToHomeScreen;
+  final void Function(BuildContext context) goToUserScreen;
 
   const BottomNavigationRoutesModel({
     required this.goToSearchScreen,
@@ -28,19 +28,13 @@ class BottomNavigationBarWidget extends StatelessWidget {
   void onChangeTab(BuildContext context, int index) {
     switch (index) {
       case 0:
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil("/search", (route) => false);
+        bottomNavigationRoutes.goToSearchScreen(context);
         break;
       case 1:
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil("/home", (route) => false);
+        bottomNavigationRoutes.goToHomeScreen(context);
         break;
       case 2:
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          "/user",
-          (route) => false,
-          arguments: user,
-        );
+        bottomNavigationRoutes.goToUserScreen(context);
         break;
     }
   }

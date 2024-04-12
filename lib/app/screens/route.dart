@@ -126,30 +126,51 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late UserModel loggedUser;
+    int indexNavBar = 1;
+
     final BottomNavigationRoutesModel bottomNavigationRoutes =
         BottomNavigationRoutesModel(
-      goToSearchScreen: () => Navigator.of(context)
-          .pushNamedAndRemoveUntil("/search", (route) => false),
-      goToHomeScreen: () => Navigator.of(context)
-          .pushNamedAndRemoveUntil("/home", (route) => false),
-      goToUserScreen: (UserModel user) =>
-          Navigator.of(context).pushNamedAndRemoveUntil(
-        "/user",
-        (route) => false,
-        arguments: user,
-      ),
+      goToSearchScreen: (BuildContext context) {
+        indexNavBar = 0;
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/search", (route) => false);
+      },
+      goToHomeScreen: (BuildContext context) {
+        indexNavBar = 1;
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("/home", (route) => false);
+      },
+      goToUserScreen: (BuildContext context) {
+        indexNavBar = 2;
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          "/user",
+          (route) => false,
+          arguments: loggedUser,
+        );
+      },
     );
 
-    routePop(BuildContext context) => Navigator.of(context).pop();
+    void routePop(BuildContext context) => Navigator.of(context).pop();
 
-    goToUserScreen(BuildContext context, UserModel user) =>
+    void goToUserScreen(BuildContext context, UserModel user) =>
         Navigator.of(context).pushNamed("/user", arguments: user);
 
-    goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
+    void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushNamed("/tweet", arguments: tweet);
 
-    goToHomeScreen(BuildContext context) => Navigator.of(context)
+    void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
+
+    void signIn(BuildContext context, UserModel user) {
+      loggedUser = user;
+      goToHomeScreen(context);
+    }
+
+    void signUp(BuildContext context, UserModel user) {
+      loggedUser = user;
+      goToHomeScreen(context);
+    }
 
     return Navigator(
       initialRoute: "/sign-in",
@@ -159,7 +180,7 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) => SignInScreen(
               goToSignUpScreen: () =>
                   Navigator.of(context).pushNamed("/sign-up"),
-              goToHomeScreen: () => goToHomeScreen(context),
+              onSignIn: (user) => signIn(context, user),
             ),
           );
         }
@@ -167,7 +188,7 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => SignUpScreen(
               routePop: () => routePop(context),
-              goToHomeScreen: () => goToHomeScreen(context),
+              onSignUp: (user) => signUp(context, user),
             ),
           );
         }
@@ -196,14 +217,12 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               UserModel navigationUser = settings.arguments as UserModel;
-              int indexNavBar = 0;
 
               EUserInteraction accountOption =
                   EUserInteraction.common; //pgar se segue o cara pela api
 
               if (user == navigationUser) {
                 accountOption = EUserInteraction.myAccount;
-                indexNavBar = 2;
               }
 
               return UserScreen(
@@ -243,6 +262,7 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => TweetScreen(
               tweet: settings.arguments as TweetModel,
+              indexNavBar: indexNavBar,
               goToUserScreen: (user) => goToUserScreen(context, user),
               routePop: () => routePop(context),
               bottomNavigationRoutes: bottomNavigationRoutes,
