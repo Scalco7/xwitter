@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "842618828625",
+    "project_id": "xwitter-fa3c5",
+    "storage_bucket": "xwitter-fa3c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842618828625:android:eb606ab43b463295794570",
+        "android_client_info": {
+          "package_name": "com.example.xwitter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjegW2oNbcd91BieWXIryTasz3FRe6oGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
