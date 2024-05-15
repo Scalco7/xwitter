@@ -1,5 +1,6 @@
 class UserModel {
   final String id;
+  final String email;
   final String name;
   final String nickname;
   final String avatarPath;
@@ -10,6 +11,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.name,
+    required this.email,
     required this.nickname,
     required this.avatarPath,
     required this.bio,

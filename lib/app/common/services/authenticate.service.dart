@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/database.service.dart';
 
 class AuthenticateService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final DataBaseService _dataBaseService = DataBaseService();
 
   Future<UserModel?> registerUser({
     required String nickname,
@@ -15,15 +17,8 @@ class AuthenticateService {
       userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      UserModel newUser = UserModel(
-        id: userCredential.user!.uid,
-        name: name,
-        nickname: nickname,
-        avatarPath: "assets/avatars/man_2.png",
-        bio: "",
-        numberOfFollowers: 0,
-        numberOfFollowings: 0,
-      );
+      UserModel newUser = await _dataBaseService.createUser(
+          userCredential.user!.uid, name, email, nickname);
 
       return newUser;
     } catch (err) {
@@ -40,20 +35,11 @@ class AuthenticateService {
       userCredential = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      UserModel newUser = UserModel(
-        id: userCredential.user!.uid,
-        name: '',
-        nickname: '',
-        avatarPath: "assets/avatars/man_2.png",
-        bio: "",
-        numberOfFollowers: 0,
-        numberOfFollowings: 0,
-      );
+      UserModel? newUser =
+          await _dataBaseService.getUser(userCredential.user!.uid);
 
-      print("deu certo o login");
       return newUser;
     } catch (err) {
-      print("erro no login");
       return null;
     }
   }

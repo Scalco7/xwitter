@@ -18,6 +18,7 @@ class SearchScreen extends StatelessWidget {
   static UserModel searchUser = UserModel(
     id: "002",
     name: "Raphael Dias",
+    email: "",
     nickname: "rapha",
     avatarPath: "assets/avatars/man_1.png",
     bio: "Olá eu sou o Rapha",

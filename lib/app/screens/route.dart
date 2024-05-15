@@ -20,6 +20,7 @@ class XWitterRoute extends StatelessWidget {
   static UserModel user = UserModel(
     id: "001",
     name: "Felipe Scalco",
+    email: "fefe@gmail",
     nickname: "Scalco",
     avatarPath: "assets/avatars/batman.png",
     bio: "Olá eu sou o felipe",
@@ -29,6 +30,7 @@ class XWitterRoute extends StatelessWidget {
   static UserModel user2 = UserModel(
     id: "002",
     name: "Raphael Dias",
+    email: "fefe@gmail",
     nickname: "rapha",
     avatarPath: "assets/avatars/man_1.png",
     bio: "Olá eu sou o Rapha",
@@ -38,6 +40,7 @@ class XWitterRoute extends StatelessWidget {
   static UserModel user3 = UserModel(
     id: "003",
     name: "Victor da Silva",
+    email: "fefe@gmail",
     nickname: "Japones",
     avatarPath: "assets/avatars/man_2.png",
     bio: "Olá eu sou o Victor",
