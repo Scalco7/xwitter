@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/authenticate.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -126,6 +127,7 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticateService authenticateService = AuthenticateService();
     late UserModel loggedUser;
     int indexNavBar = 1;
 
@@ -162,14 +164,34 @@ class XWitterRoute extends StatelessWidget {
     void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
 
-    void signIn(BuildContext context, UserModel user) {
-      loggedUser = user;
-      goToHomeScreen(context);
+    void signIn({
+      required BuildContext context,
+      required String email,
+      required String password,
+    }) async {
+      UserModel? user =
+          await authenticateService.loginUser(email: email, password: password);
+
+      if (user != null) {
+        loggedUser = user;
+        goToHomeScreen(context);
+      }
     }
 
-    void signUp(BuildContext context, UserModel user) {
-      loggedUser = user;
-      goToHomeScreen(context);
+    void signUp({
+      required BuildContext context,
+      required String nickname,
+      required String email,
+      required String name,
+      required String password,
+    }) async {
+      UserModel? user = await authenticateService.registerUser(
+          nickname: nickname, email: email, name: name, password: password);
+
+      if (user != null) {
+        loggedUser = user;
+        goToHomeScreen(context);
+      }
     }
 
     return Navigator(
@@ -180,7 +202,11 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) => SignInScreen(
               goToSignUpScreen: () =>
                   Navigator.of(context).pushNamed("/sign-up"),
-              onSignIn: (user) => signIn(context, user),
+              onSignIn: ({
+                required String email,
+                required String password,
+              }) =>
+                  signIn(context: context, email: email, password: password),
             ),
           );
         }
@@ -188,7 +214,18 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => SignUpScreen(
               routePop: () => routePop(context),
-              onSignUp: (user) => signUp(context, user),
+              onSignUp: ({
+                required String nickname,
+                required String email,
+                required String name,
+                required String password,
+              }) =>
+                  signUp(
+                      context: context,
+                      email: email,
+                      nickname: nickname,
+                      name: name,
+                      password: password),
             ),
           );
         }

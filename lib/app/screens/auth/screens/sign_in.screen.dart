@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -10,25 +9,18 @@ class SignInScreen extends StatefulWidget {
     required this.onSignIn,
   });
   final void Function() goToSignUpScreen;
-  final void Function(UserModel user) onSignIn;
+  final void Function({
+    required String email,
+    required String password,
+  }) onSignIn;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  static UserModel user = UserModel(
-    id: "001",
-    name: "Felipe Scalco",
-    nickname: "Scalco",
-    avatarPath: "assets/avatars/batman.png",
-    bio: "Olá eu sou o felipe",
-    numberOfFollowers: 209,
-    numberOfFollowings: 10,
-  );
-
-  String nickname = "";
-  String password = "";
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   static const InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -40,6 +32,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  void onSignIn() {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    widget.onSignIn(email: email, password: password);
   }
 
   @override
@@ -81,7 +80,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           TextField(
                             onTapOutside: (event) => disableKeyboard(),
-                            onChanged: (value) => nickname = value,
+                            controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(fontSize: 14),
                             decoration: const InputDecoration(
@@ -111,8 +110,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text("Senha"),
                           ),
                           TextField(
+                            controller: passwordController,
                             onTapOutside: (event) => disableKeyboard(),
-                            onChanged: (value) => password = value,
                             style: const TextStyle(fontSize: 14),
                             obscureText: true,
                             decoration: const InputDecoration(
@@ -155,7 +154,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   AuthButtonWidget(
-                    onPressed: () => widget.onSignIn(user),
+                    onPressed: () => onSignIn(),
                     text: "Entrar",
                   ),
                 ],
