@@ -212,11 +212,6 @@ class XWitterRoute extends StatelessWidget {
         avatarPath: avatarPath,
       ))!;
 
-      // UserModel? updatedUser =
-      //     await _dataBaseService.getUser(id: loggedUser.id);
-
-      // if (updatedUser != null) loggedUser = updatedUser;
-
       goToUserScreen(context, loggedUser);
     }
 
