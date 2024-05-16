@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/error/validatorFailure.model.dart';
+import 'package:xwitter/app/common/helpers/toasts.dart';
+import 'package:xwitter/app/common/helpers/validators.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
@@ -131,8 +134,11 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticateService authenticateService = AuthenticateService();
-    final DataBaseService _dataBaseService = DataBaseService();
+    final AuthenticateService authenticateService = AuthenticateService();
+    final DataBaseService dataBaseService = DataBaseService();
+    final Validators validators = Validators();
+    final Toasts toasts = Toasts();
+
     late UserModel loggedUser;
     int indexNavBar = 1;
 
@@ -174,13 +180,29 @@ class XWitterRoute extends StatelessWidget {
       required String email,
       required String password,
     }) async {
+      ValidatorFailure emailValidate = validators.validateEmail(email);
+      ValidatorFailure passwordValidate = validators.validatePassword(password);
+
+      if (!emailValidate.valid) {
+        toasts.showErrorToast(emailValidate.error);
+        return;
+      }
+
+      if (!passwordValidate.valid) {
+        toasts.showErrorToast(passwordValidate.error);
+        return;
+      }
+
       UserModel? user =
           await authenticateService.loginUser(email: email, password: password);
 
-      if (user != null) {
-        loggedUser = user;
-        goToHomeScreen(context);
+      if (user == null) {
+        toasts.showErrorToast("E-mail ou senha inválidos");
+        return;
       }
+
+      loggedUser = user;
+      goToHomeScreen(context);
     }
 
     void signUp({
@@ -205,7 +227,7 @@ class XWitterRoute extends StatelessWidget {
       required String bio,
       required String avatarPath,
     }) async {
-      loggedUser = (await _dataBaseService.updateUser(
+      loggedUser = (await dataBaseService.updateUser(
         id: loggedUser.id,
         name: name,
         bio: bio,
