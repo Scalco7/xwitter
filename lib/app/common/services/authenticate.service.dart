@@ -40,7 +40,7 @@ class AuthenticateService {
           email: email, password: password);
 
       UserModel? newUser =
-          await _dataBaseService.getUser(id: userCredential.user!.uid);
+          await _dataBaseService.getUserById(id: userCredential.user!.uid);
 
       return newUser;
     } catch (err) {

@@ -10,9 +10,9 @@ class DataBaseService {
     required String email,
     required String nickname,
   }) async {
-    DatabaseReference ref = _database.ref("users/$id");
+    DatabaseReference refUser = _database.ref("users/$id");
 
-    await ref.set({
+    await refUser.set({
       "id": id,
       "name": name,
       "email": email,
@@ -36,7 +36,7 @@ class DataBaseService {
     return newUser;
   }
 
-  Future<UserModel?> getUser({required String id}) async {
+  Future<UserModel?> getUserById({required String id}) async {
     final ref = _database.ref('users/$id');
     final snapshot = await ref.get();
     if (snapshot.exists) {
@@ -54,6 +54,39 @@ class DataBaseService {
       );
 
       return user;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getUserIdByEmail({
+    required String email,
+  }) async {
+    final ref = _database.ref('users').orderByChild("email").equalTo(email);
+    final snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      Map dbValue = snapshot.value as Map;
+      String? id = dbValue.keys.firstOrNull;
+
+      return id;
+    } else {
+      return null;
+    }
+  }
+
+  Future<String?> getUserIdByNickname({
+    required String nickname,
+  }) async {
+    final ref =
+        _database.ref('users').orderByChild("nickname").equalTo(nickname);
+    final snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      Map dbValue = snapshot.value as Map;
+      String? id = dbValue.keys.firstOrNull;
+
+      return id;
     } else {
       return null;
     }

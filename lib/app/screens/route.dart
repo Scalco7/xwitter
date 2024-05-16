@@ -181,7 +181,8 @@ class XWitterRoute extends StatelessWidget {
       required String password,
     }) async {
       ValidatorFailure emailValidate = validators.validateEmail(email);
-      ValidatorFailure passwordValidate = validators.validatePassword(password);
+      ValidatorFailure passwordValidate =
+          validators.validatePasswordForLogin(password);
 
       if (!emailValidate.valid) {
         toasts.showErrorToast(emailValidate.error);
@@ -211,14 +212,54 @@ class XWitterRoute extends StatelessWidget {
       required String email,
       required String name,
       required String password,
+      required String confirmPassword,
     }) async {
-      UserModel? user = await authenticateService.registerUser(
-          nickname: nickname, email: email, name: name, password: password);
-
-      if (user != null) {
-        loggedUser = user;
-        goToHomeScreen(context);
+      ValidatorFailure nicknameValidate = validators.validateNickname(nickname);
+      if (!nicknameValidate.valid) {
+        toasts.showErrorToast(nicknameValidate.error);
+        return;
       }
+
+      ValidatorFailure emailValidate = validators.validateEmail(email);
+      if (!emailValidate.valid) {
+        toasts.showErrorToast(emailValidate.error);
+        return;
+      }
+
+      ValidatorFailure nameValidate = validators.validateName(name);
+      if (!nameValidate.valid) {
+        toasts.showErrorToast(nameValidate.error);
+        return;
+      }
+
+      ValidatorFailure passwordValidate =
+          validators.validatePasswordForRegister(password, confirmPassword);
+      if (!passwordValidate.valid) {
+        toasts.showErrorToast(passwordValidate.error);
+        return;
+      }
+
+      ValidatorFailure accountValidation =
+          await validators.validadeAccount(nickname, email);
+      if (!accountValidation.valid) {
+        toasts.showErrorToast(accountValidation.error);
+        return;
+      }
+
+      UserModel? user = await authenticateService.registerUser(
+        nickname: nickname,
+        email: email,
+        name: name,
+        password: password,
+      );
+
+      if (user == null) {
+        toasts.showErrorToast("Erro, tente novamente");
+        return;
+      }
+
+      loggedUser = user;
+      goToHomeScreen(context);
     }
 
     void onEditUser({
@@ -262,13 +303,16 @@ class XWitterRoute extends StatelessWidget {
                 required String email,
                 required String name,
                 required String password,
+                required String confirmPassword,
               }) =>
                   signUp(
-                      context: context,
-                      email: email,
-                      nickname: nickname,
-                      name: name,
-                      password: password),
+                context: context,
+                email: email,
+                nickname: nickname,
+                name: name,
+                password: password,
+                confirmPassword: confirmPassword,
+              ),
             ),
           );
         }

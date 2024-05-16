@@ -14,6 +14,7 @@ class SignUpScreen extends StatefulWidget {
     required String email,
     required String name,
     required String password,
+    required String confirmPassword,
   }) onSignUp;
 
   @override
@@ -44,13 +45,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String email = emailController.text;
     String name = nameController.text;
     String password = passwordController.text;
-    //String confirmPassword = confirmPasswordController.text;
+    String confirmPassword = confirmPasswordController.text;
 
     widget.onSignUp(
       nickname: nickname,
       email: email,
       name: name,
       password: password,
+      confirmPassword: confirmPassword,
     );
   }
 
