@@ -76,7 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           const Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 5, vertical: 5),
-                            child: Text("Apelido / E-mail"),
+                            child: Text("E-mail"),
                           ),
                           TextField(
                             onTapOutside: (event) => disableKeyboard(),
@@ -86,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             decoration: const InputDecoration(
                               isDense: true,
                               filled: true,
-                              hintText: "felipe",
+                              hintText: "felipe@gmail.com",
                               fillColor: ColorConsts.backgroundColor,
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 8),
