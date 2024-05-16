@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
+import 'package:xwitter/app/common/services/database.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -131,6 +132,7 @@ class XWitterRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthenticateService authenticateService = AuthenticateService();
+    final DataBaseService _dataBaseService = DataBaseService();
     late UserModel loggedUser;
     int indexNavBar = 1;
 
@@ -197,6 +199,27 @@ class XWitterRoute extends StatelessWidget {
       }
     }
 
+    void onEditUser({
+      required BuildContext context,
+      required String name,
+      required String bio,
+      required String avatarPath,
+    }) async {
+      loggedUser = (await _dataBaseService.updateUser(
+        id: loggedUser.id,
+        name: name,
+        bio: bio,
+        avatarPath: avatarPath,
+      ))!;
+
+      // UserModel? updatedUser =
+      //     await _dataBaseService.getUser(id: loggedUser.id);
+
+      // if (updatedUser != null) loggedUser = updatedUser;
+
+      goToUserScreen(context, loggedUser);
+    }
+
     return Navigator(
       initialRoute: "/sign-in",
       onGenerateRoute: (settings) {
@@ -256,10 +279,12 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) {
               UserModel navigationUser = settings.arguments as UserModel;
 
+              //criar função melhor
+
               EUserInteraction accountOption =
                   EUserInteraction.common; //pgar se segue o cara pela api
 
-              if (user.nickname == navigationUser.nickname) {
+              if (loggedUser.nickname == navigationUser.nickname) {
                 accountOption = EUserInteraction.myAccount;
               }
 
@@ -285,8 +310,16 @@ class XWitterRoute extends StatelessWidget {
         if (settings.name == "/edit-user") {
           return MaterialPageRoute(
             builder: (context) => EditUserScreen(
-              user: user,
+              user: loggedUser,
               routePop: () => routePop(context),
+              onSaveUser: (
+                      {required avatarPath, required bio, required name}) =>
+                  onEditUser(
+                context: context,
+                name: name,
+                bio: bio,
+                avatarPath: avatarPath,
+              ),
               bottomNavigationRoutes: bottomNavigationRoutes,
             ),
           );

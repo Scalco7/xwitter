@@ -12,10 +12,16 @@ class EditUserScreen extends StatefulWidget {
     super.key,
     required this.user,
     required this.routePop,
+    required this.onSaveUser,
     required this.bottomNavigationRoutes,
   });
   final UserModel user;
   final void Function() routePop;
+  final void Function({
+    required String name,
+    required String bio,
+    required String avatarPath,
+  }) onSaveUser;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
@@ -23,15 +29,23 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreen extends State<EditUserScreen> {
-  late TextEditingController nameField;
-  late TextEditingController bioField;
+  late TextEditingController nameController;
+  late TextEditingController bioController;
+  late String avatarPathController;
 
   @override
   void initState() {
-    nameField = TextEditingController(text: widget.user.name);
-    bioField = TextEditingController(text: widget.user.bio);
-
+    nameController = TextEditingController(text: widget.user.name);
+    bioController = TextEditingController(text: widget.user.bio);
+    avatarPathController = widget.user.avatarPath;
     super.initState();
+  }
+
+  void onSave() {
+    String name = nameController.text;
+    String bio = bioController.text;
+
+    widget.onSaveUser(name: name, bio: bio, avatarPath: avatarPathController);
   }
 
   @override
@@ -51,8 +65,8 @@ class _EditUserScreen extends State<EditUserScreen> {
       FocusScope.of(context).requestFocus(FocusNode());
     }
 
-    void onSave() {
-      print("salvando");
+    void setAvatarPathSelected(int index) {
+      avatarPathController = AvatarPathConsts.avatarPaths[index];
     }
 
     return Scaffold(
@@ -68,9 +82,10 @@ class _EditUserScreen extends State<EditUserScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             AvatarCarouselWidget(
+              changeSelected: setAvatarPathSelected,
               list: AvatarPathConsts.avatarPaths,
               initialPage: AvatarPathConsts.avatarPaths
-                  .indexWhere((ap) => ap == widget.user.avatarPath),
+                  .indexWhere((ap) => ap == avatarPathController),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -86,7 +101,7 @@ class _EditUserScreen extends State<EditUserScreen> {
                     height: 55,
                     child: TextField(
                       onTapOutside: (event) => disableKeyboard(),
-                      controller: nameField,
+                      controller: nameController,
                       maxLines: 1,
                       maxLength: 30,
                       textAlignVertical: TextAlignVertical.center,
@@ -119,7 +134,7 @@ class _EditUserScreen extends State<EditUserScreen> {
                     height: 200,
                     child: TextField(
                       onTapOutside: (event) => disableKeyboard(),
-                      controller: bioField,
+                      controller: bioController,
                       maxLines: 4,
                       maxLength: 100,
                       textAlignVertical: TextAlignVertical.center,

@@ -4,8 +4,12 @@ import 'package:xwitter/app/common/models/user.model.dart';
 class DataBaseService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
-  Future<UserModel> createUser(
-      String id, String name, String email, String nickname) async {
+  Future<UserModel> createUser({
+    required String id,
+    required String name,
+    required String email,
+    required String nickname,
+  }) async {
     DatabaseReference ref = _database.ref("users/$id");
 
     await ref.set({
@@ -32,7 +36,7 @@ class DataBaseService {
     return newUser;
   }
 
-  Future<UserModel?> getUser(String id) async {
+  Future<UserModel?> getUser({required String id}) async {
     final ref = _database.ref('users/$id');
     final snapshot = await ref.get();
     if (snapshot.exists) {
@@ -48,6 +52,41 @@ class DataBaseService {
         numberOfFollowers: dbValue['numberOfFollowers'],
         numberOfFollowings: dbValue['numberOfFollowings'],
       );
+
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  Future<UserModel?> updateUser({
+    required String id,
+    required String name,
+    required String bio,
+    required String avatarPath,
+  }) async {
+    DatabaseReference ref = _database.ref("users/$id");
+
+    final snapshot = await ref.get();
+    if (snapshot.exists) {
+      Map dbValue = snapshot.value as Map;
+
+      UserModel user = UserModel(
+        id: dbValue['id'],
+        name: name,
+        email: dbValue['email'],
+        nickname: dbValue['nickname'],
+        avatarPath: avatarPath,
+        bio: bio,
+        numberOfFollowers: dbValue['numberOfFollowers'],
+        numberOfFollowings: dbValue['numberOfFollowings'],
+      );
+
+      await ref.update({
+        "name": name,
+        "avatarPath": avatarPath,
+        "bio": bio,
+      });
 
       return user;
     } else {

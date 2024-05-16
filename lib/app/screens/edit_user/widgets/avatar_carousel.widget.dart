@@ -6,9 +6,11 @@ class AvatarCarouselWidget extends StatefulWidget {
     super.key,
     required this.list,
     required this.initialPage,
+    required this.changeSelected,
   });
   final List<String> list;
   final int initialPage;
+  final void Function(int index) changeSelected;
 
   @override
   State<StatefulWidget> createState() => _AvatarCarouselWidget();
@@ -21,6 +23,7 @@ class _AvatarCarouselWidget extends State<AvatarCarouselWidget> {
     setState(() {
       selectedIndex = index;
     });
+    widget.changeSelected(index);
   }
 
   @override

@@ -18,7 +18,11 @@ class AuthenticateService {
           email: email, password: password);
 
       UserModel newUser = await _dataBaseService.createUser(
-          userCredential.user!.uid, name, email, nickname);
+        id: userCredential.user!.uid,
+        name: name,
+        email: email,
+        nickname: nickname,
+      );
 
       return newUser;
     } catch (err) {
@@ -36,7 +40,7 @@ class AuthenticateService {
           email: email, password: password);
 
       UserModel? newUser =
-          await _dataBaseService.getUser(userCredential.user!.uid);
+          await _dataBaseService.getUser(id: userCredential.user!.uid);
 
       return newUser;
     } catch (err) {
