@@ -275,6 +275,12 @@ class XWitterRoute extends StatelessWidget {
         avatarPath: avatarPath,
       ))!;
 
+      ValidatorFailure nameValidate = validators.validateName(name);
+      if (!nameValidate.valid) {
+        toasts.showErrorToast(nameValidate.error);
+        return;
+      }
+
       goToUserScreen(context, loggedUser);
     }
 
