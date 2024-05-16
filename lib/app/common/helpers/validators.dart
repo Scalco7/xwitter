@@ -75,6 +75,18 @@ class Validators {
     return ValidatorFailure(error: error, valid: valid);
   }
 
+  ValidatorFailure validateTweet(String tweet) {
+    bool valid = true;
+    String error = "";
+
+    if (tweet.isEmpty || tweet == "") {
+      valid = false;
+      error = "Digite um tweet";
+    }
+
+    return ValidatorFailure(error: error, valid: valid);
+  }
+
   Future<ValidatorFailure> validadeAccount(
       String nickname, String email) async {
     DataBaseService dataBaseService = DataBaseService();

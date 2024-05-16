@@ -126,4 +126,25 @@ class DataBaseService {
       return null;
     }
   }
+
+  Future<bool> createTweet(
+      {required String userId, required String tweet, String? tweetId}) async {
+    late DatabaseReference refTweet;
+    if (tweetId != null) {
+      refTweet = _database.ref("tweets/$tweetId/comments").push();
+    } else {
+      refTweet = _database.ref("tweets").push();
+    }
+    String? id = refTweet.key;
+
+    await refTweet.set({
+      "id": id,
+      "userId": userId,
+      "tweet": tweet,
+      "likes": [],
+      "comments": [],
+    });
+
+    return true;
+  }
 }

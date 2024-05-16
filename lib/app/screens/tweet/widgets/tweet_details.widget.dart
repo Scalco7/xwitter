@@ -43,8 +43,8 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             GestureDetector(
-              onTap: () => widget.goToUserScreen(widget.tweet.user),
-              child: UserWidget(user: widget.tweet.user),
+              onTap: () => widget.goToUserScreen(widget.tweet.user!),
+              child: UserWidget(user: widget.tweet.user!),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),

@@ -3,33 +3,35 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
-  const CreateTweetScreen({super.key});
+  const CreateTweetScreen({
+    super.key,
+    required this.routePop,
+    required this.publishTweet,
+  });
 
-  void publishTweet() {
-    print("publicou");
-  }
+  final void Function() routePop;
+  final void Function({required String tweet}) publishTweet;
 
   @override
   State<StatefulWidget> createState() => _CreateTweetScreen();
 }
 
 class _CreateTweetScreen extends State<CreateTweetScreen> {
-  late String tweetText;
+  TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
 
   @override
   void initState() {
-    tweetText = "";
+    tweetTextController.text = "";
     disabledTweetButton = true;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    void updateText(String text) {
+    void disabledButton() {
       setState(() {
-        tweetText = text;
-        disabledTweetButton = tweetText.isEmpty;
+        disabledTweetButton = tweetTextController.text.isEmpty;
       });
     }
 
@@ -46,7 +48,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: widget.routePop,
                     child: const Text(
                       "Cancelar",
                       style: TextStyle(
@@ -55,12 +57,14 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   ),
                   TweetButtonWidget(
                     disabled: disabledTweetButton,
-                    onPressButton: widget.publishTweet,
+                    onPressButton: () =>
+                        widget.publishTweet(tweet: tweetTextController.text),
                   ),
                 ],
               ),
               TextField(
-                onChanged: (text) => updateText(text),
+                controller: tweetTextController,
+                onChanged: (value) => disabledButton(),
                 decoration: InputDecoration(
                   icon: Image.asset(
                     "assets/avatars/man_1.png",

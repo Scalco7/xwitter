@@ -268,6 +268,12 @@ class XWitterRoute extends StatelessWidget {
       required String bio,
       required String avatarPath,
     }) async {
+      ValidatorFailure nameValidate = validators.validateName(name);
+      if (!nameValidate.valid) {
+        toasts.showErrorToast(nameValidate.error);
+        return;
+      }
+
       loggedUser = (await dataBaseService.updateUser(
         id: loggedUser.id,
         name: name,
@@ -275,17 +281,28 @@ class XWitterRoute extends StatelessWidget {
         avatarPath: avatarPath,
       ))!;
 
-      ValidatorFailure nameValidate = validators.validateName(name);
-      if (!nameValidate.valid) {
-        toasts.showErrorToast(nameValidate.error);
+      goToUserScreen(context, loggedUser);
+    }
+
+    void onPublishTweet({
+      required BuildContext context,
+      required String tweet,
+    }) {
+      ValidatorFailure tweetValidate = validators.validateTweet(tweet);
+      if (!tweetValidate.valid) {
+        toasts.showErrorToast(tweetValidate.error);
         return;
       }
 
-      goToUserScreen(context, loggedUser);
+      dataBaseService.createTweet(userId: loggedUser.id, tweet: tweet);
+      routePop(context);
+
+      toasts.showSuccessToast("Tweet publicado");
     }
 
     return Navigator(
       initialRoute: "/sign-in",
+      // ignore: body_might_complete_normally_nullable
       onGenerateRoute: (settings) {
         if (settings.name == "/sign-in") {
           return MaterialPageRoute(
@@ -358,9 +375,8 @@ class XWitterRoute extends StatelessWidget {
               return UserScreen(
                 user: navigationUser,
                 indexNavBar: indexNavBar,
-                postTweets: tweets
-                    .where((t) => t.user.id == navigationUser.id)
-                    .toList(),
+                postTweets:
+                    tweets.where((t) => t.userId == navigationUser.id).toList(),
                 likedTweets:
                     tweets.where((t) => t.liked).toList(), //trocar isso
                 accountOption: accountOption,
@@ -393,7 +409,13 @@ class XWitterRoute extends StatelessWidget {
         }
         if (settings.name == "/create-tweet") {
           return MaterialPageRoute(
-            builder: (context) => const CreateTweetScreen(),
+            builder: (context) => CreateTweetScreen(
+              routePop: () => routePop(context),
+              publishTweet: ({required String tweet}) => onPublishTweet(
+                context: context,
+                tweet: tweet,
+              ),
+            ),
           );
         }
         if (settings.name == "/tweet") {

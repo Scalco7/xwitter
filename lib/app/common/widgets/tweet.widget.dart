@@ -40,7 +40,7 @@ class _TweetWidget extends State<TweetWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              widget.tweet.user.avatarPath,
+              widget.tweet.user!.avatarPath,
               width: avatarWidth,
               fit: BoxFit.contain,
             ),
@@ -54,13 +54,13 @@ class _TweetWidget extends State<TweetWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      widget.tweet.user.name,
+                      widget.tweet.user!.name,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '@${widget.tweet.user.nickname}',
+                      '@${widget.tweet.user!.nickname}',
                       style: const TextStyle(
                         fontSize: 16,
                         color: ColorConsts.secondaryColor,
