@@ -24,7 +24,10 @@ class HomeScreen extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () => goToTweetDetailsScreen(tweets[index]),
-            child: TweetWidget(tweet: tweets[index]),
+            child: TweetWidget(
+              tweet: tweets[index],
+              hasComments: true,
+            ),
           );
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),

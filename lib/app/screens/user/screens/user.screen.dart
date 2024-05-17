@@ -136,7 +136,10 @@ class _UserScreen extends State<UserScreen> {
                     return GestureDetector(
                       onTap: () =>
                           widget.goToTweetDetailsScreen(tweetsList[index]),
-                      child: TweetWidget(tweet: tweetsList[index]),
+                      child: TweetWidget(
+                        tweet: tweetsList[index],
+                        hasComments: true,
+                      ),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) =>

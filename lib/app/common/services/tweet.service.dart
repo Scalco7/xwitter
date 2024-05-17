@@ -12,7 +12,7 @@ abstract class ITweetService {
 
   Future<List<TweetModel>> listTweets({required String loggedUserId});
 
-  Future<TweetModel> getTweetWithComments({
+  Future<TweetModel> updateTweet({
     required TweetModel tweet,
     required String loggedUserId,
   });
@@ -23,6 +23,42 @@ class TweetService implements ITweetService {
   final IUserService userService = UserService();
 
   TweetService();
+
+  Future<TweetModel?> getTweetFromMap(
+    Map<dynamic, dynamic> json,
+    String loggedUserId,
+  ) async {
+    List<String> likes = json["likes"] ?? [];
+    UserModel? user = await userService.getUserById(id: json["userId"]);
+    if (user == null) {
+      return null;
+    }
+
+    List<TweetModel> comments = [];
+
+    if (json['comments'] != null) {
+      Map commentsMap = json['comments'] as Map;
+      print(commentsMap);
+      for (final value in commentsMap.values) {
+        TweetModel? comment = await getTweetFromMap(value, loggedUserId);
+        if (comment != null) {
+          comments.add(comment);
+        }
+      }
+    }
+
+    TweetModel tweet = TweetModel(
+      id: json["id"],
+      tweet: json["tweet"],
+      user: user,
+      likes: likes.length,
+      liked: likes.contains(loggedUserId),
+      comments: comments,
+    );
+
+    return tweet;
+  }
+
   @override
   Future<bool> createTweet({
     required String userId,
@@ -59,16 +95,8 @@ class TweetService implements ITweetService {
       Map dbValue = snapshot.value as Map;
 
       for (final value in dbValue.values) {
-        List<String> likes = value?["likes"] ?? [];
-        UserModel? user = await userService.getUserById(id: value["userId"]);
-        if (user != null) {
-          TweetModel tweet = TweetModel(
-            id: value["id"],
-            tweet: value["tweet"],
-            user: user,
-            likes: likes.length,
-            liked: likes.contains(loggedUserId),
-          );
+        TweetModel? tweet = await getTweetFromMap(value, loggedUserId);
+        if (tweet != null) {
           tweetList.add(tweet);
         }
       }
@@ -78,32 +106,21 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<TweetModel> getTweetWithComments(
+  Future<TweetModel> updateTweet(
       {required TweetModel tweet, required String loggedUserId}) async {
-    final ref = database.ref('tweets/${tweet.id}/comments').limitToFirst(20);
+    final ref = database.ref('tweets/${tweet.id}').limitToFirst(20);
     final snapshot = await ref.get();
-    List<TweetModel> comments = [];
 
-    if (snapshot.value != null) {
-      Map dbValue = snapshot.value as Map;
-
-      for (final value in dbValue.values) {
-        List<String> likes = value?["likes"] ?? [];
-        UserModel? user = await userService.getUserById(id: value["userId"]);
-        if (user != null) {
-          TweetModel tweet = TweetModel(
-            id: value["id"],
-            tweet: value["tweet"],
-            user: user,
-            likes: likes.length,
-            liked: likes.contains(loggedUserId),
-          );
-          comments.add(tweet);
-        }
-      }
+    if (snapshot.value == null) {
+      return tweet;
     }
 
-    tweet.comments = comments;
-    return tweet;
+    Map dbValue = snapshot.value as Map;
+    TweetModel? newTweet = await getTweetFromMap(dbValue, loggedUserId);
+
+    if (newTweet == null) {
+      return tweet;
+    }
+    return newTweet;
   }
 }

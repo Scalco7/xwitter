@@ -86,7 +86,10 @@ class _TweetScreen extends State<TweetScreen> {
                             TweetModel comment = widget.tweet.comments![index];
                             return GestureDetector(
                               onTap: () => widget.goToUserScreen(comment.user),
-                              child: TweetWidget(tweet: comment),
+                              child: TweetWidget(
+                                tweet: comment,
+                                hasComments: false,
+                              ),
                             );
                           },
                         ),

@@ -5,8 +5,13 @@ import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 
 class TweetWidget extends StatefulWidget {
-  const TweetWidget({super.key, required this.tweet});
+  const TweetWidget({
+    super.key,
+    required this.tweet,
+    required this.hasComments,
+  });
   final TweetModel tweet;
+  final bool hasComments;
 
   @override
   State<StatefulWidget> createState() => _TweetWidget();
@@ -108,26 +113,29 @@ class _TweetWidget extends State<TweetWidget> {
                       ),
                     ),
                     SizedBox(width: tweetWidth / 5),
-                    GestureDetector(
-                      onTap: () => print("comentou"),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            "assets/icons/comment_icon.png",
-                            fit: BoxFit.contain,
-                            width: 15,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            formatQuantity(widget.tweet.comments?.length ?? 0),
-                            style: const TextStyle(
-                              color: ColorConsts.secondaryColor,
-                              fontSize: 12,
+                    Visibility(
+                      visible: widget.hasComments,
+                      child: GestureDetector(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset(
+                              "assets/icons/comment_icon.png",
+                              fit: BoxFit.contain,
+                              width: 15,
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 3),
+                            Text(
+                              formatQuantity(
+                                  widget.tweet.comments?.length ?? 0),
+                              style: const TextStyle(
+                                color: ColorConsts.secondaryColor,
+                                fontSize: 12,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],

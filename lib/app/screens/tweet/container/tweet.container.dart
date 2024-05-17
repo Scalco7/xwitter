@@ -33,8 +33,7 @@ class TweetContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<TweetModel>(
-      future: service.getTweetWithComments(
-          tweet: tweet, loggedUserId: loggedUserId),
+      future: service.updateTweet(tweet: tweet, loggedUserId: loggedUserId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingWidget();
@@ -42,7 +41,7 @@ class TweetContainer extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
           return TweetScreen(
-            tweet: tweet,
+            tweet: snapshot.data!,
             indexNavBar: indexNavBar,
             goToUserScreen: goToUserScreen,
             routePop: routePop,
