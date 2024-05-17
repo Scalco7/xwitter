@@ -301,6 +301,24 @@ class XWitterRoute extends StatelessWidget {
       toasts.showSuccessToast("Tweet publicado");
     }
 
+    void onPublishComment({
+      required BuildContext context,
+      required String comment,
+      required String parentTweetId,
+    }) {
+      ValidatorFailure tweetValidate = validators.validateTweet(comment);
+      if (!tweetValidate.valid) {
+        toasts.showErrorToast(tweetValidate.error);
+        return;
+      }
+
+      tweetService.createTweet(
+        userId: loggedUser.id,
+        tweet: comment,
+        parentTweetId: parentTweetId,
+      );
+    }
+
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -429,6 +447,12 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => TweetScreen(
               tweet: settings.arguments as TweetModel,
+              publishComment: ({required comment, required parentTweetId}) =>
+                  onPublishComment(
+                context: context,
+                comment: comment,
+                parentTweetId: parentTweetId,
+              ),
               indexNavBar: indexNavBar,
               goToUserScreen: (user) => goToUserScreen(context, user),
               routePop: () => routePop(context),

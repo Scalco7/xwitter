@@ -7,7 +7,7 @@ abstract class ITweetService {
   Future<bool> createTweet({
     required String userId,
     required String tweet,
-    String? tweetId,
+    String? parentTweetId,
   });
 
   Future<List<TweetModel>> listTweets({required String userId});
@@ -27,11 +27,11 @@ class TweetService implements ITweetService {
   Future<bool> createTweet({
     required String userId,
     required String tweet,
-    String? tweetId,
+    String? parentTweetId,
   }) async {
     late DatabaseReference refTweet;
-    if (tweetId != null) {
-      refTweet = database.ref("tweets/$tweetId/comments").push();
+    if (parentTweetId != null) {
+      refTweet = database.ref("tweets/$parentTweetId/comments").push();
     } else {
       refTweet = database.ref("tweets").push();
     }

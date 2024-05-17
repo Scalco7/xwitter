@@ -15,19 +15,22 @@ class TweetScreen extends StatefulWidget {
     required this.goToUserScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
+    required this.publishComment,
   });
   final TweetModel tweet;
   final int indexNavBar;
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
+  final void Function({required String comment, required String parentTweetId})
+      publishComment;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
 }
 
 class _TweetScreen extends State<TweetScreen> {
-  String commentText = "";
+  TextEditingController commentController = TextEditingController();
   InputBorder inputBorder = const OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(30)),
     borderSide: BorderSide(
@@ -40,8 +43,11 @@ class _TweetScreen extends State<TweetScreen> {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
-  void commentOnTweet(String text) {
-    print("Comentou: $text");
+  void commentOnTweet() {
+    widget.publishComment(
+      comment: commentController.text,
+      parentTweetId: widget.tweet.id,
+    );
   }
 
   @override
@@ -97,9 +103,9 @@ class _TweetScreen extends State<TweetScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: commentController,
                       onTapOutside: (event) => disableKeyboard(),
-                      onChanged: (value) => commentText = value,
-                      onSubmitted: (value) => commentOnTweet(value),
+                      onSubmitted: (value) => commentOnTweet(),
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w300,
@@ -121,7 +127,7 @@ class _TweetScreen extends State<TweetScreen> {
                   ),
                   const SizedBox(width: 5),
                   IconButton(
-                    onPressed: () => commentOnTweet(commentText),
+                    onPressed: () => commentOnTweet(),
                     padding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     style: const ButtonStyle(
