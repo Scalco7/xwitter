@@ -2,8 +2,7 @@ import 'package:xwitter/app/common/models/user.model.dart';
 
 class TweetModel {
   final String id;
-  final UserModel? user;
-  final String? userId;
+  final UserModel user;
   final String tweet;
   final int likes;
   bool liked;
@@ -11,8 +10,7 @@ class TweetModel {
 
   TweetModel({
     required this.id,
-    this.user,
-    this.userId,
+    required this.user,
     required this.tweet,
     required this.likes,
     required this.liked,

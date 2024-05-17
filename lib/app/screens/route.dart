@@ -5,20 +5,19 @@ import 'package:xwitter/app/common/helpers/validators.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
-import 'package:xwitter/app/common/services/database.service.dart';
+import 'package:xwitter/app/common/services/dataBase.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
-import 'package:xwitter/app/screens/home/screens/home.screen.dart';
+import 'package:xwitter/app/screens/home/container/home.container.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 
 class XWitterRoute extends StatelessWidget {
   const XWitterRoute({super.key});
-
   //tirar depois #################################################################################################
 
   static UserModel user = UserModel(
@@ -341,12 +340,15 @@ class XWitterRoute extends StatelessWidget {
         }
         if (settings.name == "/home") {
           return MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              tweets: tweets,
-              goToTweetDetailsScreen: (tweet) =>
-                  goToTweetDetailsScreen(context, tweet),
-              bottomNavigationRoutes: bottomNavigationRoutes,
-            ),
+            builder: (context) {
+              return HomeContainer(
+                service: dataBaseService,
+                userId: loggedUser.id,
+                goToTweetDetailsScreen: (tweet) =>
+                    goToTweetDetailsScreen(context, tweet),
+                bottomNavigationRoutes: bottomNavigationRoutes,
+              );
+            },
           );
         }
         if (settings.name == "/search") {
@@ -363,6 +365,8 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) {
               UserModel navigationUser = settings.arguments as UserModel;
 
+              //logged user virar idLoggedUser
+
               //criar função melhor
 
               EUserInteraction accountOption =
@@ -375,8 +379,9 @@ class XWitterRoute extends StatelessWidget {
               return UserScreen(
                 user: navigationUser,
                 indexNavBar: indexNavBar,
-                postTweets:
-                    tweets.where((t) => t.userId == navigationUser.id).toList(),
+                postTweets: tweets
+                    .where((t) => t.user.id == navigationUser.id)
+                    .toList(),
                 likedTweets:
                     tweets.where((t) => t.liked).toList(), //trocar isso
                 accountOption: accountOption,
