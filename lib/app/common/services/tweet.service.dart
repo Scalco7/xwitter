@@ -11,6 +11,11 @@ abstract class ITweetService {
   });
 
   Future<List<TweetModel>> listTweets({required String userId});
+
+  Future<TweetModel> getTweetWithComments({
+    required TweetModel tweet,
+    required String userId,
+  });
 }
 
 class TweetService implements ITweetService {
@@ -67,5 +72,33 @@ class TweetService implements ITweetService {
     }
 
     return tweetList;
+  }
+
+  @override
+  Future<TweetModel> getTweetWithComments(
+      {required TweetModel tweet, required String userId}) async {
+    final ref = database.ref('tweets/${tweet.id}/comments').limitToFirst(20);
+    final snapshot = await ref.get();
+
+    Map dbValue = snapshot.value as Map;
+    List<TweetModel> comments = [];
+
+    for (final value in dbValue.values) {
+      List<String> likes = value?["likes"] ?? [];
+      UserModel? user = await userService.getUserById(id: value["userId"]);
+      if (user != null) {
+        TweetModel tweet = TweetModel(
+          id: value["id"],
+          tweet: value["tweet"],
+          user: user,
+          likes: likes.length,
+          liked: likes.contains(userId),
+        );
+        comments.add(tweet);
+      }
+    }
+
+    tweet.comments = comments;
+    return tweet;
   }
 }
