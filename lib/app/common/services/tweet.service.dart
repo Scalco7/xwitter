@@ -10,11 +10,11 @@ abstract class ITweetService {
     String? parentTweetId,
   });
 
-  Future<List<TweetModel>> listTweets({required String userId});
+  Future<List<TweetModel>> listTweets({required String loggedUserId});
 
   Future<TweetModel> getTweetWithComments({
     required TweetModel tweet,
-    required String userId,
+    required String loggedUserId,
   });
 }
 
@@ -49,25 +49,28 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<List<TweetModel>> listTweets({required String userId}) async {
+  Future<List<TweetModel>> listTweets({required String loggedUserId}) async {
     final ref = database.ref('tweets').limitToFirst(20);
     final snapshot = await ref.get();
 
-    Map dbValue = snapshot.value as Map;
     List<TweetModel> tweetList = [];
 
-    for (final value in dbValue.values) {
-      List<String> likes = value?["likes"] ?? [];
-      UserModel? user = await userService.getUserById(id: value["userId"]);
-      if (user != null) {
-        TweetModel tweet = TweetModel(
-          id: value["id"],
-          tweet: value["tweet"],
-          user: user,
-          likes: likes.length,
-          liked: likes.contains(userId),
-        );
-        tweetList.add(tweet);
+    if (snapshot.value != null) {
+      Map dbValue = snapshot.value as Map;
+
+      for (final value in dbValue.values) {
+        List<String> likes = value?["likes"] ?? [];
+        UserModel? user = await userService.getUserById(id: value["userId"]);
+        if (user != null) {
+          TweetModel tweet = TweetModel(
+            id: value["id"],
+            tweet: value["tweet"],
+            user: user,
+            likes: likes.length,
+            liked: likes.contains(loggedUserId),
+          );
+          tweetList.add(tweet);
+        }
       }
     }
 
@@ -76,25 +79,27 @@ class TweetService implements ITweetService {
 
   @override
   Future<TweetModel> getTweetWithComments(
-      {required TweetModel tweet, required String userId}) async {
+      {required TweetModel tweet, required String loggedUserId}) async {
     final ref = database.ref('tweets/${tweet.id}/comments').limitToFirst(20);
     final snapshot = await ref.get();
-
-    Map dbValue = snapshot.value as Map;
     List<TweetModel> comments = [];
 
-    for (final value in dbValue.values) {
-      List<String> likes = value?["likes"] ?? [];
-      UserModel? user = await userService.getUserById(id: value["userId"]);
-      if (user != null) {
-        TweetModel tweet = TweetModel(
-          id: value["id"],
-          tweet: value["tweet"],
-          user: user,
-          likes: likes.length,
-          liked: likes.contains(userId),
-        );
-        comments.add(tweet);
+    if (snapshot.value != null) {
+      Map dbValue = snapshot.value as Map;
+
+      for (final value in dbValue.values) {
+        List<String> likes = value?["likes"] ?? [];
+        UserModel? user = await userService.getUserById(id: value["userId"]);
+        if (user != null) {
+          TweetModel tweet = TweetModel(
+            id: value["id"],
+            tweet: value["tweet"],
+            user: user,
+            likes: likes.length,
+            liked: likes.contains(loggedUserId),
+          );
+          comments.add(tweet);
+        }
       }
     }
 

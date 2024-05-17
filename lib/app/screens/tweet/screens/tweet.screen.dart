@@ -22,8 +22,10 @@ class TweetScreen extends StatefulWidget {
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final void Function({required String comment, required String parentTweetId})
-      publishComment;
+  final void Function({
+    required String comment,
+    required TweetModel parentTweet,
+  }) publishComment;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
@@ -46,7 +48,7 @@ class _TweetScreen extends State<TweetScreen> {
   void commentOnTweet() {
     widget.publishComment(
       comment: commentController.text,
-      parentTweetId: widget.tweet.id,
+      parentTweet: widget.tweet,
     );
   }
 

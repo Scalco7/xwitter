@@ -21,8 +21,9 @@ class HomeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("veio pra ca");
     return FutureBuilder<List<TweetModel>>(
-        future: service.listTweets(userId: userId),
+        future: service.listTweets(loggedUserId: userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingWidget();
@@ -30,11 +31,13 @@ class HomeContainer extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             return HomeScreen(
-                tweets: snapshot.data!,
-                goToTweetDetailsScreen: goToTweetDetailsScreen,
-                bottomNavigationRoutes: bottomNavigationRoutes);
+              tweets: snapshot.data!,
+              goToTweetDetailsScreen: goToTweetDetailsScreen,
+              bottomNavigationRoutes: bottomNavigationRoutes,
+            );
           }
           if (snapshot.hasError) {
+            print(snapshot.error.toString());
             return ErrorWidget((snapshot.error as Failure).message!);
           }
           return Container();

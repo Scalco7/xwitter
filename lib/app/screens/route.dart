@@ -14,7 +14,7 @@ import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dar
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/container/home.container.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
-import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
+import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 
 class XWitterRoute extends StatelessWidget {
@@ -296,7 +296,8 @@ class XWitterRoute extends StatelessWidget {
       }
 
       tweetService.createTweet(userId: loggedUser.id, tweet: tweet);
-      routePop(context);
+
+      goToHomeScreen(context);
 
       toasts.showSuccessToast("Tweet publicado");
     }
@@ -304,19 +305,27 @@ class XWitterRoute extends StatelessWidget {
     void onPublishComment({
       required BuildContext context,
       required String comment,
-      required String parentTweetId,
-    }) {
+      required TweetModel parentTweet,
+    }) async {
       ValidatorFailure tweetValidate = validators.validateTweet(comment);
       if (!tweetValidate.valid) {
         toasts.showErrorToast(tweetValidate.error);
         return;
       }
 
-      tweetService.createTweet(
+      bool success = await tweetService.createTweet(
         userId: loggedUser.id,
         tweet: comment,
-        parentTweetId: parentTweetId,
+        parentTweetId: parentTweet.id,
       );
+
+      if (!success) {
+        toasts.showErrorToast("Erro ao comentar");
+        return;
+      }
+
+      Navigator.of(context)
+          .pushReplacementNamed("/tweet", arguments: parentTweet);
     }
 
     return Navigator(
@@ -445,13 +454,15 @@ class XWitterRoute extends StatelessWidget {
         }
         if (settings.name == "/tweet") {
           return MaterialPageRoute(
-            builder: (context) => TweetScreen(
+            builder: (context) => TweetContainer(
+              service: tweetService,
+              loggedUserId: loggedUser.id,
               tweet: settings.arguments as TweetModel,
-              publishComment: ({required comment, required parentTweetId}) =>
+              publishComment: ({required comment, required parentTweet}) =>
                   onPublishComment(
                 context: context,
                 comment: comment,
-                parentTweetId: parentTweetId,
+                parentTweet: parentTweet,
               ),
               indexNavBar: indexNavBar,
               goToUserScreen: (user) => goToUserScreen(context, user),
