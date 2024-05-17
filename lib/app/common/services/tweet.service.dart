@@ -38,7 +38,6 @@ class TweetService implements ITweetService {
 
     if (json['comments'] != null) {
       Map commentsMap = json['comments'] as Map;
-      print(commentsMap);
       for (final value in commentsMap.values) {
         TweetModel? comment = await getTweetFromMap(value, loggedUserId);
         if (comment != null) {

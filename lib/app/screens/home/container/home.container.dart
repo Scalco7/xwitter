@@ -21,7 +21,6 @@ class HomeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("veio pra ca");
     return FutureBuilder<List<TweetModel>>(
         future: service.listTweets(loggedUserId: userId),
         builder: (context, snapshot) {
@@ -37,7 +36,6 @@ class HomeContainer extends StatelessWidget {
             );
           }
           if (snapshot.hasError) {
-            print(snapshot.error.toString());
             return ErrorWidget((snapshot.error as Failure).message!);
           }
           return Container();
