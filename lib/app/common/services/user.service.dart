@@ -1,8 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 
-abstract class IDataBaseService {
+abstract class IUserService {
   Future<UserModel> createUser({
     required String id,
     required String name,
@@ -22,19 +21,11 @@ abstract class IDataBaseService {
     required String bio,
     required String avatarPath,
   });
-
-  Future<bool> createTweet({
-    required String userId,
-    required String tweet,
-    String? tweetId,
-  });
-
-  Future<List<TweetModel>> listTweets({required String userId});
 }
 
-class DataBaseService implements IDataBaseService {
-  final FirebaseDatabase _database = FirebaseDatabase.instance;
-  DataBaseService();
+class UserService implements IUserService {
+  final FirebaseDatabase database = FirebaseDatabase.instance;
+  UserService();
 
   @override
   Future<UserModel> createUser({
@@ -43,7 +34,7 @@ class DataBaseService implements IDataBaseService {
     required String email,
     required String nickname,
   }) async {
-    DatabaseReference refUser = _database.ref("users/$id");
+    DatabaseReference refUser = database.ref("users/$id");
 
     await refUser.set({
       "id": id,
@@ -71,7 +62,7 @@ class DataBaseService implements IDataBaseService {
 
   @override
   Future<UserModel?> getUserById({required String id}) async {
-    final ref = _database.ref('users/$id');
+    final ref = database.ref('users/$id');
     final snapshot = await ref.get();
     if (snapshot.exists) {
       Map dbValue = snapshot.value as Map;
@@ -95,7 +86,7 @@ class DataBaseService implements IDataBaseService {
 
   @override
   Future<String?> getUserIdByEmail({required String email}) async {
-    final ref = _database.ref('users').orderByChild("email").equalTo(email);
+    final ref = database.ref('users').orderByChild("email").equalTo(email);
     final snapshot = await ref.get();
 
     if (snapshot.exists) {
@@ -111,7 +102,7 @@ class DataBaseService implements IDataBaseService {
   @override
   Future<String?> getUserIdByNickname({required String nickname}) async {
     final ref =
-        _database.ref('users').orderByChild("nickname").equalTo(nickname);
+        database.ref('users').orderByChild("nickname").equalTo(nickname);
     final snapshot = await ref.get();
 
     if (snapshot.exists) {
@@ -131,7 +122,7 @@ class DataBaseService implements IDataBaseService {
     required String bio,
     required String avatarPath,
   }) async {
-    DatabaseReference ref = _database.ref("users/$id");
+    DatabaseReference ref = database.ref("users/$id");
 
     final snapshot = await ref.get();
     if (snapshot.exists) {
@@ -158,56 +149,5 @@ class DataBaseService implements IDataBaseService {
     } else {
       return null;
     }
-  }
-
-  @override
-  Future<bool> createTweet({
-    required String userId,
-    required String tweet,
-    String? tweetId,
-  }) async {
-    late DatabaseReference refTweet;
-    if (tweetId != null) {
-      refTweet = _database.ref("tweets/$tweetId/comments").push();
-    } else {
-      refTweet = _database.ref("tweets").push();
-    }
-    String? id = refTweet.key;
-
-    await refTweet.set({
-      "id": id,
-      "userId": userId,
-      "tweet": tweet,
-      "likes": [],
-      "comments": [],
-    });
-
-    return true;
-  }
-
-  @override
-  Future<List<TweetModel>> listTweets({required String userId}) async {
-    final ref = _database.ref('tweets').limitToFirst(20);
-    final snapshot = await ref.get();
-
-    Map dbValue = snapshot.value as Map;
-    List<TweetModel> tweetList = [];
-
-    for (final value in dbValue.values) {
-      List<String> likes = value?["likes"] ?? [];
-      UserModel? user = await getUserById(id: value["userId"]);
-      if (user != null) {
-        TweetModel tweet = TweetModel(
-          id: value["id"],
-          tweet: value["tweet"],
-          user: user,
-          likes: likes.length,
-          liked: likes.contains(userId),
-        );
-        tweetList.add(tweet);
-      }
-    }
-
-    return tweetList;
   }
 }

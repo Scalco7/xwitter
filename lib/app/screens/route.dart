@@ -5,7 +5,8 @@ import 'package:xwitter/app/common/helpers/validators.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
-import 'package:xwitter/app/common/services/dataBase.service.dart';
+import 'package:xwitter/app/common/services/tweet.service.dart';
+import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -133,8 +134,9 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticateService authenticateService = AuthenticateService();
-    final DataBaseService dataBaseService = DataBaseService();
+    final IAuthenticateService authenticateService = AuthenticateService();
+    final IUserService userService = UserService();
+    final ITweetService tweetService = TweetService();
     final Validators validators = Validators();
     final Toasts toasts = Toasts();
 
@@ -273,7 +275,7 @@ class XWitterRoute extends StatelessWidget {
         return;
       }
 
-      loggedUser = (await dataBaseService.updateUser(
+      loggedUser = (await userService.updateUser(
         id: loggedUser.id,
         name: name,
         bio: bio,
@@ -293,7 +295,7 @@ class XWitterRoute extends StatelessWidget {
         return;
       }
 
-      dataBaseService.createTweet(userId: loggedUser.id, tweet: tweet);
+      tweetService.createTweet(userId: loggedUser.id, tweet: tweet);
       routePop(context);
 
       toasts.showSuccessToast("Tweet publicado");
@@ -342,7 +344,7 @@ class XWitterRoute extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return HomeContainer(
-                service: dataBaseService,
+                service: tweetService,
                 userId: loggedUser.id,
                 goToTweetDetailsScreen: (tweet) =>
                     goToTweetDetailsScreen(context, tweet),

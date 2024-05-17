@@ -1,8 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:xwitter/app/common/error/validatorFailure.model.dart';
-import 'package:xwitter/app/common/services/dataBase.service.dart';
+import 'package:xwitter/app/common/services/user.service.dart';
 
 class Validators {
+  IUserService userService = UserService();
+
   ValidatorFailure validateEmail(String email) {
     bool isValid = EmailValidator.validate(email);
     String error = isValid ? "" : "E-mail inválido";
@@ -89,14 +91,12 @@ class Validators {
 
   Future<ValidatorFailure> validadeAccount(
       String nickname, String email) async {
-    DataBaseService dataBaseService = DataBaseService();
-
-    String? id = await dataBaseService.getUserIdByEmail(email: email);
+    String? id = await userService.getUserIdByEmail(email: email);
     if (id != null) {
       return ValidatorFailure(error: "Email já está em uso", valid: false);
     }
 
-    id = await dataBaseService.getUserIdByNickname(nickname: nickname);
+    id = await userService.getUserIdByNickname(nickname: nickname);
     if (id != null) {
       return ValidatorFailure(error: "Nickname já está em uso", valid: false);
     }

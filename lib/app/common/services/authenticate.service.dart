@@ -1,11 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
-import 'package:xwitter/app/common/services/database.service.dart';
+import 'package:xwitter/app/common/services/user.service.dart';
 
-class AuthenticateService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final DataBaseService _dataBaseService = DataBaseService();
+abstract class IAuthenticateService {
+  Future<UserModel?> registerUser({
+    required String nickname,
+    required String email,
+    required String name,
+    required String password,
+  });
 
+  Future<UserModel?> loginUser({
+    required String email,
+    required String password,
+  });
+}
+
+class AuthenticateService implements IAuthenticateService {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final IUserService userService = UserService();
+
+  @override
   Future<UserModel?> registerUser({
     required String nickname,
     required String email,
@@ -14,10 +29,10 @@ class AuthenticateService {
   }) async {
     late UserCredential userCredential;
     try {
-      userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      userCredential = await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      UserModel newUser = await _dataBaseService.createUser(
+      UserModel newUser = await userService.createUser(
         id: userCredential.user!.uid,
         name: name,
         email: email,
@@ -30,17 +45,18 @@ class AuthenticateService {
     }
   }
 
+  @override
   Future<UserModel?> loginUser({
     required String email,
     required String password,
   }) async {
     late UserCredential userCredential;
     try {
-      userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      userCredential = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
       UserModel? newUser =
-          await _dataBaseService.getUserById(id: userCredential.user!.uid);
+          await userService.getUserById(id: userCredential.user!.uid);
 
       return newUser;
     } catch (err) {
