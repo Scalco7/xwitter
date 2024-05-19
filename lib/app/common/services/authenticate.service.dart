@@ -55,10 +55,10 @@ class AuthenticateService implements IAuthenticateService {
       userCredential = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      UserModel? newUser =
+      UserModel? user =
           await userService.getUserById(id: userCredential.user!.uid);
 
-      return newUser;
+      return user;
     } catch (err) {
       return null;
     }

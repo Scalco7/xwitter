@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/avatars_path.consts.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
@@ -10,17 +11,15 @@ class EditUserScreen extends StatefulWidget {
   const EditUserScreen({
     super.key,
     required this.user,
+    required this.userController,
     required this.routePop,
-    required this.onSaveUser,
+    required this.updateUserScreen,
     required this.bottomNavigationRoutes,
   });
   final UserModel user;
+  final IUserController userController;
   final void Function() routePop;
-  final void Function({
-    required String name,
-    required String bio,
-    required String avatarPath,
-  }) onSaveUser;
+  final void Function(UserModel user) updateUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
@@ -40,11 +39,20 @@ class _EditUserScreen extends State<EditUserScreen> {
     super.initState();
   }
 
-  void onSave() {
+  void onSave() async {
     String name = nameController.text;
     String bio = bioController.text;
 
-    widget.onSaveUser(name: name, bio: bio, avatarPath: avatarPathController);
+    bool success = await widget.userController.editUser(
+      userId: widget.user.id,
+      name: name,
+      bio: bio,
+      avatarPath: avatarPathController,
+    );
+
+    if (success) {
+      widget.updateUserScreen(widget.userController.loggedUser!);
+    }
   }
 
   @override

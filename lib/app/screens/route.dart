@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/app/common/error/validatorFailure.model.dart';
-import 'package:xwitter/app/common/helpers/toasts.dart';
-import 'package:xwitter/app/common/helpers/validators.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
-import 'package:xwitter/app/common/services/authenticate.service.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
-import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -134,13 +130,9 @@ class XWitterRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final IAuthenticateService authenticateService = AuthenticateService();
-    final IUserService userService = UserService();
     final ITweetService tweetService = TweetService();
-    final Validators validators = Validators();
-    final Toasts toasts = Toasts();
+    final IUserController userController = UserController();
 
-    late UserModel loggedUser;
     int indexNavBar = 1;
 
     final BottomNavigationRoutesModel bottomNavigationRoutes =
@@ -160,7 +152,7 @@ class XWitterRoute extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil(
           "/user",
           (route) => false,
-          arguments: loggedUser,
+          arguments: userController.loggedUser,
         );
       },
     );
@@ -179,253 +171,130 @@ class XWitterRoute extends StatelessWidget {
     void updateTweetScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushReplacementNamed("/tweet", arguments: tweet);
 
-    void signIn({
-      required BuildContext context,
-      required String email,
-      required String password,
-    }) async {
-      ValidatorFailure emailValidate = validators.validateEmail(email);
-      ValidatorFailure passwordValidate =
-          validators.validatePasswordForLogin(password);
-
-      if (!emailValidate.valid) {
-        toasts.showErrorToast(emailValidate.error);
-        return;
-      }
-
-      if (!passwordValidate.valid) {
-        toasts.showErrorToast(passwordValidate.error);
-        return;
-      }
-
-      UserModel? user =
-          await authenticateService.loginUser(email: email, password: password);
-
-      if (user == null) {
-        toasts.showErrorToast("E-mail ou senha inválidos");
-        return;
-      }
-
-      loggedUser = user;
-      goToHomeScreen(context);
-    }
-
-    void signUp({
-      required BuildContext context,
-      required String nickname,
-      required String email,
-      required String name,
-      required String password,
-      required String confirmPassword,
-    }) async {
-      ValidatorFailure nicknameValidate = validators.validateNickname(nickname);
-      if (!nicknameValidate.valid) {
-        toasts.showErrorToast(nicknameValidate.error);
-        return;
-      }
-
-      ValidatorFailure emailValidate = validators.validateEmail(email);
-      if (!emailValidate.valid) {
-        toasts.showErrorToast(emailValidate.error);
-        return;
-      }
-
-      ValidatorFailure nameValidate = validators.validateName(name);
-      if (!nameValidate.valid) {
-        toasts.showErrorToast(nameValidate.error);
-        return;
-      }
-
-      ValidatorFailure passwordValidate =
-          validators.validatePasswordForRegister(password, confirmPassword);
-      if (!passwordValidate.valid) {
-        toasts.showErrorToast(passwordValidate.error);
-        return;
-      }
-
-      ValidatorFailure accountValidation =
-          await validators.validadeAccount(nickname, email);
-      if (!accountValidation.valid) {
-        toasts.showErrorToast(accountValidation.error);
-        return;
-      }
-
-      UserModel? user = await authenticateService.registerUser(
-        nickname: nickname,
-        email: email,
-        name: name,
-        password: password,
-      );
-
-      if (user == null) {
-        toasts.showErrorToast("Erro, tente novamente");
-        return;
-      }
-
-      loggedUser = user;
-      goToHomeScreen(context);
-    }
-
-    void onEditUser({
-      required BuildContext context,
-      required String name,
-      required String bio,
-      required String avatarPath,
-    }) async {
-      ValidatorFailure nameValidate = validators.validateName(name);
-      if (!nameValidate.valid) {
-        toasts.showErrorToast(nameValidate.error);
-        return;
-      }
-
-      loggedUser = (await userService.updateUser(
-        id: loggedUser.id,
-        name: name,
-        bio: bio,
-        avatarPath: avatarPath,
-      ))!;
-
-      Navigator.of(context)
-          .pushReplacementNamed("/user", arguments: loggedUser);
-    }
+    void updateUserScreenAfterEdit(BuildContext context, UserModel user) =>
+        Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
+            arguments: user);
 
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
       onGenerateRoute: (settings) {
-        if (settings.name == "/sign-in") {
-          return MaterialPageRoute(
-            builder: (context) => SignInScreen(
-              goToSignUpScreen: () =>
-                  Navigator.of(context).pushNamed("/sign-up"),
-              onSignIn: ({
-                required String email,
-                required String password,
-              }) =>
-                  signIn(context: context, email: email, password: password),
-            ),
-          );
-        }
-        if (settings.name == "/sign-up") {
-          return MaterialPageRoute(
-            builder: (context) => SignUpScreen(
-              routePop: () => routePop(context),
-              onSignUp: ({
-                required String nickname,
-                required String email,
-                required String name,
-                required String password,
-                required String confirmPassword,
-              }) =>
-                  signUp(
-                context: context,
-                email: email,
-                nickname: nickname,
-                name: name,
-                password: password,
-                confirmPassword: confirmPassword,
+        if (userController.loggedUser == null) {
+          if (settings.name == "/sign-in") {
+            return MaterialPageRoute(
+              builder: (context) => SignInScreen(
+                goToSignUpScreen: () =>
+                    Navigator.of(context).pushNamed("/sign-up"),
+                goToHomeScreen: () => goToHomeScreen(context),
+                userController: userController,
               ),
-            ),
-          );
-        }
-        if (settings.name == "/home") {
-          return MaterialPageRoute(
-            builder: (context) {
-              return HomeContainer(
-                service: tweetService,
-                loggedUserId: loggedUser.id,
-                goToTweetDetailsScreen: (tweet) =>
-                    goToTweetDetailsScreen(context, tweet),
-                bottomNavigationRoutes: bottomNavigationRoutes,
-              );
-            },
-          );
-        }
-        if (settings.name == "/search") {
-          return MaterialPageRoute(
-            builder: (context) => SearchScreen(
-              goToUserScreen: (user) => goToUserScreen(context, user),
-              bottomNavigationRoutes: bottomNavigationRoutes,
-            ),
-          );
-        }
-        if (settings.name == "/user") {
-          //mexer
-          return MaterialPageRoute(
-            builder: (context) {
-              UserModel navigationUser = settings.arguments as UserModel;
-
-              //logged user virar idLoggedUser
-
-              //criar função melhor
-
-              EUserInteraction accountOption =
-                  EUserInteraction.common; //pgar se segue o cara pela api
-
-              if (loggedUser.nickname == navigationUser.nickname) {
-                accountOption = EUserInteraction.myAccount;
-              }
-
-              return UserScreen(
-                loggedUserId: loggedUser.id,
-                user: navigationUser,
-                indexNavBar: indexNavBar,
-                postTweets: tweets
-                    .where((t) => t.user.id == navigationUser.id)
-                    .toList(),
-                likedTweets:
-                    tweets.where((t) => t.liked).toList(), //trocar isso
-                accountOption: accountOption,
-                goToTweetDetailsScreen: (tweet) =>
-                    goToTweetDetailsScreen(context, tweet),
-                goToEditUserScreen: () =>
-                    Navigator.of(context).pushNamed("/edit-user"),
+            );
+          }
+          if (settings.name == "/sign-up") {
+            return MaterialPageRoute(
+              builder: (context) => SignUpScreen(
                 routePop: () => routePop(context),
-                bottomNavigationRoutes: bottomNavigationRoutes,
-              );
-            },
-          );
-        }
-        if (settings.name == "/edit-user") {
-          return MaterialPageRoute(
-            builder: (context) => EditUserScreen(
-              user: loggedUser,
-              routePop: () => routePop(context),
-              onSaveUser: (
-                      {required avatarPath, required bio, required name}) =>
-                  onEditUser(
-                context: context,
-                name: name,
-                bio: bio,
-                avatarPath: avatarPath,
+                goToHomeScreen: () => goToHomeScreen(context),
+                userController: userController,
               ),
-              bottomNavigationRoutes: bottomNavigationRoutes,
-            ),
-          );
-        }
-        if (settings.name == "/create-tweet") {
-          return MaterialPageRoute(
-            builder: (context) => CreateTweetScreen(
-              loggedUser: loggedUser,
-              routePop: () => routePop(context),
-              goToHomeScreen: () => goToHomeScreen(context),
-            ),
-          );
-        }
-        if (settings.name == "/tweet") {
-          return MaterialPageRoute(
-            builder: (context) => TweetContainer(
-              service: tweetService,
-              loggedUserId: loggedUser.id,
-              tweet: settings.arguments as TweetModel,
-              indexNavBar: indexNavBar,
-              goToUserScreen: (user) => goToUserScreen(context, user),
-              routePop: () => routePop(context),
-              updateTweetScreen: ({required tweet}) =>
-                  updateTweetScreen(context, tweet),
-              bottomNavigationRoutes: bottomNavigationRoutes,
-            ),
-          );
+            );
+          }
+        } else {
+          if (settings.name == "/home") {
+            return MaterialPageRoute(
+              builder: (context) {
+                return HomeContainer(
+                  service: tweetService,
+                  loggedUserId: userController.loggedUser!.id,
+                  goToTweetDetailsScreen: (tweet) =>
+                      goToTweetDetailsScreen(context, tweet),
+                  bottomNavigationRoutes: bottomNavigationRoutes,
+                );
+              },
+            );
+          }
+          if (settings.name == "/search") {
+            return MaterialPageRoute(
+              builder: (context) => SearchScreen(
+                goToUserScreen: (user) => goToUserScreen(context, user),
+                bottomNavigationRoutes: bottomNavigationRoutes,
+              ),
+            );
+          }
+          if (settings.name == "/user") {
+            //mexer
+            return MaterialPageRoute(
+              builder: (context) {
+                UserModel navigationUser = settings.arguments as UserModel;
+
+                //logged user virar idLoggedUser
+
+                //criar função melhor
+
+                EUserInteraction accountOption =
+                    EUserInteraction.common; //pgar se segue o cara pela api
+
+                if (userController.loggedUser!.nickname ==
+                    navigationUser.nickname) {
+                  accountOption = EUserInteraction.myAccount;
+                }
+
+                return UserScreen(
+                  loggedUserId: userController.loggedUser!.id,
+                  user: navigationUser,
+                  indexNavBar: indexNavBar,
+                  postTweets: tweets
+                      .where((t) => t.user.id == navigationUser.id)
+                      .toList(),
+                  likedTweets:
+                      tweets.where((t) => t.liked).toList(), //trocar isso
+                  accountOption: accountOption,
+                  goToTweetDetailsScreen: (tweet) =>
+                      goToTweetDetailsScreen(context, tweet),
+                  goToEditUserScreen: () =>
+                      Navigator.of(context).pushNamed("/edit-user"),
+                  routePop: () => routePop(context),
+                  bottomNavigationRoutes: bottomNavigationRoutes,
+                );
+              },
+            );
+          }
+          if (settings.name == "/edit-user") {
+            return MaterialPageRoute(
+              builder: (context) => EditUserScreen(
+                user: userController.loggedUser!,
+                userController: userController,
+                routePop: () => routePop(context),
+                updateUserScreen: (user) =>
+                    updateUserScreenAfterEdit(context, user),
+                bottomNavigationRoutes: bottomNavigationRoutes,
+              ),
+            );
+          }
+          if (settings.name == "/create-tweet") {
+            return MaterialPageRoute(
+              builder: (context) => CreateTweetScreen(
+                loggedUser: userController.loggedUser!,
+                routePop: () => routePop(context),
+                goToHomeScreen: () => goToHomeScreen(context),
+              ),
+            );
+          }
+          if (settings.name == "/tweet") {
+            return MaterialPageRoute(
+              builder: (context) => TweetContainer(
+                service: tweetService,
+                loggedUserId: userController.loggedUser!.id,
+                tweet: settings.arguments as TweetModel,
+                indexNavBar: indexNavBar,
+                goToUserScreen: (user) => goToUserScreen(context, user),
+                routePop: () => routePop(context),
+                updateTweetScreen: ({required tweet}) =>
+                    updateTweetScreen(context, tweet),
+                bottomNavigationRoutes: bottomNavigationRoutes,
+              ),
+            );
+          }
         }
       },
     );

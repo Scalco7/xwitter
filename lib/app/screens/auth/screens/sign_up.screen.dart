@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
     super.key,
     required this.routePop,
-    required this.onSignUp,
+    required this.goToHomeScreen,
+    required this.userController,
   });
   final void Function() routePop;
-  final void Function({
-    required String nickname,
-    required String email,
-    required String name,
-    required String password,
-    required String confirmPassword,
-  }) onSignUp;
+  final void Function() goToHomeScreen;
+  final IUserController userController;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -40,20 +37,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
-  void signUp() {
+  void signUp() async {
     String nickname = nicknameController.text;
     String email = emailController.text;
     String name = nameController.text;
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
 
-    widget.onSignUp(
+    bool success = await widget.userController.signUp(
       nickname: nickname,
       email: email,
       name: name,
       password: password,
       confirmPassword: confirmPassword,
     );
+
+    if (success) {
+      widget.goToHomeScreen();
+    }
   }
 
   @override
