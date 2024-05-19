@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/screens/search/widgets/search.widget.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({
     super.key,
     required this.goToUserScreen,
@@ -15,46 +16,30 @@ class SearchScreen extends StatelessWidget {
   final void Function(String userId) goToUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
-  static UserModel searchUser = UserModel(
-    id: "002",
-    name: "Raphael Dias",
-    email: "",
-    nickname: "rapha",
-    avatarPath: "assets/avatars/man_1.png",
-    bio: "Olá eu sou o Rapha",
-    numberOfFollowers: 209,
-    numberOfFollowings: 10,
-  );
+  @override
+  State<StatefulWidget> createState() => _SearchScreenState();
+}
 
-  static List<UserModel> listUsers = [
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser,
-    searchUser
-  ];
+class _SearchScreenState extends State<SearchScreen> {
+  IUserService userService = UserService();
+  List<UserModel> listUsers = [];
 
-  void searchFunction(String searchText) {
-    print("pesquisando - $searchText");
+  void search(String searchText) async {
+    List<UserModel> newList =
+        await userService.listUsersByText(text: searchText);
+
+    setState(() {
+      listUsers = newList;
+    });
+  }
+
+  void onClickUser(String acessedUserId) {
+    widget.goToUserScreen(acessedUserId);
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-
-    void onClickUser(String acessedUserId) {
-      print(
-          "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - $acessedUserId");
-
-      goToUserScreen(acessedUserId);
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +51,7 @@ class SearchScreen extends StatelessWidget {
         decoration: const BoxDecoration(color: ColorConsts.backgroundColor),
         child: Column(
           children: <Widget>[
-            SearchWidget(onSubmitted: searchFunction),
+            SearchWidget(onSubmitted: search),
             SizedBox(
               width: screenWidth,
               height: 50,
@@ -101,7 +86,7 @@ class SearchScreen extends StatelessWidget {
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 0,
-        bottomNavigationRoutes: bottomNavigationRoutes,
+        bottomNavigationRoutes: widget.bottomNavigationRoutes,
       ),
     );
   }

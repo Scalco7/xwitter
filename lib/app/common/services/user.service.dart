@@ -21,6 +21,8 @@ abstract class IUserService {
     required String bio,
     required String avatarPath,
   });
+
+  Future<List<UserModel>> listUsersByText({required String text});
 }
 
 class UserService implements IUserService {
@@ -158,5 +160,26 @@ class UserService implements IUserService {
     user.avatarPath = avatarPath;
 
     return user;
+  }
+
+  Future<List<UserModel>> listUsersByText({required String text}) async {
+    final usersRef = database.collection('users');
+    final query = usersRef.where(Filter.or(
+      Filter("name", isEqualTo: text),
+      Filter("nickname", isEqualTo: text),
+    ));
+    final QuerySnapshot snapshot = await query.get();
+
+    List<UserModel> userList = [];
+
+    for (var docSnapshot in snapshot.docs) {
+      Map<String, dynamic> jsonData =
+          docSnapshot.data() as Map<String, dynamic>;
+
+      UserModel user = getUserFromMap(jsonData);
+      userList.add(user);
+    }
+
+    return userList;
   }
 }
