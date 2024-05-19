@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
   const CreateTweetScreen({
     super.key,
+    required this.loggedUser,
     required this.routePop,
     required this.publishTweet,
   });
 
+  final UserModel loggedUser;
   final void Function() routePop;
   final void Function({required String tweet}) publishTweet;
 
@@ -67,7 +70,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 onChanged: (value) => disabledButton(),
                 decoration: InputDecoration(
                   icon: Image.asset(
-                    "assets/avatars/man_1.png",
+                    widget.loggedUser.avatarPath,
                     width: 35,
                     fit: BoxFit.contain,
                   ),

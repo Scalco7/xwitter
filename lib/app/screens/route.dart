@@ -282,7 +282,8 @@ class XWitterRoute extends StatelessWidget {
         avatarPath: avatarPath,
       ))!;
 
-      goToUserScreen(context, loggedUser);
+      Navigator.of(context)
+          .pushReplacementNamed("/user", arguments: loggedUser);
     }
 
     void onPublishTweet({
@@ -470,6 +471,7 @@ class XWitterRoute extends StatelessWidget {
         if (settings.name == "/create-tweet") {
           return MaterialPageRoute(
             builder: (context) => CreateTweetScreen(
+              loggedUser: loggedUser,
               routePop: () => routePop(context),
               publishTweet: ({required String tweet}) => onPublishTweet(
                 context: context,

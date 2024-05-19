@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/avatars_path.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dart';
@@ -169,7 +168,6 @@ class _EditUserScreen extends State<EditUserScreen> {
           ],
         ),
       ),
-      floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: 2,
         bottomNavigationRoutes: widget.bottomNavigationRoutes,

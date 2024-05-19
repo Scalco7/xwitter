@@ -101,26 +101,29 @@ class _TweetWidget extends State<TweetWidget> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () => likeTweet(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            tweet.liked
-                                ? "assets/icons/heart_fill_icon.png"
-                                : "assets/icons/heart_icon.png",
-                            fit: BoxFit.contain,
-                            width: 15,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            formatQuantity(tweet.likes),
-                            style: const TextStyle(
-                              color: ColorConsts.secondaryColor,
-                              fontSize: 12,
+                      child: SizedBox(
+                        width: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset(
+                              tweet.liked
+                                  ? "assets/icons/heart_fill_icon.png"
+                                  : "assets/icons/heart_icon.png",
+                              fit: BoxFit.contain,
+                              width: 15,
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 3),
+                            Text(
+                              formatQuantity(tweet.likes),
+                              style: const TextStyle(
+                                color: ColorConsts.secondaryColor,
+                                fontSize: 12,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(width: tweetWidth / 5),
