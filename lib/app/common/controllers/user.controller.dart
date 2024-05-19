@@ -185,7 +185,7 @@ class UserController implements IUserController {
 
     List<TweetModel> postedTweets = await tweetService.listPostedTweets(
       user: user,
-      loggedUserId: "Yc8U6DYDqvT44pKvBMN5gLXkinC2",
+      loggedUserId: loggedUser!.id,
     );
 
     UserData userData = UserData(

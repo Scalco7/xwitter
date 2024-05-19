@@ -6,6 +6,7 @@ class TweetModel {
   final String tweet;
   int likes;
   bool liked;
+  int commentsQuantity;
   List<TweetModel>? comments;
 
   TweetModel({
@@ -14,6 +15,7 @@ class TweetModel {
     required this.tweet,
     required this.likes,
     required this.liked,
+    this.commentsQuantity = 0,
     this.comments,
   });
 }
