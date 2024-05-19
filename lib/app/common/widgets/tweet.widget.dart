@@ -96,13 +96,13 @@ class _TweetWidget extends State<TweetWidget> {
                   height: 10,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     GestureDetector(
                       onTap: () => likeTweet(),
                       child: SizedBox(
-                        width: 50,
+                        width: 120,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,12 +126,11 @@ class _TweetWidget extends State<TweetWidget> {
                         ),
                       ),
                     ),
-                    SizedBox(width: tweetWidth / 5),
                     Visibility(
                       visible: widget.hasComments,
                       child: GestureDetector(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Image.asset(
