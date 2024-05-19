@@ -10,6 +10,18 @@ abstract class ITweetService {
     String? parentTweetId,
   });
 
+  Future<TweetModel> likeTweet({
+    required TweetModel tweet,
+    required String loggedUserId,
+    String? parentTweetId,
+  });
+
+  Future<TweetModel> deslikeTweet({
+    required TweetModel tweet,
+    required String loggedUserId,
+    String? parentTweetId,
+  });
+
   Future<List<TweetModel>> listTweets({required String loggedUserId});
 
   Future<TweetModel> updateLoadedTweet({
@@ -28,7 +40,17 @@ class TweetService implements ITweetService {
     Map<dynamic, dynamic> json,
     String loggedUserId,
   ) async {
-    List<String> likes = json["likes"] ?? [];
+    List<String> likes = [];
+
+    if (json["likes"] != null) {
+      Map likesMap = json["likes"] as Map;
+      likes = likesMap.values
+          .map(
+            (e) => e as String,
+          )
+          .toList();
+    }
+
     UserModel? user = await userService.getUserById(id: json["userId"]);
     if (user == null) {
       return null;
@@ -81,6 +103,51 @@ class TweetService implements ITweetService {
     });
 
     return true;
+  }
+
+  @override
+  Future<TweetModel> likeTweet({
+    required TweetModel tweet,
+    required String loggedUserId,
+    String? parentTweetId,
+  }) async {
+    late DatabaseReference refTweet;
+    if (parentTweetId != null) {
+      refTweet =
+          database.ref("tweets/$parentTweetId/comments/${tweet.id}/likes");
+    } else {
+      refTweet = database.ref("tweets/${tweet.id}/likes");
+    }
+
+    await refTweet.set({loggedUserId: loggedUserId});
+
+    tweet.liked = true;
+    tweet.likes++;
+
+    return tweet;
+  }
+
+  @override
+  Future<TweetModel> deslikeTweet({
+    required TweetModel tweet,
+    required String loggedUserId,
+    String? parentTweetId,
+  }) async {
+    late DatabaseReference refTweet;
+
+    if (parentTweetId != null) {
+      refTweet = database.ref(
+          "tweets/$parentTweetId/comments/${tweet.id}/likes/$loggedUserId");
+    } else {
+      refTweet = database.ref("tweets/${tweet.id}/likes/$loggedUserId");
+    }
+
+    await refTweet.remove();
+
+    tweet.liked = false;
+    tweet.likes--;
+
+    return tweet;
   }
 
   @override

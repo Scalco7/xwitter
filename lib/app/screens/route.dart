@@ -328,6 +328,28 @@ class XWitterRoute extends StatelessWidget {
           .pushReplacementNamed("/tweet", arguments: parentTweet);
     }
 
+    Future<TweetModel> onLikedTweet({
+      required TweetModel tweet,
+      required bool liked,
+      String? parentTweetId,
+    }) async {
+      if (liked) {
+        tweet = await tweetService.likeTweet(
+          tweet: tweet,
+          loggedUserId: loggedUser.id,
+          parentTweetId: parentTweetId,
+        );
+      } else {
+        tweet = await tweetService.deslikeTweet(
+          tweet: tweet,
+          loggedUserId: loggedUser.id,
+          parentTweetId: parentTweetId,
+        );
+      }
+
+      return tweet;
+    }
+
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -376,6 +398,8 @@ class XWitterRoute extends StatelessWidget {
                 goToTweetDetailsScreen: (tweet) =>
                     goToTweetDetailsScreen(context, tweet),
                 bottomNavigationRoutes: bottomNavigationRoutes,
+                onLikedTweet: ({required liked, required tweet}) =>
+                    onLikedTweet(tweet: tweet, liked: liked),
               );
             },
           );
@@ -420,6 +444,8 @@ class XWitterRoute extends StatelessWidget {
                     Navigator.of(context).pushNamed("/edit-user"),
                 routePop: () => routePop(context),
                 bottomNavigationRoutes: bottomNavigationRoutes,
+                onLikedTweet: ({required liked, required tweet}) =>
+                    onLikedTweet(tweet: tweet, liked: liked),
               );
             },
           );
@@ -468,6 +494,16 @@ class XWitterRoute extends StatelessWidget {
               goToUserScreen: (user) => goToUserScreen(context, user),
               routePop: () => routePop(context),
               bottomNavigationRoutes: bottomNavigationRoutes,
+              onLikedTweet: ({
+                required liked,
+                required parentTweetId,
+                required tweet,
+              }) =>
+                  onLikedTweet(
+                tweet: tweet,
+                liked: liked,
+                parentTweetId: parentTweetId,
+              ),
             ),
           );
         }

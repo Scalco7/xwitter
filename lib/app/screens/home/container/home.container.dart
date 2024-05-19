@@ -13,11 +13,16 @@ class HomeContainer extends StatelessWidget {
     required this.userId,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
+    required this.onLikedTweet,
   });
   final ITweetService service;
   final String userId;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,8 @@ class HomeContainer extends StatelessWidget {
               tweets: snapshot.data!,
               goToTweetDetailsScreen: goToTweetDetailsScreen,
               bottomNavigationRoutes: bottomNavigationRoutes,
+              onLikedTweet: ({required liked, required tweet}) =>
+                  onLikedTweet(tweet: tweet, liked: liked),
             );
           }
           if (snapshot.hasError) {

@@ -18,6 +18,7 @@ class TweetContainer extends StatelessWidget {
     required this.routePop,
     required this.bottomNavigationRoutes,
     required this.publishComment,
+    required this.onLikedTweet,
   });
   final ITweetService service;
   final String loggedUserId;
@@ -26,9 +27,16 @@ class TweetContainer extends StatelessWidget {
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final void Function(
-      {required String comment,
-      required TweetModel parentTweet}) publishComment;
+  final void Function({
+    required String comment,
+    required TweetModel parentTweet,
+  }) publishComment;
+
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+    required String parentTweetId,
+  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +56,7 @@ class TweetContainer extends StatelessWidget {
             routePop: routePop,
             bottomNavigationRoutes: bottomNavigationRoutes,
             publishComment: publishComment,
+            onLikedTweet: onLikedTweet,
           );
         }
         if (snapshot.hasError) {

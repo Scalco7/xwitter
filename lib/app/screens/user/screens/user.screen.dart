@@ -26,6 +26,7 @@ class UserScreen extends StatefulWidget {
     required this.goToEditUserScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
+    required this.onLikedTweet,
   });
 
   final EUserInteraction accountOption;
@@ -37,6 +38,10 @@ class UserScreen extends StatefulWidget {
   final void Function() goToEditUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+  }) onLikedTweet;
 
   @override
   State<UserScreen> createState() => _UserScreen();
@@ -134,11 +139,16 @@ class _UserScreen extends State<UserScreen> {
                 child: ListView.separated(
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
+                      key: Key("user-tweet-${tweetsList[index].id}"),
                       onTap: () =>
                           widget.goToTweetDetailsScreen(tweetsList[index]),
                       child: TweetWidget(
                         tweet: tweetsList[index],
                         hasComments: true,
+                        onLikedTweet: ({required liked}) => widget.onLikedTweet(
+                          tweet: tweetsList[index],
+                          liked: liked,
+                        ),
                       ),
                     );
                   },

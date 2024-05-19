@@ -16,6 +16,7 @@ class TweetScreen extends StatefulWidget {
     required this.routePop,
     required this.bottomNavigationRoutes,
     required this.publishComment,
+    required this.onLikedTweet,
   });
   final TweetModel tweet;
   final int indexNavBar;
@@ -26,6 +27,11 @@ class TweetScreen extends StatefulWidget {
     required String comment,
     required TweetModel parentTweet,
   }) publishComment;
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+    required String parentTweetId,
+  }) onLikedTweet;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
@@ -89,6 +95,11 @@ class _TweetScreen extends State<TweetScreen> {
                               child: TweetWidget(
                                 tweet: comment,
                                 hasComments: false,
+                                onLikedTweet: ({required liked}) =>
+                                    widget.onLikedTweet(
+                                        liked: liked,
+                                        tweet: comment,
+                                        parentTweetId: widget.tweet.id),
                               ),
                             );
                           },

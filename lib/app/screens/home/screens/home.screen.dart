@@ -11,10 +11,15 @@ class HomeScreen extends StatelessWidget {
     required this.tweets,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
+    required this.onLikedTweet,
   });
   final List<TweetModel> tweets;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +30,11 @@ class HomeScreen extends StatelessWidget {
           return GestureDetector(
             onTap: () => goToTweetDetailsScreen(tweets[index]),
             child: TweetWidget(
-              key: Key("home-tweet-$index"),
+              key: Key("home-tweet-${tweets[index].id}"),
               tweet: tweets[index],
               hasComments: true,
+              onLikedTweet: ({required bool liked}) =>
+                  onLikedTweet(tweet: tweets[index], liked: liked),
             ),
           );
         },

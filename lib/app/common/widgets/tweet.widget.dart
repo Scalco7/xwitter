@@ -9,19 +9,30 @@ class TweetWidget extends StatefulWidget {
     super.key,
     required this.tweet,
     required this.hasComments,
+    required this.onLikedTweet,
   });
   final TweetModel tweet;
   final bool hasComments;
+  final Future<TweetModel> Function({required bool liked}) onLikedTweet;
 
   @override
   State<StatefulWidget> createState() => _TweetWidget();
 }
 
 class _TweetWidget extends State<TweetWidget> {
-  void likeTweet() {
+  late TweetModel tweet;
+
+  void likeTweet() async {
+    TweetModel updatedTweet = await widget.onLikedTweet(liked: !tweet.liked);
     setState(() {
-      widget.tweet.liked = !widget.tweet.liked;
+      tweet = updatedTweet;
     });
+  }
+
+  @override
+  void initState() {
+    tweet = widget.tweet;
+    super.initState();
   }
 
   @override
@@ -45,7 +56,7 @@ class _TweetWidget extends State<TweetWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              widget.tweet.user.avatarPath,
+              tweet.user.avatarPath,
               width: avatarWidth,
               fit: BoxFit.contain,
             ),
@@ -59,13 +70,13 @@ class _TweetWidget extends State<TweetWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      widget.tweet.user.name,
+                      tweet.user.name,
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '@${widget.tweet.user.nickname}',
+                      '@${tweet.user.nickname}',
                       style: const TextStyle(
                         fontSize: 16,
                         color: ColorConsts.secondaryColor,
@@ -76,7 +87,7 @@ class _TweetWidget extends State<TweetWidget> {
                 SizedBox(
                   width: tweetWidth,
                   child: Text(
-                    widget.tweet.tweet,
+                    tweet.tweet,
                     overflow: TextOverflow.clip,
                     softWrap: true,
                   ),
@@ -95,7 +106,7 @@ class _TweetWidget extends State<TweetWidget> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Image.asset(
-                            widget.tweet.liked
+                            tweet.liked
                                 ? "assets/icons/heart_fill_icon.png"
                                 : "assets/icons/heart_icon.png",
                             fit: BoxFit.contain,
@@ -103,7 +114,7 @@ class _TweetWidget extends State<TweetWidget> {
                           ),
                           const SizedBox(width: 3),
                           Text(
-                            formatQuantity(widget.tweet.likes),
+                            formatQuantity(tweet.likes),
                             style: const TextStyle(
                               color: ColorConsts.secondaryColor,
                               fontSize: 12,
@@ -127,8 +138,7 @@ class _TweetWidget extends State<TweetWidget> {
                             ),
                             const SizedBox(width: 3),
                             Text(
-                              formatQuantity(
-                                  widget.tweet.comments?.length ?? 0),
+                              formatQuantity(tweet.comments?.length ?? 0),
                               style: const TextStyle(
                                 color: ColorConsts.secondaryColor,
                                 fontSize: 12,
