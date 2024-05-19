@@ -40,8 +40,6 @@ class UserController implements IUserController {
   @override
   UserModel? loggedUser;
 
-  //fazer refactor e deixar a parte de criar no banco de dados aqui e não no authenticate service
-
   @override
   Future<bool> signIn({
     required String email,
@@ -61,8 +59,15 @@ class UserController implements IUserController {
       return false;
     }
 
-    UserModel? user =
+    String? id =
         await authenticateService.loginUser(email: email, password: password);
+
+    if (id == null) {
+      toasts.showErrorToast("E-mail ou senha inválidos");
+      return false;
+    }
+
+    UserModel? user = await userService.getUserById(id: id);
 
     if (user == null) {
       toasts.showErrorToast("E-mail ou senha inválidos");
@@ -114,17 +119,24 @@ class UserController implements IUserController {
       return false;
     }
 
-    UserModel? user = await authenticateService.registerUser(
+    String? id = await authenticateService.registerUser(
       nickname: nickname,
       email: email,
       name: name,
       password: password,
     );
 
-    if (user == null) {
-      toasts.showErrorToast("Erro, tente novamente");
+    if (id == null) {
+      toasts.showErrorToast("Erro ao criar conta");
       return false;
     }
+
+    UserModel user = await userService.createUser(
+      id: id,
+      name: name,
+      email: email,
+      nickname: nickname,
+    );
 
     loggedUser = user;
     return true;
