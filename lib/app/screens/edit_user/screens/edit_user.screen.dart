@@ -44,7 +44,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     String bio = bioController.text;
 
     bool success = await widget.userController.editUser(
-      userId: widget.user.id,
+      user: widget.user,
       name: name,
       bio: bio,
       avatarPath: avatarPathController,

@@ -1,10 +1,10 @@
 class UserModel {
   final String id;
   final String email;
-  final String name;
+  String name;
   final String nickname;
-  final String avatarPath;
-  final String bio;
+  String avatarPath;
+  String bio;
   final int numberOfFollowers;
   final int numberOfFollowings;
 

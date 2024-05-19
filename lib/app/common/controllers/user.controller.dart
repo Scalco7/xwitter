@@ -25,7 +25,7 @@ abstract class IUserController {
   });
 
   Future<bool> editUser({
-    required String userId,
+    required UserModel user,
     required String name,
     required String bio,
     required String avatarPath,
@@ -148,7 +148,7 @@ class UserController implements IUserController {
 
   @override
   Future<bool> editUser({
-    required String userId,
+    required UserModel user,
     required String name,
     required String bio,
     required String avatarPath,
@@ -160,7 +160,7 @@ class UserController implements IUserController {
     }
 
     UserModel? newUser = await userService.updateUser(
-      id: userId,
+      user: user,
       name: name,
       bio: bio,
       avatarPath: avatarPath,

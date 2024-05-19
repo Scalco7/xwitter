@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 
 abstract class IUserService {
@@ -16,7 +16,7 @@ abstract class IUserService {
   Future<String?> getUserIdByNickname({required String nickname});
 
   Future<UserModel?> updateUser({
-    required String id,
+    required UserModel user,
     required String name,
     required String bio,
     required String avatarPath,
@@ -24,8 +24,21 @@ abstract class IUserService {
 }
 
 class UserService implements IUserService {
-  final FirebaseDatabase database = FirebaseDatabase.instance;
+  final FirebaseFirestore database = FirebaseFirestore.instance;
   UserService();
+
+  UserModel getUserFromMap(Map<String, dynamic> data) {
+    return UserModel(
+      id: data['id'],
+      name: data['name'],
+      email: data['email'],
+      nickname: data['nickname'],
+      avatarPath: data['avatarPath'],
+      bio: data['bio'],
+      numberOfFollowers: data['numberOfFollowers'],
+      numberOfFollowings: data['numberOfFollowings'],
+    );
+  }
 
   @override
   Future<UserModel> createUser({
@@ -34,9 +47,7 @@ class UserService implements IUserService {
     required String email,
     required String nickname,
   }) async {
-    DatabaseReference refUser = database.ref("users/$id");
-
-    await refUser.set({
+    Map<String, dynamic> userJson = {
       "id": id,
       "name": name,
       "email": email,
@@ -45,7 +56,9 @@ class UserService implements IUserService {
       "bio": "",
       "numberOfFollowers": 0,
       "numberOfFollowings": 0,
-    });
+    };
+
+    await database.collection("users").doc(id).set(userJson);
 
     UserModel newUser = UserModel(
       id: id,
@@ -62,21 +75,12 @@ class UserService implements IUserService {
 
   @override
   Future<UserModel?> getUserById({required String id}) async {
-    final ref = database.ref('users/$id');
-    final snapshot = await ref.get();
-    if (snapshot.exists) {
-      Map dbValue = snapshot.value as Map;
+    final docRef = database.collection('users').doc(id);
+    final DocumentSnapshot snapshot = await docRef.get();
 
-      UserModel user = UserModel(
-        id: dbValue['id'],
-        name: dbValue['name'],
-        email: dbValue['email'],
-        nickname: dbValue['nickname'],
-        avatarPath: dbValue['avatarPath'],
-        bio: dbValue['bio'],
-        numberOfFollowers: dbValue['numberOfFollowers'],
-        numberOfFollowings: dbValue['numberOfFollowings'],
-      );
+    if (snapshot.exists) {
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      UserModel user = getUserFromMap(data);
 
       return user;
     } else {
@@ -86,68 +90,73 @@ class UserService implements IUserService {
 
   @override
   Future<String?> getUserIdByEmail({required String email}) async {
-    final ref = database.ref('users').orderByChild("email").equalTo(email);
-    final snapshot = await ref.get();
+    final usersRef = database.collection('users');
+    final query = usersRef.where('email', isEqualTo: email);
+    late QuerySnapshot snapshot;
 
-    if (snapshot.exists) {
-      Map dbValue = snapshot.value as Map;
-      String? id = dbValue.keys.firstOrNull;
-
-      return id;
-    } else {
+    try {
+      snapshot = await query.get();
+    } catch (error) {
       return null;
     }
+
+    if (snapshot.docs.firstOrNull == null) {
+      return null;
+    }
+
+    final data = snapshot.docs.firstOrNull;
+    String? id = data!.id;
+
+    return id;
   }
 
   @override
   Future<String?> getUserIdByNickname({required String nickname}) async {
-    final ref =
-        database.ref('users').orderByChild("nickname").equalTo(nickname);
-    final snapshot = await ref.get();
+    final usersRef = database.collection('users');
+    final query = usersRef.where('nickname', isEqualTo: nickname);
+    late QuerySnapshot snapshot;
 
-    if (snapshot.exists) {
-      Map dbValue = snapshot.value as Map;
-      String? id = dbValue.keys.firstOrNull;
-
-      return id;
-    } else {
+    try {
+      snapshot = await query.get();
+    } catch (error) {
       return null;
     }
+
+    if (snapshot.docs.firstOrNull == null) {
+      return null;
+    }
+
+    final data = snapshot.docs.firstOrNull;
+    String? id = data!.id;
+
+    return id;
   }
 
   @override
   Future<UserModel?> updateUser({
-    required String id,
+    required UserModel user,
     required String name,
     required String bio,
     required String avatarPath,
   }) async {
-    DatabaseReference ref = database.ref("users/$id");
+    final ref = database.collection("users").doc(user.id);
 
-    final snapshot = await ref.get();
-    if (snapshot.exists) {
-      Map dbValue = snapshot.value as Map;
+    Map<String, dynamic> updatesJson = {
+      "name": name,
+      "avatarPath": avatarPath,
+      "bio": bio,
+    };
 
-      UserModel user = UserModel(
-        id: dbValue['id'],
-        name: name,
-        email: dbValue['email'],
-        nickname: dbValue['nickname'],
-        avatarPath: avatarPath,
-        bio: bio,
-        numberOfFollowers: dbValue['numberOfFollowers'],
-        numberOfFollowings: dbValue['numberOfFollowings'],
-      );
-
-      await ref.update({
-        "name": name,
-        "avatarPath": avatarPath,
-        "bio": bio,
-      });
-
-      return user;
-    } else {
+    try {
+      await ref.update(updatesJson);
+    } catch (error) {
       return null;
     }
+
+    user.name = name;
+    user.bio = bio;
+    user.avatarPath = avatarPath;
+
+    return user;
   }
 }
