@@ -9,19 +9,34 @@ class TweetDetailsWidget extends StatefulWidget {
     super.key,
     required this.tweet,
     required this.goToUserScreen,
+    required this.onLikedTweet,
   });
   final TweetModel tweet;
   final void Function(UserModel user) goToUserScreen;
+  final Future<TweetModel> Function({
+    required TweetModel tweet,
+    required bool liked,
+  }) onLikedTweet;
 
   @override
   State<TweetDetailsWidget> createState() => _TweetDetailsWidgetState();
 }
 
 class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
-  void likeTweet() {
+  late TweetModel tweet;
+
+  void likeTweet() async {
+    TweetModel updatedTweet =
+        await widget.onLikedTweet(liked: !tweet.liked, tweet: tweet);
     setState(() {
-      widget.tweet.liked = !widget.tweet.liked;
+      tweet = updatedTweet;
     });
+  }
+
+  @override
+  void initState() {
+    tweet = widget.tweet;
+    super.initState();
   }
 
   @override
@@ -43,12 +58,12 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             GestureDetector(
-              onTap: () => widget.goToUserScreen(widget.tweet.user),
-              child: UserWidget(user: widget.tweet.user),
+              onTap: () => widget.goToUserScreen(tweet.user),
+              child: UserWidget(user: tweet.user),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Text(widget.tweet.tweet),
+              child: Text(tweet.tweet),
             ),
             Container(
               width: double.maxFinite,
@@ -70,7 +85,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                   ),
                   children: <TextSpan>[
                     TextSpan(
-                      text: widget.tweet.likes.toString(),
+                      text: tweet.likes.toString(),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     const TextSpan(text: " Likes"),
@@ -87,7 +102,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                   GestureDetector(
                     onTap: () => likeTweet(),
                     child: Image.asset(
-                      widget.tweet.liked
+                      tweet.liked
                           ? "assets/icons/heart_fill_icon.png"
                           : "assets/icons/heart_icon.png",
                       fit: BoxFit.contain,

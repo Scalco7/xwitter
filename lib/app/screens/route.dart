@@ -498,8 +498,8 @@ class XWitterRoute extends StatelessWidget {
               bottomNavigationRoutes: bottomNavigationRoutes,
               onLikedTweet: ({
                 required liked,
-                required parentTweetId,
                 required tweet,
+                parentTweetId,
               }) =>
                   onLikedTweet(
                 tweet: tweet,

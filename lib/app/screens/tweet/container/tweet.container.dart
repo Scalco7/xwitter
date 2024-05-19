@@ -35,7 +35,7 @@ class TweetContainer extends StatelessWidget {
   final Future<TweetModel> Function({
     required TweetModel tweet,
     required bool liked,
-    required String parentTweetId,
+    String? parentTweetId,
   }) onLikedTweet;
 
   @override

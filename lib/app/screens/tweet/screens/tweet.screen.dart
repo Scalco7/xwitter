@@ -30,7 +30,7 @@ class TweetScreen extends StatefulWidget {
   final Future<TweetModel> Function({
     required TweetModel tweet,
     required bool liked,
-    required String parentTweetId,
+    String? parentTweetId,
   }) onLikedTweet;
 
   @override
@@ -78,6 +78,7 @@ class _TweetScreen extends State<TweetScreen> {
                   TweetDetailsWidget(
                     tweet: widget.tweet,
                     goToUserScreen: widget.goToUserScreen,
+                    onLikedTweet: widget.onLikedTweet,
                   ),
                   Visibility(
                     visible: widget.tweet.comments != null,
