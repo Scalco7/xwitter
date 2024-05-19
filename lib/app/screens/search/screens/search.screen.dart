@@ -26,6 +26,21 @@ class SearchScreen extends StatelessWidget {
     numberOfFollowings: 10,
   );
 
+  static List<UserModel> listUsers = [
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser,
+    searchUser
+  ];
+
   void searchFunction(String searchText) {
     print("pesquisando - $searchText");
   }
@@ -68,9 +83,17 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => onClickUser(searchUser.id),
-              child: UserWidget(user: searchUser),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    key: Key("search-user-${listUsers[index].id}"),
+                    onTap: () => onClickUser(listUsers[index].id),
+                    child: UserWidget(user: listUsers[index]),
+                  );
+                },
+                itemCount: listUsers.length,
+              ),
             ),
           ],
         ),
