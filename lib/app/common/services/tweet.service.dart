@@ -12,7 +12,7 @@ abstract class ITweetService {
 
   Future<List<TweetModel>> listTweets({required String loggedUserId});
 
-  Future<TweetModel> updateTweet({
+  Future<TweetModel> updateLoadedTweet({
     required TweetModel tweet,
     required String loggedUserId,
   });
@@ -105,7 +105,7 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<TweetModel> updateTweet(
+  Future<TweetModel> updateLoadedTweet(
       {required TweetModel tweet, required String loggedUserId}) async {
     final ref = database.ref('tweets/${tweet.id}').limitToFirst(20);
     final snapshot = await ref.get();

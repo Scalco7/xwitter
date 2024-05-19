@@ -25,6 +25,7 @@ class HomeScreen extends StatelessWidget {
           return GestureDetector(
             onTap: () => goToTweetDetailsScreen(tweets[index]),
             child: TweetWidget(
+              key: Key("home-tweet-$index"),
               tweet: tweets[index],
               hasComments: true,
             ),
