@@ -29,6 +29,11 @@ abstract class ITweetService {
     required String loggedUserId,
   });
 
+  Future<List<TweetModel>> listLikedTweets({
+    required UserModel user,
+    required String loggedUserId,
+  });
+
   Future<TweetModel> updateLoadedTweet({
     required TweetModel tweet,
     required String loggedUserId,
@@ -219,6 +224,32 @@ class TweetService implements ITweetService {
   }) async {
     final tweetRef = database.collection('tweets');
     final query = tweetRef.where("userId", isEqualTo: user.id);
+    final QuerySnapshot snapshot = await query.get();
+
+    List<TweetModel> tweetList = [];
+
+    for (var docSnapshot in snapshot.docs) {
+      Map<String, dynamic> jsonData =
+          docSnapshot.data() as Map<String, dynamic>;
+
+      TweetModel? tweet = await getTweetFromMap(
+          json: jsonData, loggedUserId: loggedUserId, user: user);
+
+      if (tweet != null) {
+        tweetList.add(tweet);
+      }
+    }
+
+    return tweetList;
+  }
+
+  @override
+  Future<List<TweetModel>> listLikedTweets({
+    required UserModel user,
+    required String loggedUserId,
+  }) async {
+    final tweetRef = database.collection('tweets');
+    final query = tweetRef.where("likes", arrayContains: user.id);
     final QuerySnapshot snapshot = await query.get();
 
     List<TweetModel> tweetList = [];

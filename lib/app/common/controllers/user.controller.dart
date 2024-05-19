@@ -188,10 +188,15 @@ class UserController implements IUserController {
       loggedUserId: loggedUser!.id,
     );
 
+    List<TweetModel> likedTweets = await tweetService.listLikedTweets(
+      user: user,
+      loggedUserId: loggedUser!.id,
+    );
+
     UserData userData = UserData(
       user: user,
       postedTweets: postedTweets,
-      likedTweets: [],
+      likedTweets: likedTweets,
     );
 
     return userData;
