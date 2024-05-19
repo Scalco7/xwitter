@@ -176,6 +176,9 @@ class XWitterRoute extends StatelessWidget {
     void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
 
+    void updateTweetScreen(BuildContext context, TweetModel tweet) =>
+        Navigator.of(context).pushReplacementNamed("/tweet", arguments: tweet);
+
     void signIn({
       required BuildContext context,
       required String email,
@@ -286,71 +289,6 @@ class XWitterRoute extends StatelessWidget {
           .pushReplacementNamed("/user", arguments: loggedUser);
     }
 
-    void onPublishTweet({
-      required BuildContext context,
-      required String tweet,
-    }) {
-      ValidatorFailure tweetValidate = validators.validateTweet(tweet);
-      if (!tweetValidate.valid) {
-        toasts.showErrorToast(tweetValidate.error);
-        return;
-      }
-
-      tweetService.createTweet(userId: loggedUser.id, tweet: tweet);
-
-      goToHomeScreen(context);
-
-      toasts.showSuccessToast("Tweet publicado");
-    }
-
-    void onPublishComment({
-      required BuildContext context,
-      required String comment,
-      required TweetModel parentTweet,
-    }) async {
-      ValidatorFailure tweetValidate = validators.validateTweet(comment);
-      if (!tweetValidate.valid) {
-        toasts.showErrorToast(tweetValidate.error);
-        return;
-      }
-
-      bool success = await tweetService.createTweet(
-        userId: loggedUser.id,
-        tweet: comment,
-        parentTweetId: parentTweet.id,
-      );
-
-      if (!success) {
-        toasts.showErrorToast("Erro ao comentar");
-        return;
-      }
-
-      Navigator.of(context)
-          .pushReplacementNamed("/tweet", arguments: parentTweet);
-    }
-
-    Future<TweetModel> onLikedTweet({
-      required TweetModel tweet,
-      required bool liked,
-      String? parentTweetId,
-    }) async {
-      if (liked) {
-        tweet = await tweetService.likeTweet(
-          tweet: tweet,
-          loggedUserId: loggedUser.id,
-          parentTweetId: parentTweetId,
-        );
-      } else {
-        tweet = await tweetService.deslikeTweet(
-          tweet: tweet,
-          loggedUserId: loggedUser.id,
-          parentTweetId: parentTweetId,
-        );
-      }
-
-      return tweet;
-    }
-
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -395,12 +333,10 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) {
               return HomeContainer(
                 service: tweetService,
-                userId: loggedUser.id,
+                loggedUserId: loggedUser.id,
                 goToTweetDetailsScreen: (tweet) =>
                     goToTweetDetailsScreen(context, tweet),
                 bottomNavigationRoutes: bottomNavigationRoutes,
-                onLikedTweet: ({required liked, required tweet}) =>
-                    onLikedTweet(tweet: tweet, liked: liked),
               );
             },
           );
@@ -431,6 +367,7 @@ class XWitterRoute extends StatelessWidget {
               }
 
               return UserScreen(
+                loggedUserId: loggedUser.id,
                 user: navigationUser,
                 indexNavBar: indexNavBar,
                 postTweets: tweets
@@ -445,8 +382,6 @@ class XWitterRoute extends StatelessWidget {
                     Navigator.of(context).pushNamed("/edit-user"),
                 routePop: () => routePop(context),
                 bottomNavigationRoutes: bottomNavigationRoutes,
-                onLikedTweet: ({required liked, required tweet}) =>
-                    onLikedTweet(tweet: tweet, liked: liked),
               );
             },
           );
@@ -473,10 +408,7 @@ class XWitterRoute extends StatelessWidget {
             builder: (context) => CreateTweetScreen(
               loggedUser: loggedUser,
               routePop: () => routePop(context),
-              publishTweet: ({required String tweet}) => onPublishTweet(
-                context: context,
-                tweet: tweet,
-              ),
+              goToHomeScreen: () => goToHomeScreen(context),
             ),
           );
         }
@@ -486,26 +418,12 @@ class XWitterRoute extends StatelessWidget {
               service: tweetService,
               loggedUserId: loggedUser.id,
               tweet: settings.arguments as TweetModel,
-              publishComment: ({required comment, required parentTweet}) =>
-                  onPublishComment(
-                context: context,
-                comment: comment,
-                parentTweet: parentTweet,
-              ),
               indexNavBar: indexNavBar,
               goToUserScreen: (user) => goToUserScreen(context, user),
               routePop: () => routePop(context),
+              updateTweetScreen: ({required tweet}) =>
+                  updateTweetScreen(context, tweet),
               bottomNavigationRoutes: bottomNavigationRoutes,
-              onLikedTweet: ({
-                required liked,
-                required tweet,
-                parentTweetId,
-              }) =>
-                  onLikedTweet(
-                tweet: tweet,
-                liked: liked,
-                parentTweetId: parentTweetId,
-              ),
             ),
           );
         }

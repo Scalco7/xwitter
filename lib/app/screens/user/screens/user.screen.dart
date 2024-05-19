@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -17,6 +18,7 @@ enum EUserInteraction {
 class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
+    required this.loggedUserId,
     required this.user,
     required this.postTweets,
     required this.indexNavBar,
@@ -26,9 +28,9 @@ class UserScreen extends StatefulWidget {
     required this.goToEditUserScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
-    required this.onLikedTweet,
   });
 
+  final String loggedUserId;
   final EUserInteraction accountOption;
   final UserModel user;
   final int indexNavBar;
@@ -38,16 +40,13 @@ class UserScreen extends StatefulWidget {
   final void Function() goToEditUserScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-  }) onLikedTweet;
 
   @override
   State<UserScreen> createState() => _UserScreen();
 }
 
 class _UserScreen extends State<UserScreen> {
+  TweetController tweetController = TweetController();
   late List<TweetModel> tweetsList;
   late String buttonText;
 
@@ -145,7 +144,9 @@ class _UserScreen extends State<UserScreen> {
                       child: TweetWidget(
                         tweet: tweetsList[index],
                         hasComments: true,
-                        onLikedTweet: ({required liked}) => widget.onLikedTweet(
+                        onLikedTweet: ({required liked}) =>
+                            tweetController.onLikedTweet(
+                          loggedUserId: widget.loggedUserId,
                           tweet: tweetsList[index],
                           liked: liked,
                         ),

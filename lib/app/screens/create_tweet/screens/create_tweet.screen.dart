@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
@@ -8,20 +9,31 @@ class CreateTweetScreen extends StatefulWidget {
     super.key,
     required this.loggedUser,
     required this.routePop,
-    required this.publishTweet,
+    required this.goToHomeScreen,
   });
 
   final UserModel loggedUser;
   final void Function() routePop;
-  final void Function({required String tweet}) publishTweet;
+  final void Function() goToHomeScreen;
 
   @override
   State<StatefulWidget> createState() => _CreateTweetScreen();
 }
 
 class _CreateTweetScreen extends State<CreateTweetScreen> {
+  TweetController tweetController = TweetController();
   TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
+
+  void publishTweet() {
+    tweetController.publishTweet(
+      loggedUserId: widget.loggedUser.id,
+      context: context,
+      tweet: tweetTextController.text,
+    );
+
+    widget.goToHomeScreen();
+  }
 
   @override
   void initState() {
@@ -60,8 +72,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   ),
                   TweetButtonWidget(
                     disabled: disabledTweetButton,
-                    onPressButton: () =>
-                        widget.publishTweet(tweet: tweetTextController.text),
+                    onPressButton: publishTweet,
                   ),
                 ],
               ),

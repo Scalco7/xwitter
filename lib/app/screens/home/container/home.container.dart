@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
@@ -10,24 +11,21 @@ class HomeContainer extends StatelessWidget {
   const HomeContainer({
     super.key,
     required this.service,
-    required this.userId,
+    required this.loggedUserId,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
-    required this.onLikedTweet,
   });
   final ITweetService service;
-  final String userId;
+  final String loggedUserId;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
+    TweetController tweetController = TweetController();
+
     return FutureBuilder<List<TweetModel>>(
-        future: service.listTweets(loggedUserId: userId),
+        future: service.listTweets(loggedUserId: loggedUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingWidget();
@@ -39,7 +37,11 @@ class HomeContainer extends StatelessWidget {
               goToTweetDetailsScreen: goToTweetDetailsScreen,
               bottomNavigationRoutes: bottomNavigationRoutes,
               onLikedTweet: ({required liked, required tweet}) =>
-                  onLikedTweet(tweet: tweet, liked: liked),
+                  tweetController.onLikedTweet(
+                tweet: tweet,
+                liked: liked,
+                loggedUserId: loggedUserId,
+              ),
             );
           }
           if (snapshot.hasError) {

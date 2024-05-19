@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
@@ -16,9 +17,8 @@ class TweetContainer extends StatelessWidget {
     required this.indexNavBar,
     required this.goToUserScreen,
     required this.routePop,
+    required this.updateTweetScreen,
     required this.bottomNavigationRoutes,
-    required this.publishComment,
-    required this.onLikedTweet,
   });
   final ITweetService service;
   final String loggedUserId;
@@ -26,20 +26,13 @@ class TweetContainer extends StatelessWidget {
   final int indexNavBar;
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
+  final void Function({required TweetModel tweet}) updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final void Function({
-    required String comment,
-    required TweetModel parentTweet,
-  }) publishComment;
-
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-    String? parentTweetId,
-  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
+    TweetController tweetController = TweetController();
+
     return FutureBuilder<TweetModel>(
       future:
           service.updateLoadedTweet(tweet: tweet, loggedUserId: loggedUserId),
@@ -54,9 +47,22 @@ class TweetContainer extends StatelessWidget {
             indexNavBar: indexNavBar,
             goToUserScreen: goToUserScreen,
             routePop: routePop,
+            updateTweetScreen: () => updateTweetScreen(tweet: snapshot.data!),
             bottomNavigationRoutes: bottomNavigationRoutes,
-            publishComment: publishComment,
-            onLikedTweet: onLikedTweet,
+            publishComment: ({required comment}) =>
+                tweetController.publishTweet(
+              loggedUserId: loggedUserId,
+              context: context,
+              tweet: comment,
+              parentTweetId: snapshot.data!.id,
+            ),
+            onLikedTweet: ({required liked, parentTweetId, required tweet}) =>
+                tweetController.onLikedTweet(
+              loggedUserId: loggedUserId,
+              tweet: tweet,
+              liked: liked,
+              parentTweetId: parentTweetId,
+            ),
           );
         }
         if (snapshot.hasError) {
