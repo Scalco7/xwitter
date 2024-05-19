@@ -19,7 +19,7 @@ class EditUserScreen extends StatefulWidget {
   final UserModel user;
   final IUserController userController;
   final void Function() routePop;
-  final void Function(UserModel user) updateUserScreen;
+  final void Function(String userId) updateUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
@@ -51,7 +51,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     );
 
     if (success) {
-      widget.updateUserScreen(widget.userController.loggedUser!);
+      widget.updateUserScreen(widget.userController.loggedUser!.id);
     }
   }
 

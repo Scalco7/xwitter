@@ -29,7 +29,6 @@ class UserScreen extends StatefulWidget {
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
-
   final String loggedUserId;
   final EUserInteraction accountOption;
   final UserModel user;

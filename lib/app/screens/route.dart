@@ -11,7 +11,7 @@ import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/container/home.container.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
-import 'package:xwitter/app/screens/user/screens/user.screen.dart';
+import 'package:xwitter/app/screens/user/container/user.container.dart';
 
 class XWitterRoute extends StatelessWidget {
   const XWitterRoute({super.key});
@@ -152,15 +152,15 @@ class XWitterRoute extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil(
           "/user",
           (route) => false,
-          arguments: userController.loggedUser,
+          arguments: userController.loggedUser!.id,
         );
       },
     );
 
     void routePop(BuildContext context) => Navigator.of(context).pop();
 
-    void goToUserScreen(BuildContext context, UserModel user) =>
-        Navigator.of(context).pushNamed("/user", arguments: user);
+    void goToUserScreen(BuildContext context, String userId) =>
+        Navigator.of(context).pushNamed("/user", arguments: userId);
 
     void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushNamed("/tweet", arguments: tweet);
@@ -171,9 +171,9 @@ class XWitterRoute extends StatelessWidget {
     void updateTweetScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushReplacementNamed("/tweet", arguments: tweet);
 
-    void updateUserScreenAfterEdit(BuildContext context, UserModel user) =>
+    void updateUserScreenAfterEdit(BuildContext context, String userId) =>
         Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
-            arguments: user);
+            arguments: userId);
 
     return Navigator(
       initialRoute: "/sign-in",
@@ -216,7 +216,7 @@ class XWitterRoute extends StatelessWidget {
           if (settings.name == "/search") {
             return MaterialPageRoute(
               builder: (context) => SearchScreen(
-                goToUserScreen: (user) => goToUserScreen(context, user),
+                goToUserScreen: (userId) => goToUserScreen(context, userId),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
             );
@@ -225,30 +225,10 @@ class XWitterRoute extends StatelessWidget {
             //mexer
             return MaterialPageRoute(
               builder: (context) {
-                UserModel navigationUser = settings.arguments as UserModel;
-
-                //logged user virar idLoggedUser
-
-                //criar função melhor
-
-                EUserInteraction accountOption =
-                    EUserInteraction.common; //pgar se segue o cara pela api
-
-                if (userController.loggedUser!.nickname ==
-                    navigationUser.nickname) {
-                  accountOption = EUserInteraction.myAccount;
-                }
-
-                return UserScreen(
-                  loggedUserId: userController.loggedUser!.id,
-                  user: navigationUser,
+                return UserContainer(
+                  userController: userController,
+                  userId: settings.arguments as String,
                   indexNavBar: indexNavBar,
-                  postTweets: tweets
-                      .where((t) => t.user.id == navigationUser.id)
-                      .toList(),
-                  likedTweets:
-                      tweets.where((t) => t.liked).toList(), //trocar isso
-                  accountOption: accountOption,
                   goToTweetDetailsScreen: (tweet) =>
                       goToTweetDetailsScreen(context, tweet),
                   goToEditUserScreen: () =>
@@ -265,8 +245,8 @@ class XWitterRoute extends StatelessWidget {
                 user: userController.loggedUser!,
                 userController: userController,
                 routePop: () => routePop(context),
-                updateUserScreen: (user) =>
-                    updateUserScreenAfterEdit(context, user),
+                updateUserScreen: (userId) =>
+                    updateUserScreenAfterEdit(context, userId),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
             );
@@ -287,7 +267,7 @@ class XWitterRoute extends StatelessWidget {
                 loggedUserId: userController.loggedUser!.id,
                 tweet: settings.arguments as TweetModel,
                 indexNavBar: indexNavBar,
-                goToUserScreen: (user) => goToUserScreen(context, user),
+                goToUserScreen: (userId) => goToUserScreen(context, userId),
                 routePop: () => routePop(context),
                 updateTweetScreen: ({required tweet}) =>
                     updateTweetScreen(context, tweet),

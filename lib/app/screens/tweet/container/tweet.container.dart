@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/loading.widget.dart';
@@ -24,7 +23,7 @@ class TweetContainer extends StatelessWidget {
   final String loggedUserId;
   final TweetModel tweet;
   final int indexNavBar;
-  final void Function(UserModel user) goToUserScreen;
+  final void Function(String userId) goToUserScreen;
   final void Function() routePop;
   final void Function({required TweetModel tweet}) updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;

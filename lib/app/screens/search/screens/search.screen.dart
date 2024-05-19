@@ -12,7 +12,7 @@ class SearchScreen extends StatelessWidget {
     required this.goToUserScreen,
     required this.bottomNavigationRoutes,
   });
-  final void Function(UserModel user) goToUserScreen;
+  final void Function(String userId) goToUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   static UserModel searchUser = UserModel(
@@ -34,11 +34,11 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    void onClickUser(UserModel acessedUser) {
+    void onClickUser(String acessedUserId) {
       print(
-          "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - ${acessedUser.name}");
+          "indo para a pagina de usuário do (passar usuário, dai n tem q pesquisar na api || a lista daqui só buscar o avatar path o nome e o @, dai o get de la pegar tds os dados) - $acessedUserId");
 
-      goToUserScreen(acessedUser);
+      goToUserScreen(acessedUserId);
     }
 
     return Scaffold(
@@ -69,7 +69,7 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () => onClickUser(searchUser),
+              onTap: () => onClickUser(searchUser.id),
               child: UserWidget(user: searchUser),
             ),
           ],

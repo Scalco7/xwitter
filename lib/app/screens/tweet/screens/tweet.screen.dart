@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
@@ -21,7 +20,7 @@ class TweetScreen extends StatefulWidget {
   });
   final TweetModel tweet;
   final int indexNavBar;
-  final void Function(UserModel user) goToUserScreen;
+  final void Function(String userId) goToUserScreen;
   final void Function() routePop;
   final void Function() updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
@@ -89,7 +88,8 @@ class _TweetScreen extends State<TweetScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             TweetModel comment = widget.tweet.comments![index];
                             return GestureDetector(
-                              onTap: () => widget.goToUserScreen(comment.user),
+                              onTap: () =>
+                                  widget.goToUserScreen(comment.user.id),
                               child: TweetWidget(
                                 tweet: comment,
                                 hasComments: false,

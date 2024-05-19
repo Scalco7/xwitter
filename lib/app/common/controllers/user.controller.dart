@@ -1,7 +1,9 @@
 import 'package:xwitter/app/common/error/validatorFailure.model.dart';
 import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/helpers/validators.dart';
+import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/models/userData.interface.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
@@ -28,6 +30,8 @@ abstract class IUserController {
     required String bio,
     required String avatarPath,
   });
+
+  Future<UserData?> getUserData({required userId});
 }
 
 class UserController implements IUserController {
@@ -169,5 +173,27 @@ class UserController implements IUserController {
 
     loggedUser = newUser;
     return true;
+  }
+
+  @override
+  Future<UserData?> getUserData({required userId}) async {
+    UserModel? user = await userService.getUserById(id: userId);
+
+    if (user == null) {
+      return null;
+    }
+
+    List<TweetModel> postedTweets = await tweetService.listPostedTweets(
+      user: user,
+      loggedUserId: "Yc8U6DYDqvT44pKvBMN5gLXkinC2",
+    );
+
+    UserData userData = UserData(
+      user: user,
+      postedTweets: postedTweets,
+      likedTweets: [],
+    );
+
+    return userData;
   }
 }

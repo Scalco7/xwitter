@@ -24,6 +24,11 @@ abstract class ITweetService {
 
   Future<List<TweetModel>> listTweets({required String loggedUserId});
 
+  Future<List<TweetModel>> listPostedTweets({
+    required UserModel user,
+    required String loggedUserId,
+  });
+
   Future<TweetModel> updateLoadedTweet({
     required TweetModel tweet,
     required String loggedUserId,
@@ -36,10 +41,11 @@ class TweetService implements ITweetService {
 
   TweetService();
 
-  Future<TweetModel?> getTweetFromMap(
-    Map<dynamic, dynamic> json,
-    String loggedUserId,
-  ) async {
+  Future<TweetModel?> getTweetFromMap({
+    required Map<dynamic, dynamic> json,
+    required String loggedUserId,
+    UserModel? user,
+  }) async {
     List<String> likes = [];
 
     if (json["likes"] != null) {
@@ -51,9 +57,12 @@ class TweetService implements ITweetService {
           .toList();
     }
 
-    UserModel? user = await userService.getUserById(id: json["userId"]);
     if (user == null) {
-      return null;
+      user = await userService.getUserById(id: json["userId"]);
+
+      if (user == null) {
+        return null;
+      }
     }
 
     List<TweetModel> comments = [];
@@ -61,7 +70,8 @@ class TweetService implements ITweetService {
     if (json['comments'] != null) {
       Map commentsMap = json['comments'] as Map;
       for (final value in commentsMap.values) {
-        TweetModel? comment = await getTweetFromMap(value, loggedUserId);
+        TweetModel? comment =
+            await getTweetFromMap(json: value, loggedUserId: loggedUserId);
         if (comment != null) {
           comments.add(comment);
         }
@@ -113,13 +123,14 @@ class TweetService implements ITweetService {
   }) async {
     late DatabaseReference refTweet;
     if (parentTweetId != null) {
-      refTweet =
-          database.ref("tweets/$parentTweetId/comments/${tweet.id}/likes");
+      refTweet = database
+          .ref("tweets/$parentTweetId/comments/${tweet.id}/likes")
+          .push();
     } else {
-      refTweet = database.ref("tweets/${tweet.id}/likes");
+      refTweet = database.ref("tweets/${tweet.id}/likes").push();
     }
 
-    await refTweet.set({loggedUserId: loggedUserId});
+    await refTweet.set(loggedUserId);
 
     tweet.liked = true;
     tweet.likes++;
@@ -161,7 +172,37 @@ class TweetService implements ITweetService {
       Map dbValue = snapshot.value as Map;
 
       for (final value in dbValue.values) {
-        TweetModel? tweet = await getTweetFromMap(value, loggedUserId);
+        TweetModel? tweet =
+            await getTweetFromMap(json: value, loggedUserId: loggedUserId);
+        if (tweet != null) {
+          tweetList.add(tweet);
+        }
+      }
+    }
+
+    return tweetList;
+  }
+
+  @override
+  Future<List<TweetModel>> listPostedTweets({
+    required UserModel user,
+    required String loggedUserId,
+  }) async {
+    final ref = database
+        .ref('tweets')
+        .orderByChild('userId')
+        .equalTo(user.id)
+        .limitToFirst(20);
+    final snapshot = await ref.get();
+
+    List<TweetModel> tweetList = [];
+
+    if (snapshot.value != null) {
+      Map dbValue = snapshot.value as Map;
+
+      for (final value in dbValue.values) {
+        TweetModel? tweet = await getTweetFromMap(
+            json: value, loggedUserId: loggedUserId, user: user);
         if (tweet != null) {
           tweetList.add(tweet);
         }
@@ -182,7 +223,8 @@ class TweetService implements ITweetService {
     }
 
     Map dbValue = snapshot.value as Map;
-    TweetModel? newTweet = await getTweetFromMap(dbValue, loggedUserId);
+    TweetModel? newTweet =
+        await getTweetFromMap(json: dbValue, loggedUserId: loggedUserId);
 
     if (newTweet == null) {
       return tweet;
