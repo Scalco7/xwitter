@@ -51,6 +51,7 @@ class UserController implements IUserController {
   @override
   UserModel? loggedUser;
 
+  @override
   Future<bool> signInFromLocalData() async {
     UserLocalDataModel? localData = await localDataService.getUserLogin();
 

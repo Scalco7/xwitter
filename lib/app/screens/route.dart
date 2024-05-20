@@ -69,6 +69,14 @@ class XWitterRoute extends StatelessWidget {
     void goToSignInScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/sign-in", (route) => false);
 
+    void getSignInLocal(BuildContext context) async {
+      //gambiarra
+      bool success = await userController.signInFromLocalData();
+      if (success) {
+        goToHomeScreen(context);
+      }
+    }
+
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -76,12 +84,15 @@ class XWitterRoute extends StatelessWidget {
         if (userController.loggedUser == null) {
           if (settings.name == "/sign-in") {
             return MaterialPageRoute(
-              builder: (context) => SignInScreen(
-                goToSignUpScreen: () =>
-                    Navigator.of(context).pushNamed("/sign-up"),
-                goToHomeScreen: () => goToHomeScreen(context),
-                userController: userController,
-              ),
+              builder: (context) {
+                getSignInLocal(context);
+                return SignInScreen(
+                  goToSignUpScreen: () =>
+                      Navigator.of(context).pushNamed("/sign-up"),
+                  goToHomeScreen: () => goToHomeScreen(context),
+                  userController: userController,
+                );
+              },
             );
           }
           if (settings.name == "/sign-up") {
