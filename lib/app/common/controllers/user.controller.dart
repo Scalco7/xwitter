@@ -4,19 +4,23 @@ import 'package:xwitter/app/common/helpers/validators.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/models/user_data.model.dart';
+import 'package:xwitter/app/common/models/user_local_data.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
+import 'package:xwitter/app/common/services/local_data.service.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class IUserController {
   UserModel? loggedUser;
 
+  Future<bool> signInFromLocalStorage();
+
   Future<bool> signIn({
     required String email,
     required String password,
   });
 
-  Future<bool> logout();
+  Future<bool> signOut();
 
   Future<bool> signUp({
     required String nickname,
@@ -39,12 +43,29 @@ abstract class IUserController {
 class UserController implements IUserController {
   final IAuthenticateService authenticateService = AuthenticateService();
   final IUserService userService = UserService();
+  final ILocalData localDataService = LocalData();
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
 
   @override
   UserModel? loggedUser;
+
+  Future<bool> signInFromLocalStorage() async {
+    UserLocalDataModel? localData = await localDataService.getUserLogin();
+
+    if (localData == null) {
+      return false;
+    }
+
+    if (DateTime.now().isAfter(localData.date.add(const Duration(days: 14)))) {
+      localDataService.removeUserLogin();
+      return false;
+    }
+
+    loggedUser = await userService.getUserById(id: localData.id);
+    return loggedUser != null;
+  }
 
   @override
   Future<bool> signIn({
@@ -80,16 +101,26 @@ class UserController implements IUserController {
       return false;
     }
 
+    bool success = await localDataService.saveUserLogin(id);
+    if (!success) {
+      return false;
+    }
+
     loggedUser = user;
 
     return true;
   }
 
   @override
-  Future<bool> logout() async {
+  Future<bool> signOut() async {
     await authenticateService.logoutUser();
-    loggedUser = null;
+    bool success = await localDataService.removeUserLogin();
 
+    if (!success) {
+      return false;
+    }
+
+    loggedUser = null;
     return true;
   }
 
@@ -151,6 +182,11 @@ class UserController implements IUserController {
       email: email,
       nickname: nickname,
     );
+
+    bool success = await localDataService.saveUserLogin(id);
+    if (!success) {
+      return false;
+    }
 
     loggedUser = user;
     return true;

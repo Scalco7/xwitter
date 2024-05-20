@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xwitter/app/common/models/user_local_data.model.dart';
 
-abstract class ILocalDate {
+abstract class ILocalData {
   Future<bool> saveUserLogin(String id);
 
   Future<bool> removeUserLogin();
@@ -9,7 +9,7 @@ abstract class ILocalDate {
   Future<UserLocalDataModel?> getUserLogin();
 }
 
-class LocalDate implements ILocalDate {
+class LocalData implements ILocalData {
   static const loginIdKey = "user-id";
   static const loginDateKey = "login-date";
 

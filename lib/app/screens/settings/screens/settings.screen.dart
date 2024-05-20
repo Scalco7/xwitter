@@ -13,7 +13,7 @@ class SettingsScreen extends StatelessWidget {
   final void Function() goToSignInScreen;
 
   void logout() async {
-    bool success = await userController.logout();
+    bool success = await userController.signOut();
 
     if (success) {
       goToSignInScreen();
