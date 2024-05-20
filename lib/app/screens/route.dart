@@ -3,7 +3,7 @@ import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
+import 'package:xwitter/app/screens/auth/container/sign_in.container.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
@@ -69,14 +69,6 @@ class XWitterRoute extends StatelessWidget {
     void goToSignInScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/sign-in", (route) => false);
 
-    void getSignInLocal(BuildContext context) async {
-      //gambiarra
-      bool success = await userController.signInFromLocalData();
-      if (success) {
-        goToHomeScreen(context);
-      }
-    }
-
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -84,15 +76,12 @@ class XWitterRoute extends StatelessWidget {
         if (userController.loggedUser == null) {
           if (settings.name == "/sign-in") {
             return MaterialPageRoute(
-              builder: (context) {
-                getSignInLocal(context);
-                return SignInScreen(
-                  goToSignUpScreen: () =>
-                      Navigator.of(context).pushNamed("/sign-up"),
-                  goToHomeScreen: () => goToHomeScreen(context),
-                  userController: userController,
-                );
-              },
+              builder: (context) => SignInContainer(
+                goToSignUpScreen: () =>
+                    Navigator.of(context).pushNamed("/sign-up"),
+                goToHomeScreen: () => goToHomeScreen(context),
+                userController: userController,
+              ),
             );
           }
           if (settings.name == "/sign-up") {
