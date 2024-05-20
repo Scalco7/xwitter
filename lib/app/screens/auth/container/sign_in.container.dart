@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
+import 'package:xwitter/app/common/widgets/bt_error.widget.dart';
 import 'package:xwitter/app/common/widgets/loading.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 
@@ -38,7 +39,7 @@ class SignInContainer extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return ErrorWidget((snapshot.error as Failure).message!);
+          return BTErrorWidget(error: (snapshot.error as Failure).message!);
         }
 
         return Container();

@@ -4,6 +4,7 @@ import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
+import 'package:xwitter/app/common/widgets/bt_error.widget.dart';
 import 'package:xwitter/app/common/widgets/loading.widget.dart';
 import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
 
@@ -65,7 +66,7 @@ class TweetContainer extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return ErrorWidget((snapshot.error as Failure).message!);
+          return BTErrorWidget(error: (snapshot.error as Failure).message!);
         }
 
         return Container();
