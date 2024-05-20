@@ -13,8 +13,8 @@ import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
 import 'package:xwitter/app/screens/user/container/user.container.dart';
 
-class XWitterRoute extends StatelessWidget {
-  const XWitterRoute({super.key});
+class BigTalkRoute extends StatelessWidget {
+  const BigTalkRoute({super.key});
 
   @override
   Widget build(BuildContext context) {

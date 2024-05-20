@@ -30,8 +30,7 @@ class SignInContainer extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingWidget();
         }
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.done) {
           return SignInScreen(
             goToSignUpScreen: goToSignUpScreen,
             goToHomeScreen: goToHomeScreen,
