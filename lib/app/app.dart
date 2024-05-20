@@ -9,6 +9,7 @@ class BigTalk extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: ColorConsts.primaryColor,
       title: 'BigTalk',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: ColorConsts.primaryColor),
