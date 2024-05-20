@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/userData.interface.dart';
+import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/loading.widget.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';

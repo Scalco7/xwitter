@@ -3,7 +3,7 @@ import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/helpers/validators.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
-import 'package:xwitter/app/common/models/userData.interface.dart';
+import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/services/authenticate.service.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
