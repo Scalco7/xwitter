@@ -6,10 +6,12 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.height,
     required this.nickname,
     required this.routePop,
+    this.goToSettingsScreen,
   });
   final double height;
   final String nickname;
   final void Function() routePop;
+  final void Function()? goToSettingsScreen;
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -28,6 +30,18 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.w800,
         ),
       ),
+      actions: <Widget>[
+        Visibility(
+          visible: goToSettingsScreen != null,
+          child: IconButton(
+            onPressed: goToSettingsScreen,
+            icon: const Icon(
+              Icons.settings_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
       leading: Visibility(
         visible: Navigator.of(context).canPop(),
         child: IconButton(

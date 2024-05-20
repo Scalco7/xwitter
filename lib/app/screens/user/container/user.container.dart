@@ -15,6 +15,7 @@ class UserContainer extends StatelessWidget {
     required this.indexNavBar,
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
+    required this.goToSettingsScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
@@ -24,6 +25,7 @@ class UserContainer extends StatelessWidget {
   final int indexNavBar;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final void Function() goToEditUserScreen;
+  final void Function() goToSettingsScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
@@ -47,6 +49,7 @@ class UserContainer extends StatelessWidget {
             likedTweets: userData.likedTweets,
             goToTweetDetailsScreen: goToTweetDetailsScreen,
             goToEditUserScreen: goToEditUserScreen,
+            goToSettingsScreen: goToSettingsScreen,
             routePop: routePop,
             bottomNavigationRoutes: bottomNavigationRoutes,
           );

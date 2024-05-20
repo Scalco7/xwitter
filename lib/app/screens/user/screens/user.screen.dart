@@ -20,6 +20,7 @@ class UserScreen extends StatefulWidget {
     required this.likedTweets,
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
+    required this.goToSettingsScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
@@ -30,6 +31,7 @@ class UserScreen extends StatefulWidget {
   final List<TweetModel> likedTweets;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final void Function() goToEditUserScreen;
+  final void Function() goToSettingsScreen;
   final void Function() routePop;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
@@ -113,6 +115,7 @@ class _UserScreen extends State<UserScreen> {
         nickname: user.nickname,
         height: appBarHeight,
         routePop: widget.routePop,
+        goToSettingsScreen: isMyAccount ? widget.goToSettingsScreen : null,
       ),
       body: Stack(
         children: <Widget>[

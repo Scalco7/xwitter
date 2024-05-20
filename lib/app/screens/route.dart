@@ -9,6 +9,7 @@ import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dar
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/container/home.container.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
+import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
 import 'package:xwitter/app/screens/user/container/user.container.dart';
 
@@ -51,6 +52,9 @@ class XWitterRoute extends StatelessWidget {
 
     void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+
+    void goToSettingsScreen(BuildContext context) =>
+        Navigator.of(context).pushNamed("/settings");
 
     void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
@@ -109,7 +113,6 @@ class XWitterRoute extends StatelessWidget {
             );
           }
           if (settings.name == "/user") {
-            //mexer
             return MaterialPageRoute(
               builder: (context) {
                 return UserContainer(
@@ -120,6 +123,7 @@ class XWitterRoute extends StatelessWidget {
                       goToTweetDetailsScreen(context, tweet),
                   goToEditUserScreen: () =>
                       Navigator.of(context).pushNamed("/edit-user"),
+                  goToSettingsScreen: () => goToSettingsScreen(context),
                   routePop: () => routePop(context),
                   bottomNavigationRoutes: bottomNavigationRoutes,
                 );
@@ -160,6 +164,13 @@ class XWitterRoute extends StatelessWidget {
                     updateTweetScreen(context, tweet),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
+            );
+          }
+          if (settings.name == "/settings") {
+            return MaterialPageRoute(
+              builder: (context) {
+                return const SettingsScreen();
+              },
             );
           }
         }
