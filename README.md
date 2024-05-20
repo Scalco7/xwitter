@@ -4,6 +4,11 @@ A new Flutter project.
 
 ## Getting Started
 
+## Generate APK
+
+- flutter build apk --split-per-abi
+- flutter build apk
+
 This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
