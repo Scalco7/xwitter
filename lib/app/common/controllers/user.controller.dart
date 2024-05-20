@@ -16,6 +16,8 @@ abstract class IUserController {
     required String password,
   });
 
+  Future<bool> logout();
+
   Future<bool> signUp({
     required String nickname,
     required String email,
@@ -79,6 +81,14 @@ class UserController implements IUserController {
     }
 
     loggedUser = user;
+
+    return true;
+  }
+
+  @override
+  Future<bool> logout() async {
+    await authenticateService.logoutUser();
+    loggedUser = null;
 
     return true;
   }

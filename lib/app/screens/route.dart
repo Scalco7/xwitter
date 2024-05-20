@@ -66,6 +66,9 @@ class XWitterRoute extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
             arguments: userId);
 
+    void goToSignInScreen(BuildContext context) => Navigator.of(context)
+        .pushNamedAndRemoveUntil("/sign-in", (route) => false);
+
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -169,7 +172,10 @@ class XWitterRoute extends StatelessWidget {
           if (settings.name == "/settings") {
             return MaterialPageRoute(
               builder: (context) {
-                return const SettingsScreen();
+                return SettingsScreen(
+                  userController: userController,
+                  goToSignInScreen: () => goToSignInScreen(context),
+                );
               },
             );
           }

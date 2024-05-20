@@ -12,6 +12,8 @@ abstract class IAuthenticateService {
     required String email,
     required String password,
   });
+
+  Future<void> logoutUser();
 }
 
 class AuthenticateService implements IAuthenticateService {
@@ -51,5 +53,10 @@ class AuthenticateService implements IAuthenticateService {
     } catch (err) {
       return null;
     }
+  }
+
+  @override
+  Future<void> logoutUser() async {
+    await firebaseAuth.signOut();
   }
 }

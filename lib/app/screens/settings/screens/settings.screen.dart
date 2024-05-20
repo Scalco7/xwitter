@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/settings/widgets/settings_app_bar.widget.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({
+    super.key,
+    required this.userController,
+    required this.goToSignInScreen,
+  });
+  final IUserController userController;
+  final void Function() goToSignInScreen;
+
+  void logout() async {
+    bool success = await userController.logout();
+
+    if (success) {
+      goToSignInScreen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: logout,
                 child: const Text(
                   "Sair da conta",
                   style: TextStyle(
