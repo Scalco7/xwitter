@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
-import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -66,7 +66,8 @@ class TweetContainer extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return BTErrorWidget(error: (snapshot.error as Failure).message!);
+          return BTErrorWidget(
+              error: (snapshot.error as FirebaseException).message!);
         }
 
         return Container();

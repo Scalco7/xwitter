@@ -69,7 +69,8 @@ class TweetService implements ITweetService {
     late int commentsQuantity;
 
     if (withComments) {
-      final QuerySnapshot commentSnapshot = await commentsRef.get();
+      final QuerySnapshot commentSnapshot =
+          await commentsRef.orderBy("date", descending: true).get();
 
       for (var docSnapshot in commentSnapshot.docs) {
         Map<String, dynamic> jsonData =
@@ -127,6 +128,7 @@ class TweetService implements ITweetService {
       "id": id,
       "userId": userId,
       "tweet": tweet,
+      "date": Timestamp.now(),
       "likes": [],
     };
 
@@ -197,7 +199,10 @@ class TweetService implements ITweetService {
 
   @override
   Future<List<TweetModel>> listTweets({required String loggedUserId}) async {
-    final ref = database.collection('tweets').limit(20);
+    final ref = database
+        .collection('tweets')
+        .orderBy("date", descending: true)
+        .limit(20);
     final QuerySnapshot snapshot = await ref.get();
 
     List<TweetModel> tweetList = [];
@@ -222,7 +227,8 @@ class TweetService implements ITweetService {
     required UserModel user,
     required String loggedUserId,
   }) async {
-    final tweetRef = database.collection('tweets');
+    final tweetRef =
+        database.collection('tweets').orderBy("date", descending: true);
     final query = tweetRef.where("userId", isEqualTo: user.id);
     final QuerySnapshot snapshot = await query.get();
 
@@ -248,7 +254,8 @@ class TweetService implements ITweetService {
     required UserModel user,
     required String loggedUserId,
   }) async {
-    final tweetRef = database.collection('tweets');
+    final tweetRef =
+        database.collection('tweets').orderBy("date", descending: true);
     final query = tweetRef.where("likes", arrayContains: user.id);
     final QuerySnapshot snapshot = await query.get();
 

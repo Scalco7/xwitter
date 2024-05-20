@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
-import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -56,7 +56,8 @@ class UserContainer extends StatelessWidget {
           );
         }
         if (snapshot.hasError) {
-          return BTErrorWidget(error: (snapshot.error as Failure).message!);
+          return BTErrorWidget(
+              error: (snapshot.error as FirebaseException).message!);
         }
         return Container();
       },
