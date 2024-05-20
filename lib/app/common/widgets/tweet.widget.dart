@@ -65,24 +65,26 @@ class _TweetWidget extends State<TweetWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      tweet.user.name,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      '@${tweet.user.nickname}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: ColorConsts.secondaryColor,
+                SizedBox(
+                  width: tweetWidth,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        tweet.user.name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 5),
+                      Text(
+                        '@${tweet.user.nickname}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: ColorConsts.secondaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   width: tweetWidth,
