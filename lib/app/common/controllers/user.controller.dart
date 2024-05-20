@@ -13,7 +13,7 @@ import 'package:xwitter/app/common/services/user.service.dart';
 abstract class IUserController {
   UserModel? loggedUser;
 
-  Future<bool> signInFromLocalStorage();
+  Future<bool> signInFromLocalData();
 
   Future<bool> signIn({
     required String email,
@@ -51,7 +51,7 @@ class UserController implements IUserController {
   @override
   UserModel? loggedUser;
 
-  Future<bool> signInFromLocalStorage() async {
+  Future<bool> signInFromLocalData() async {
     UserLocalDataModel? localData = await localDataService.getUserLogin();
 
     if (localData == null) {
