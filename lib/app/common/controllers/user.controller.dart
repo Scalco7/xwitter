@@ -177,7 +177,10 @@ class UserController implements IUserController {
 
   @override
   Future<UserData?> getUserData({required userId}) async {
-    UserModel? user = await userService.getUserById(id: userId);
+    UserModel? user = await userService.getUserById(
+      id: userId,
+      loggedUserId: loggedUser!.id,
+    );
 
     if (user == null) {
       return null;

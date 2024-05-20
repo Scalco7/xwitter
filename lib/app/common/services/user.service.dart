@@ -9,7 +9,10 @@ abstract class IUserService {
     required String nickname,
   });
 
-  Future<UserModel?> getUserById({required String id});
+  Future<UserModel?> getUserById({
+    required String id,
+    String? loggedUserId,
+  });
 
   Future<String?> getUserIdByEmail({required String email});
 
@@ -23,22 +26,61 @@ abstract class IUserService {
   });
 
   Future<List<UserModel>> listUsersByText({required String text});
+
+  Future<UserModel> followUser({
+    required UserModel user,
+    required String loggedUserId,
+  });
+
+  Future<UserModel> unfollowUser({
+    required UserModel user,
+    required String loggedUserId,
+  });
 }
 
 class UserService implements IUserService {
   final FirebaseFirestore database = FirebaseFirestore.instance;
   UserService();
 
-  UserModel getUserFromMap(Map<String, dynamic> data) {
+  Future<UserModel> getUserFromMap({
+    required Map<String, dynamic> data,
+    String? loggedUserId,
+  }) async {
+    List<dynamic> jsonFollowList = data["followList"] as List<dynamic>;
+    List<String> followingsList =
+        jsonFollowList.map((e) => e as String).toList();
+    int numberOfFollowings = followingsList.length;
+
+    String userId = data["id"];
+
+    final followersQuery = database
+        .collection('users')
+        .where("id", isNotEqualTo: userId)
+        .where("followList", arrayContains: userId);
+    AggregateQuerySnapshot followersSnapshot =
+        await followersQuery.count().get();
+
+    AggregateQuerySnapshot? followSnapshot;
+    if (loggedUserId != null) {
+      final followQuery = database
+          .collection('users')
+          .where("id", isEqualTo: loggedUserId)
+          .where("followList", arrayContains: userId);
+
+      followSnapshot = await followQuery.count().get();
+    }
+
     return UserModel(
-      id: data['id'],
+      id: userId,
       name: data['name'],
       email: data['email'],
       nickname: data['nickname'],
       avatarPath: data['avatarPath'],
       bio: data['bio'],
-      numberOfFollowers: data['numberOfFollowers'],
-      numberOfFollowings: data['numberOfFollowings'],
+      numberOfFollowers: followersSnapshot.count!,
+      numberOfFollowings: numberOfFollowings,
+      following:
+          followSnapshot == null ? false : (followSnapshot.count ?? 0) > 0,
     );
   }
 
@@ -56,8 +98,7 @@ class UserService implements IUserService {
       "nickname": nickname,
       "avatarPath": "assets/avatars/man_1.png",
       "bio": "",
-      "numberOfFollowers": 0,
-      "numberOfFollowings": 0,
+      "followList": [],
     };
 
     await database.collection("users").doc(id).set(userJson);
@@ -71,18 +112,23 @@ class UserService implements IUserService {
       bio: "",
       numberOfFollowers: 0,
       numberOfFollowings: 0,
+      following: false,
     );
     return newUser;
   }
 
   @override
-  Future<UserModel?> getUserById({required String id}) async {
+  Future<UserModel?> getUserById({
+    required String id,
+    String? loggedUserId,
+  }) async {
     final docRef = database.collection('users').doc(id);
     final DocumentSnapshot snapshot = await docRef.get();
 
     if (snapshot.exists) {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      UserModel user = getUserFromMap(data);
+      UserModel user =
+          await getUserFromMap(data: data, loggedUserId: loggedUserId);
 
       return user;
     } else {
@@ -162,6 +208,7 @@ class UserService implements IUserService {
     return user;
   }
 
+  @override
   Future<List<UserModel>> listUsersByText({required String text}) async {
     final usersRef = database.collection('users');
     final query = usersRef.where(Filter.or(
@@ -176,10 +223,44 @@ class UserService implements IUserService {
       Map<String, dynamic> jsonData =
           docSnapshot.data() as Map<String, dynamic>;
 
-      UserModel user = getUserFromMap(jsonData);
+      UserModel user = await getUserFromMap(data: jsonData);
       userList.add(user);
     }
 
     return userList;
+  }
+
+  @override
+  Future<UserModel> followUser({
+    required UserModel user,
+    required String loggedUserId,
+  }) async {
+    DocumentReference refUser = database.collection("users").doc(loggedUserId);
+
+    await refUser.update({
+      "followList": FieldValue.arrayUnion([user.id])
+    });
+
+    user.numberOfFollowers++;
+    user.following = true;
+
+    return user;
+  }
+
+  @override
+  Future<UserModel> unfollowUser({
+    required UserModel user,
+    required String loggedUserId,
+  }) async {
+    DocumentReference refUser = database.collection("users").doc(loggedUserId);
+
+    await refUser.update({
+      "followList": FieldValue.arrayRemove([user.id])
+    });
+
+    user.numberOfFollowers--;
+    user.following = false;
+
+    return user;
   }
 }

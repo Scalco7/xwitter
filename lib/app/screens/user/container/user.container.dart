@@ -38,11 +38,6 @@ class UserContainer extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
           UserData userData = snapshot.data!;
-          EUserInteraction accountOption = EUserInteraction.common;
-
-          if (userController.loggedUser!.id == userData.user.id) {
-            accountOption = EUserInteraction.myAccount;
-          }
 
           return UserScreen(
             loggedUserId: userController.loggedUser!.id,
@@ -50,7 +45,6 @@ class UserContainer extends StatelessWidget {
             postTweets: userData.postedTweets,
             indexNavBar: indexNavBar,
             likedTweets: userData.likedTweets,
-            accountOption: accountOption,
             goToTweetDetailsScreen: goToTweetDetailsScreen,
             goToEditUserScreen: goToEditUserScreen,
             routePop: routePop,

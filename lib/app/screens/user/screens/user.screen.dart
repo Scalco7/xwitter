@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/change_section_button.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
-
-enum EUserInteraction {
-  myAccount,
-  following,
-  common,
-}
 
 class UserScreen extends StatefulWidget {
   const UserScreen({
@@ -23,14 +18,12 @@ class UserScreen extends StatefulWidget {
     required this.postTweets,
     required this.indexNavBar,
     required this.likedTweets,
-    required this.accountOption,
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
   final String loggedUserId;
-  final EUserInteraction accountOption;
   final UserModel user;
   final int indexNavBar;
   final List<TweetModel> postTweets;
@@ -46,8 +39,12 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreen extends State<UserScreen> {
   TweetController tweetController = TweetController();
+  IUserService userService = UserService();
+
   late List<TweetModel> tweetsList;
   late String buttonText;
+  late UserModel user;
+  late bool isMyAccount;
 
   void setTweetsList(EListTweetsSection state) {
     setState(() {
@@ -58,41 +55,47 @@ class _UserScreen extends State<UserScreen> {
   }
 
   void onClickButton() {
-    switch (widget.accountOption) {
-      case EUserInteraction.myAccount:
-        widget.goToEditUserScreen();
-        break;
-      case EUserInteraction.following:
+    if (isMyAccount) {
+      widget.goToEditUserScreen();
+    } else {
+      if (user.following) {
         unfollowUser();
-        break;
-      case EUserInteraction.common:
+      } else {
         followUser();
-        break;
+      }
     }
   }
 
-  void followUser() {
-    print("Você começou a seguir o ${widget.user.name}");
+  void followUser() async {
+    UserModel newUser = await userService.followUser(
+        user: user, loggedUserId: widget.loggedUserId);
+
+    setState(() {
+      user = newUser;
+      buttonText = user.following ? "Deixar de seguir" : "Seguir";
+    });
   }
 
-  void unfollowUser() {
-    print("Você deixou de seguir o ${widget.user.name}");
+  void unfollowUser() async {
+    UserModel newUser = await userService.unfollowUser(
+        user: user, loggedUserId: widget.loggedUserId);
+
+    setState(() {
+      user = newUser;
+      buttonText = user.following ? "Deixar de seguir" : "Seguir";
+    });
   }
 
   @override
   void initState() {
+    user = widget.user;
     tweetsList = widget.postTweets;
+    isMyAccount = user.id == widget.loggedUserId;
 
-    switch (widget.accountOption) {
-      case EUserInteraction.myAccount:
-        buttonText = "Editar";
-        break;
-      case EUserInteraction.following:
-        buttonText = "Deixar de seguir";
-        break;
-      case EUserInteraction.common:
-        buttonText = "Seguir";
-        break;
+    if (isMyAccount) {
+      buttonText = "Editar";
+    } else {
+      buttonText = user.following ? "Deixar de seguir" : "Seguir";
     }
 
     super.initState();
@@ -107,7 +110,7 @@ class _UserScreen extends State<UserScreen> {
 
     return Scaffold(
       appBar: UserAppBarWidget(
-        nickname: widget.user.nickname,
+        nickname: user.nickname,
         height: appBarHeight,
         routePop: widget.routePop,
       ),
@@ -124,7 +127,7 @@ class _UserScreen extends State<UserScreen> {
           Column(
             children: <Widget>[
               UserDataWidget(
-                user: widget.user,
+                user: user,
                 avatarHeight: avatarHeight,
                 editUser: onClickButton,
                 buttonText: buttonText,

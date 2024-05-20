@@ -1,12 +1,13 @@
 class UserModel {
   final String id;
   final String email;
-  String name;
   final String nickname;
+  final int numberOfFollowings;
+  String name;
   String avatarPath;
   String bio;
-  final int numberOfFollowers;
-  final int numberOfFollowings;
+  int numberOfFollowers;
+  bool following;
 
   UserModel({
     required this.id,
@@ -17,5 +18,6 @@ class UserModel {
     required this.bio,
     required this.numberOfFollowers,
     required this.numberOfFollowings,
+    required this.following,
   });
 }
