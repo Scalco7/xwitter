@@ -6,12 +6,29 @@ import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
-class TweetController {
+abstract class ITweetController {
+  void publishTweet({
+    required String loggedUserId,
+    required BuildContext context,
+    required String tweet,
+    String? parentTweetId,
+  });
+
+  Future<TweetModel> onLikedTweet({
+    required String loggedUserId,
+    required TweetModel tweet,
+    required bool liked,
+    String? parentTweetId,
+  });
+}
+
+class TweetController implements ITweetController {
   final IUserService userService = UserService();
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
 
+  @override
   void publishTweet({
     required String loggedUserId,
     required BuildContext context,
@@ -44,6 +61,7 @@ class TweetController {
     // vai chamar o controller e dps fora daqui vai chamar a função de mudar de rota
   }
 
+  @override
   Future<TweetModel> onLikedTweet({
     required String loggedUserId,
     required TweetModel tweet,

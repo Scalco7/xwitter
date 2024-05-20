@@ -38,7 +38,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreen extends State<UserScreen> {
-  TweetController tweetController = TweetController();
+  ITweetController tweetController = TweetController();
   IUserService userService = UserService();
 
   late List<TweetModel> tweetsList;

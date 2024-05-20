@@ -21,7 +21,7 @@ class CreateTweetScreen extends StatefulWidget {
 }
 
 class _CreateTweetScreen extends State<CreateTweetScreen> {
-  TweetController tweetController = TweetController();
+  ITweetController tweetController = TweetController();
   TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
 

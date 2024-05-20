@@ -22,7 +22,7 @@ class HomeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TweetController tweetController = TweetController();
+    ITweetController tweetController = TweetController();
 
     return FutureBuilder<List<TweetModel>>(
         future: service.listTweets(loggedUserId: loggedUserId),
