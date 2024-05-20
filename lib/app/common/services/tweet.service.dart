@@ -258,8 +258,8 @@ class TweetService implements ITweetService {
       Map<String, dynamic> jsonData =
           docSnapshot.data() as Map<String, dynamic>;
 
-      TweetModel? tweet = await getTweetFromMap(
-          json: jsonData, loggedUserId: loggedUserId, user: user);
+      TweetModel? tweet =
+          await getTweetFromMap(json: jsonData, loggedUserId: loggedUserId);
 
       if (tweet != null) {
         tweetList.add(tweet);
