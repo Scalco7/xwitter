@@ -1,5 +1,7 @@
 # xwitter
 
+Um app que imimta o twiter, um clone do twiter basicamente, tenho que melhorar algumas funcionalidades mas já está legal para usar
+
 A new Flutter project.
 
 ## Getting Started
