@@ -87,7 +87,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                       text: tweet.likes.toString(),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
-                    const TextSpan(text: " Likes"),
+                    TextSpan(text: " Curtida${tweet.likes <= 1 ? "" : "s"}"),
                   ],
                 ),
               ),

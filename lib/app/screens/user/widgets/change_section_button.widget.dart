@@ -93,7 +93,7 @@ class _ChangeSectionButtonWidgetState extends State<ChangeSectionButtonWidget> {
                 ),
               ),
               child: Text(
-                "Likes",
+                "Curtidos",
                 style: TextStyle(
                   color: selectedSection == EListTweetsSection.likedTweets
                       ? ColorConsts.primaryColor
