@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
+import 'package:xwitter/app/screens/auth/widgets/input.widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -26,14 +27,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   bool isLoading = false;
-
-  static const InputBorder inputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(50)),
-    borderSide: BorderSide(
-      color: Colors.transparent,
-      width: 0,
-    ),
-  );
 
   void setLoading(bool loading) {
     setState(() {
@@ -94,157 +87,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: Text("Apelido"),
-                          ),
-                          TextField(
-                            controller: nicknameController,
-                            onTapOutside: (event) => disableKeyboard(),
-                            keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(fontSize: 14),
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              filled: true,
-                              hintText: "felipe",
-                              fillColor: ColorConsts.backgroundColor,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              disabledBorder: inputBorder,
-                              border: inputBorder,
-                              errorBorder: inputBorder,
-                              enabledBorder: inputBorder,
-                              focusedBorder: inputBorder,
-                            ),
-                          ),
-                        ],
+                      InputWidget(
+                        controller: nicknameController,
+                        hintText: "felipe",
+                        keyboardType: TextInputType.name,
+                        labelText: "Apelido",
+                        isPassword: false,
                       ),
                       const SizedBox(height: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: Text("E-mail"),
-                          ),
-                          TextField(
-                            controller: emailController,
-                            onTapOutside: (event) => disableKeyboard(),
-                            keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(fontSize: 14),
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              filled: true,
-                              hintText: "felipe@gmail.com",
-                              fillColor: ColorConsts.backgroundColor,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              disabledBorder: inputBorder,
-                              border: inputBorder,
-                              errorBorder: inputBorder,
-                              enabledBorder: inputBorder,
-                              focusedBorder: inputBorder,
-                            ),
-                          ),
-                        ],
+                      InputWidget(
+                        controller: emailController,
+                        hintText: "felipe@gmail.com",
+                        keyboardType: TextInputType.emailAddress,
+                        labelText: "E-mail",
+                        isPassword: false,
                       ),
                       const SizedBox(height: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: Text("Nome completo"),
-                          ),
-                          TextField(
-                            controller: nameController,
-                            onTapOutside: (event) => disableKeyboard(),
-                            keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(fontSize: 14),
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              filled: true,
-                              hintText: "Felipe da Silva",
-                              fillColor: ColorConsts.backgroundColor,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              disabledBorder: inputBorder,
-                              border: inputBorder,
-                              errorBorder: inputBorder,
-                              enabledBorder: inputBorder,
-                              focusedBorder: inputBorder,
-                            ),
-                          ),
-                        ],
+                      InputWidget(
+                        controller: nameController,
+                        hintText: "Felipe da Silva",
+                        keyboardType: TextInputType.name,
+                        labelText: "Nome completo",
+                        isPassword: false,
                       ),
                       const SizedBox(height: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: Text("Senha"),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            onTapOutside: (event) => disableKeyboard(),
-                            style: const TextStyle(fontSize: 14),
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              filled: true,
-                              fillColor: ColorConsts.backgroundColor,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              disabledBorder: inputBorder,
-                              border: inputBorder,
-                              errorBorder: inputBorder,
-                              enabledBorder: inputBorder,
-                              focusedBorder: inputBorder,
-                            ),
-                          ),
-                        ],
+                      InputWidget(
+                        controller: passwordController,
+                        hintText: "",
+                        keyboardType: TextInputType.visiblePassword,
+                        labelText: "Senha",
+                        isPassword: true,
                       ),
                       const SizedBox(height: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: Text("Confirmar senha"),
-                          ),
-                          TextField(
-                            controller: confirmPasswordController,
-                            onTapOutside: (event) => disableKeyboard(),
-                            style: const TextStyle(fontSize: 14),
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              filled: true,
-                              fillColor: ColorConsts.backgroundColor,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              disabledBorder: inputBorder,
-                              border: inputBorder,
-                              errorBorder: inputBorder,
-                              enabledBorder: inputBorder,
-                              focusedBorder: inputBorder,
-                            ),
-                          ),
-                        ],
+                      InputWidget(
+                        controller: confirmPasswordController,
+                        hintText: "",
+                        keyboardType: TextInputType.visiblePassword,
+                        labelText: "Confirmar senha",
+                        isPassword: true,
                       ),
                       TextButton(
                         onPressed: widget.routePop,
