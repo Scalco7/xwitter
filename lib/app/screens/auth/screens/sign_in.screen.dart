@@ -22,6 +22,8 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool isLoading = false;
+
   static const InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(50)),
     borderSide: BorderSide(
@@ -29,6 +31,12 @@ class _SignInScreenState extends State<SignInScreen> {
       width: 0,
     ),
   );
+
+  void setLoading(bool loading) {
+    setState(() {
+      isLoading = loading;
+    });
+  }
 
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -38,8 +46,10 @@ class _SignInScreenState extends State<SignInScreen> {
     String email = emailController.text;
     String password = passwordController.text;
 
+    setLoading(true);
     bool success =
         await widget.userController.signIn(email: email, password: password);
+    setLoading(false);
 
     if (success) {
       widget.goToHomeScreen();
@@ -159,6 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   AuthButtonWidget(
+                    isLoading: isLoading,
                     onPressed: () => onSignIn(),
                     text: "Entrar",
                   ),

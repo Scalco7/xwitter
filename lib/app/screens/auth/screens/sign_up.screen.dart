@@ -25,6 +25,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  bool isLoading = false;
+
   static const InputBorder inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(50)),
     borderSide: BorderSide(
@@ -32,6 +34,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: 0,
     ),
   );
+
+  void setLoading(bool loading) {
+    setState(() {
+      isLoading = loading;
+    });
+  }
 
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -44,6 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
 
+    setLoading(true);
     bool success = await widget.userController.signUp(
       nickname: nickname,
       email: email,
@@ -51,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: password,
       confirmPassword: confirmPassword,
     );
+    setLoading(false);
 
     if (success) {
       widget.goToHomeScreen();
@@ -261,6 +271,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   AuthButtonWidget(
+                    isLoading: isLoading,
                     onPressed: () => signUp(),
                     text: "Criar conta",
                   ),
