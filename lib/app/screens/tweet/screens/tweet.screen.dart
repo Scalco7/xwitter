@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
+import 'package:xwitter/app/screens/tweet/widgets/tweet_comments.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_details.widget.dart';
 
 class TweetScreen extends StatefulWidget {
@@ -80,32 +80,14 @@ class _TweetScreen extends State<TweetScreen> {
                     commentTextFieldFocus: commentTextFieldFocus,
                   ),
                   Visibility(
-                    visible: widget.tweet.comments != null,
-                    child: Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        decoration: const BoxDecoration(color: Colors.white),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: widget.tweet.comments?.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            TweetModel comment = widget.tweet.comments![index];
-                            return GestureDetector(
-                              onTap: () =>
-                                  widget.goToUserScreen(comment.user.id),
-                              child: TweetWidget(
-                                tweet: comment,
-                                hasComments: false,
-                                onLikedTweet: ({required liked}) =>
-                                    widget.onLikedTweet(
-                                        liked: liked,
-                                        tweet: comment,
-                                        parentTweetId: widget.tweet.id),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                    visible: widget.tweet.commentsQuantity > 0 &&
+                        widget.tweet.comments != null,
+                    child: TweetCommentsWidget(
+                      comments: widget.tweet.comments!,
+                      commentsQuantity: widget.tweet.commentsQuantity,
+                      tweetId: widget.tweet.id,
+                      goToUserScreen: widget.goToUserScreen,
+                      onLikedTweet: widget.onLikedTweet,
                     ),
                   ),
                 ],
