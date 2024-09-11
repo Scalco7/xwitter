@@ -7,7 +7,8 @@ import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class ITweetController {
-  final List<TweetModel> tweetsList = [];
+  final List<TweetModel> _tweetsList = [];
+  List<TweetModel> get tweetsList => _tweetsList;
 
   void publishTweet({
     required String loggedUserId,
@@ -29,15 +30,18 @@ abstract class ITweetController {
   });
 }
 
-class TweetController implements ITweetController {
+class TweetController extends ChangeNotifier implements ITweetController {
   static final TweetController _singleton = TweetController._internal();
   final IUserService userService = UserService();
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
+  bool isReloadingTweetList = false;
 
   @override
-  final List<TweetModel> tweetsList = [];
+  final List<TweetModel> _tweetsList = [];
+  @override
+  List<TweetModel> get tweetsList => _tweetsList;
 
   factory TweetController() {
     return _singleton;
@@ -68,6 +72,8 @@ class TweetController implements ITweetController {
       toasts.showErrorToast("Erro");
       return;
     }
+
+    fillTweetsList(loggedUserId: loggedUserId, isReloading: true);
   }
 
   @override
@@ -99,13 +105,21 @@ class TweetController implements ITweetController {
     required String loggedUserId,
     required bool isReloading,
   }) async {
-    try {
-      if (isReloading) tweetsList.clear();
+    if (isReloadingTweetList) return true;
 
-      tweetsList
-          .addAll(await tweetService.listTweets(loggedUserId: loggedUserId));
+    try {
+      isReloadingTweetList = true;
+      List<TweetModel> list =
+          await tweetService.listTweets(loggedUserId: loggedUserId);
+
+      if (isReloading) _tweetsList.clear();
+      _tweetsList.addAll(list);
+
+      notifyListeners();
+      isReloadingTweetList = false;
       return true;
     } catch (e) {
+      isReloadingTweetList = false;
       return false;
     }
   }

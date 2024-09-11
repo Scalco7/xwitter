@@ -34,8 +34,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
       loggedUserId: userController.loggedUser!.id,
       isReloading: true,
     );
-
-    updateTweets();
   }
 
   void fillTweets() async {
@@ -43,8 +41,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
       loggedUserId: userController.loggedUser!.id,
       isReloading: false,
     );
-
-    updateTweets();
   }
 
   void updateTweets() {
@@ -55,9 +51,9 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
 
   @override
   void initState() {
+    TweetController().addListener(updateTweets);
     if (tweetController.tweetsList.isEmpty) reloadTweets();
 
-    tweets = tweetController.tweetsList;
     super.initState();
   }
 
