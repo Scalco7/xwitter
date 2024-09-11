@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/container/sign_in.container.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -18,7 +17,6 @@ class BigTalkRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ITweetService tweetService = TweetService();
     final IUserController userController = UserController();
 
     int indexNavBar = 1;
@@ -80,7 +78,6 @@ class BigTalkRoute extends StatelessWidget {
                 goToSignUpScreen: () =>
                     Navigator.of(context).pushNamed("/sign-up"),
                 goToHomeScreen: () => goToHomeScreen(context),
-                userController: userController,
               ),
             );
           }
@@ -89,7 +86,6 @@ class BigTalkRoute extends StatelessWidget {
               builder: (context) => SignUpScreen(
                 routePop: () => routePop(context),
                 goToHomeScreen: () => goToHomeScreen(context),
-                userController: userController,
               ),
             );
           }
@@ -98,8 +94,6 @@ class BigTalkRoute extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) {
                 return HomeContainer(
-                  service: tweetService,
-                  loggedUserId: userController.loggedUser!.id,
                   goToTweetDetailsScreen: (tweet) =>
                       goToTweetDetailsScreen(context, tweet),
                   bottomNavigationRoutes: bottomNavigationRoutes,
@@ -119,7 +113,6 @@ class BigTalkRoute extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) {
                 return UserContainer(
-                  userController: userController,
                   userId: settings.arguments as String,
                   indexNavBar: indexNavBar,
                   goToTweetDetailsScreen: (tweet) =>
@@ -136,8 +129,6 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/edit-user") {
             return MaterialPageRoute(
               builder: (context) => EditUserScreen(
-                user: userController.loggedUser!,
-                userController: userController,
                 routePop: () => routePop(context),
                 updateUserScreen: (userId) =>
                     updateUserScreenAfterEdit(context, userId),
@@ -148,7 +139,6 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/create-tweet") {
             return MaterialPageRoute(
               builder: (context) => CreateTweetScreen(
-                loggedUser: userController.loggedUser!,
                 routePop: () => routePop(context),
                 goToHomeScreen: () => goToHomeScreen(context),
               ),
@@ -157,8 +147,6 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/tweet") {
             return MaterialPageRoute(
               builder: (context) => TweetContainer(
-                service: tweetService,
-                loggedUserId: userController.loggedUser!.id,
                 tweet: settings.arguments as TweetModel,
                 indexNavBar: indexNavBar,
                 goToUserScreen: (userId) => goToUserScreen(context, userId),
@@ -173,7 +161,6 @@ class BigTalkRoute extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) {
                 return SettingsScreen(
-                  userController: userController,
                   goToSignInScreen: () => goToSignInScreen(context),
                 );
               },

@@ -8,13 +8,13 @@ import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 class SignInContainer extends StatelessWidget {
   const SignInContainer({
     super.key,
-    required this.userController,
     required this.goToSignUpScreen,
     required this.goToHomeScreen,
   });
+
+  static final IUserController userController = UserController();
   final void Function() goToSignUpScreen;
   final void Function() goToHomeScreen;
-  final IUserController userController;
 
   Future<void> signInFromLocalData() async {
     bool success = await userController.signInFromLocalData();

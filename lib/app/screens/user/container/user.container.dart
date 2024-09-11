@@ -11,7 +11,6 @@ import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 class UserContainer extends StatelessWidget {
   const UserContainer({
     super.key,
-    required this.userController,
     required this.userId,
     required this.indexNavBar,
     required this.goToTweetDetailsScreen,
@@ -21,7 +20,7 @@ class UserContainer extends StatelessWidget {
     required this.bottomNavigationRoutes,
   });
 
-  final IUserController userController;
+  static final IUserController userController = UserController();
   final String userId;
   final int indexNavBar;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;

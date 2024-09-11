@@ -41,10 +41,16 @@ abstract class ITweetService {
 }
 
 class TweetService implements ITweetService {
+  static final TweetService _singleton = TweetService._internal();
+
   final FirebaseFirestore database = FirebaseFirestore.instance;
   final IUserService userService = UserService();
 
-  TweetService();
+  factory TweetService() {
+    return _singleton;
+  }
+
+  TweetService._internal();
 
   Future<TweetModel?> getTweetFromMap({
     required Map<dynamic, dynamic> json,
@@ -89,7 +95,7 @@ class TweetService implements ITweetService {
       AggregateQuerySnapshot aggregateSnapshot =
           await commentsRef.count().get();
 
-      commentsQuantity = aggregateSnapshot.count!;
+      commentsQuantity = aggregateSnapshot.count ?? 0;
     }
 
     TweetModel tweet = TweetModel(
@@ -211,8 +217,8 @@ class TweetService implements ITweetService {
       Map<String, dynamic> jsonData =
           docSnapshot.data() as Map<String, dynamic>;
 
-      TweetModel? tweet =
-          await getTweetFromMap(json: jsonData, loggedUserId: loggedUserId);
+      TweetModel? tweet = await getTweetFromMap(
+          json: jsonData, loggedUserId: loggedUserId, withComments: true);
 
       if (tweet != null) {
         tweetList.add(tweet);

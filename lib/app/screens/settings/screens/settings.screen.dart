@@ -6,10 +6,9 @@ import 'package:xwitter/app/screens/settings/widgets/settings_app_bar.widget.dar
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({
     super.key,
-    required this.userController,
     required this.goToSignInScreen,
   });
-  final IUserController userController;
+  static final IUserController userController = UserController();
   final void Function() goToSignInScreen;
 
   void logout() async {

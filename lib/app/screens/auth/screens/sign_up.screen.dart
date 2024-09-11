@@ -9,17 +9,18 @@ class SignUpScreen extends StatefulWidget {
     super.key,
     required this.routePop,
     required this.goToHomeScreen,
-    required this.userController,
   });
+
   final void Function() routePop;
   final void Function() goToHomeScreen;
-  final IUserController userController;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final IUserController userController = UserController();
+
   TextEditingController nicknameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -46,7 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String confirmPassword = confirmPasswordController.text;
 
     setLoading(true);
-    bool success = await widget.userController.signUp(
+    bool success = await userController.signUp(
       nickname: nickname,
       email: email,
       name: name,

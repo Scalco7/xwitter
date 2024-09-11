@@ -17,7 +17,14 @@ abstract class IAuthenticateService {
 }
 
 class AuthenticateService implements IAuthenticateService {
+  static final AuthenticateService _singleton = AuthenticateService._internal();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+  factory AuthenticateService() {
+    return _singleton;
+  }
+
+  AuthenticateService._internal();
 
   @override
   Future<String?> registerUser({

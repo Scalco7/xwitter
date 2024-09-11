@@ -23,10 +23,17 @@ abstract class ITweetController {
 }
 
 class TweetController implements ITweetController {
+  static final TweetController _singleton = TweetController._internal();
   final IUserService userService = UserService();
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
+
+  factory TweetController() {
+    return _singleton;
+  }
+
+  TweetController._internal();
 
   @override
   void publishTweet({

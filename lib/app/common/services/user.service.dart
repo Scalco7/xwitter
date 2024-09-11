@@ -39,8 +39,14 @@ abstract class IUserService {
 }
 
 class UserService implements IUserService {
+  static final UserService _singleton = UserService._internal();
   final FirebaseFirestore database = FirebaseFirestore.instance;
-  UserService();
+
+  factory UserService() {
+    return _singleton;
+  }
+
+  UserService._internal();
 
   Future<UserModel> getUserFromMap({
     required Map<String, dynamic> data,

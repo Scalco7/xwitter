@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
   const CreateTweetScreen({
     super.key,
-    required this.loggedUser,
     required this.routePop,
     required this.goToHomeScreen,
   });
 
-  final UserModel loggedUser;
   final void Function() routePop;
   final void Function() goToHomeScreen;
 
@@ -21,13 +20,15 @@ class CreateTweetScreen extends StatefulWidget {
 }
 
 class _CreateTweetScreen extends State<CreateTweetScreen> {
+  final UserModel loggedUser = UserController().loggedUser!;
+
   ITweetController tweetController = TweetController();
   TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
 
   void publishTweet() {
     tweetController.publishTweet(
-      loggedUserId: widget.loggedUser.id,
+      loggedUserId: loggedUser.id,
       context: context,
       tweet: tweetTextController.text,
     );
@@ -81,7 +82,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 onChanged: (value) => disabledButton(),
                 decoration: InputDecoration(
                   icon: Image.asset(
-                    widget.loggedUser.avatarPath,
+                    loggedUser.avatarPath,
                     width: 35,
                     fit: BoxFit.contain,
                   ),

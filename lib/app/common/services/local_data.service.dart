@@ -10,8 +10,15 @@ abstract class ILocalData {
 }
 
 class LocalData implements ILocalData {
+  static final LocalData _singleton = LocalData._internal();
   static const loginIdKey = "user-id";
   static const loginDateKey = "login-date";
+
+  factory LocalData() {
+    return _singleton;
+  }
+
+  LocalData._internal();
 
   @override
   Future<bool> saveUserLogin(String id) async {

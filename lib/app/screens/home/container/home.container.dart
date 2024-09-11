@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
@@ -11,20 +12,17 @@ import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 class HomeContainer extends StatelessWidget {
   const HomeContainer({
     super.key,
-    required this.service,
-    required this.loggedUserId,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
   });
-  final ITweetService service;
-  final String loggedUserId;
+  static final ITweetService service = TweetService();
+  static final String loggedUserId = UserController().loggedUser!.id;
+  static final ITweetController tweetController = TweetController();
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   Widget build(BuildContext context) {
-    ITweetController tweetController = TweetController();
-
     return FutureBuilder<List<TweetModel>>(
         future: service.listTweets(loggedUserId: loggedUserId),
         builder: (context, snapshot) {

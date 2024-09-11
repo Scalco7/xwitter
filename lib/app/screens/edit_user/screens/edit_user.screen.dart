@@ -10,14 +10,11 @@ import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dar
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({
     super.key,
-    required this.user,
-    required this.userController,
     required this.routePop,
     required this.updateUserScreen,
     required this.bottomNavigationRoutes,
   });
-  final UserModel user;
-  final IUserController userController;
+
   final void Function() routePop;
   final void Function(String userId) updateUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
@@ -27,15 +24,18 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreen extends State<EditUserScreen> {
+  final IUserController userController = UserController();
+  final UserModel user = UserController().loggedUser!;
+
   late TextEditingController nameController;
   late TextEditingController bioController;
   late String avatarPathController;
 
   @override
   void initState() {
-    nameController = TextEditingController(text: widget.user.name);
-    bioController = TextEditingController(text: widget.user.bio);
-    avatarPathController = widget.user.avatarPath;
+    nameController = TextEditingController(text: user.name);
+    bioController = TextEditingController(text: user.bio);
+    avatarPathController = user.avatarPath;
     super.initState();
   }
 
@@ -43,15 +43,15 @@ class _EditUserScreen extends State<EditUserScreen> {
     String name = nameController.text;
     String bio = bioController.text;
 
-    bool success = await widget.userController.editUser(
-      user: widget.user,
+    bool success = await userController.editUser(
+      user: user,
       name: name,
       bio: bio,
       avatarPath: avatarPathController,
     );
 
     if (success) {
-      widget.updateUserScreen(widget.userController.loggedUser!.id);
+      widget.updateUserScreen(userController.loggedUser!.id);
     }
   }
 
@@ -79,7 +79,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     return Scaffold(
       appBar: UserAppBarWidget(
         height: headerHeight,
-        nickname: widget.user.nickname,
+        nickname: user.nickname,
         routePop: widget.routePop,
       ),
       body: SizedBox(

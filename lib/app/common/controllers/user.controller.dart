@@ -41,12 +41,19 @@ abstract class IUserController {
 }
 
 class UserController implements IUserController {
+  static final UserController _singleton = UserController._internal();
   final IAuthenticateService authenticateService = AuthenticateService();
   final IUserService userService = UserService();
   final ILocalData localDataService = LocalData();
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
+
+  factory UserController() {
+    return _singleton;
+  }
+
+  UserController._internal();
 
   @override
   UserModel? loggedUser;

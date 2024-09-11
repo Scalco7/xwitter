@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -11,8 +12,6 @@ import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
 class TweetContainer extends StatelessWidget {
   const TweetContainer({
     super.key,
-    required this.service,
-    required this.loggedUserId,
     required this.tweet,
     required this.indexNavBar,
     required this.goToUserScreen,
@@ -20,8 +19,10 @@ class TweetContainer extends StatelessWidget {
     required this.updateTweetScreen,
     required this.bottomNavigationRoutes,
   });
-  final ITweetService service;
-  final String loggedUserId;
+  static final ITweetService service = TweetService();
+  static final String loggedUserId = UserController().loggedUser!.id;
+  static final ITweetController tweetController = TweetController();
+
   final TweetModel tweet;
   final int indexNavBar;
   final void Function(String userId) goToUserScreen;
@@ -31,8 +32,6 @@ class TweetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ITweetController tweetController = TweetController();
-
     return FutureBuilder<TweetModel>(
       future:
           service.updateLoadedTweet(tweet: tweet, loggedUserId: loggedUserId),
