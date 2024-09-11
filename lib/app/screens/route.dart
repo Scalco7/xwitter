@@ -6,7 +6,7 @@ import 'package:xwitter/app/screens/auth/container/sign_in.container.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
-import 'package:xwitter/app/screens/home/container/home.container.dart';
+import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
@@ -93,7 +93,7 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/home") {
             return MaterialPageRoute(
               builder: (context) {
-                return HomeContainer(
+                return HomeScreen(
                   goToTweetDetailsScreen: (tweet) =>
                       goToTweetDetailsScreen(context, tweet),
                   bottomNavigationRoutes: bottomNavigationRoutes,

@@ -7,6 +7,8 @@ import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class ITweetController {
+  final List<TweetModel> tweetsList = [];
+
   void publishTweet({
     required String loggedUserId,
     required BuildContext context,
@@ -20,6 +22,11 @@ abstract class ITweetController {
     required bool liked,
     String? parentTweetId,
   });
+
+  Future<bool> fillTweetsList({
+    required String loggedUserId,
+    required bool isReloading,
+  });
 }
 
 class TweetController implements ITweetController {
@@ -28,6 +35,9 @@ class TweetController implements ITweetController {
   final ITweetService tweetService = TweetService();
   final Validators validators = Validators();
   final Toasts toasts = Toasts();
+
+  @override
+  final List<TweetModel> tweetsList = [];
 
   factory TweetController() {
     return _singleton;
@@ -58,14 +68,6 @@ class TweetController implements ITweetController {
       toasts.showErrorToast("Erro");
       return;
     }
-
-    // goToHomeScreen(context); -> chamar quando publicar
-    // chamar função pra home
-
-    // Navigator.of(context)
-    //     .pushReplacementNamed("/tweet", arguments: parentTweet); -> chamar quando comentar
-
-    // vai chamar o controller e dps fora daqui vai chamar a função de mudar de rota
   }
 
   @override
@@ -90,5 +92,21 @@ class TweetController implements ITweetController {
     }
 
     return tweet;
+  }
+
+  @override
+  Future<bool> fillTweetsList({
+    required String loggedUserId,
+    required bool isReloading,
+  }) async {
+    try {
+      if (isReloading) tweetsList.clear();
+
+      tweetsList
+          .addAll(await tweetService.listTweets(loggedUserId: loggedUserId));
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
