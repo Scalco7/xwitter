@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user_data.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/bt_error.widget.dart';
 import 'package:xwitter/app/common/widgets/loading.widget.dart';
@@ -11,7 +11,7 @@ import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 class UserContainer extends StatelessWidget {
   const UserContainer({
     super.key,
-    required this.userId,
+    required this.user,
     required this.indexNavBar,
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
@@ -21,7 +21,7 @@ class UserContainer extends StatelessWidget {
   });
 
   static final IUserController userController = UserController();
-  final String userId;
+  final UserModel user;
   final int indexNavBar;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final void Function() goToEditUserScreen;
@@ -31,22 +31,19 @@ class UserContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(user.nickname);
+
     return FutureBuilder(
-      future: userController.getUserData(userId: userId),
+      future: userController.getUserData(oldUser: user),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingWidget();
         }
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
-          UserData userData = snapshot.data!;
-
           return UserScreen(
-            loggedUserId: userController.loggedUser!.id,
-            user: userData.user,
-            postTweets: userData.postedTweets,
+            user: user,
             indexNavBar: indexNavBar,
-            likedTweets: userData.likedTweets,
             goToTweetDetailsScreen: goToTweetDetailsScreen,
             goToEditUserScreen: goToEditUserScreen,
             goToSettingsScreen: goToSettingsScreen,

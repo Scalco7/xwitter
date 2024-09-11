@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/container/sign_in.container.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
@@ -10,7 +11,7 @@ import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/container/tweet.container.dart';
-import 'package:xwitter/app/screens/user/container/user.container.dart';
+import 'package:xwitter/app/screens/user/screens/user.screen.dart';
 
 class BigTalkRoute extends StatelessWidget {
   const BigTalkRoute({super.key});
@@ -38,15 +39,15 @@ class BigTalkRoute extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil(
           "/user",
           (route) => false,
-          arguments: userController.loggedUser!.id,
+          arguments: userController.loggedUser!,
         );
       },
     );
 
     void routePop(BuildContext context) => Navigator.of(context).pop();
 
-    void goToUserScreen(BuildContext context, String userId) =>
-        Navigator.of(context).pushNamed("/user", arguments: userId);
+    void goToUserScreen(BuildContext context, UserModel user) =>
+        Navigator.of(context).pushNamed("/user", arguments: user);
 
     void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushNamed("/tweet", arguments: tweet);
@@ -60,9 +61,9 @@ class BigTalkRoute extends StatelessWidget {
     void updateTweetScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushReplacementNamed("/tweet", arguments: tweet);
 
-    void updateUserScreenAfterEdit(BuildContext context, String userId) =>
+    void updateUserScreenAfterEdit(BuildContext context, UserModel user) =>
         Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
-            arguments: userId);
+            arguments: user);
 
     void goToSignInScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/sign-in", (route) => false);
@@ -104,7 +105,7 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/search") {
             return MaterialPageRoute(
               builder: (context) => SearchScreen(
-                goToUserScreen: (userId) => goToUserScreen(context, userId),
+                goToUserScreen: (user) => goToUserScreen(context, user),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
             );
@@ -112,8 +113,8 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/user") {
             return MaterialPageRoute(
               builder: (context) {
-                return UserContainer(
-                  userId: settings.arguments as String,
+                return UserScreen(
+                  user: settings.arguments as UserModel,
                   indexNavBar: indexNavBar,
                   goToTweetDetailsScreen: (tweet) =>
                       goToTweetDetailsScreen(context, tweet),
@@ -130,8 +131,8 @@ class BigTalkRoute extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) => EditUserScreen(
                 routePop: () => routePop(context),
-                updateUserScreen: (userId) =>
-                    updateUserScreenAfterEdit(context, userId),
+                updateUserScreen: (user) =>
+                    updateUserScreenAfterEdit(context, user),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
             );
@@ -149,7 +150,7 @@ class BigTalkRoute extends StatelessWidget {
               builder: (context) => TweetContainer(
                 tweet: settings.arguments as TweetModel,
                 indexNavBar: indexNavBar,
-                goToUserScreen: (userId) => goToUserScreen(context, userId),
+                goToUserScreen: (user) => goToUserScreen(context, user),
                 routePop: () => routePop(context),
                 updateTweetScreen: ({required tweet}) =>
                     updateTweetScreen(context, tweet),

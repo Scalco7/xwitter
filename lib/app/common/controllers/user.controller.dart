@@ -37,7 +37,7 @@ abstract class IUserController {
     required String avatarPath,
   });
 
-  Future<UserData?> getUserData({required userId});
+  Future<UserData?> getUserData({required UserModel oldUser});
 }
 
 class UserController implements IUserController {
@@ -230,9 +230,9 @@ class UserController implements IUserController {
   }
 
   @override
-  Future<UserData?> getUserData({required userId}) async {
+  Future<UserData?> getUserData({required UserModel oldUser}) async {
     UserModel? user = await userService.getUserById(
-      id: userId,
+      id: oldUser.id,
       loggedUserId: loggedUser!.id,
     );
 

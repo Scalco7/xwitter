@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
@@ -13,22 +16,16 @@ import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
 class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
-    required this.loggedUserId,
     required this.user,
-    required this.postTweets,
     required this.indexNavBar,
-    required this.likedTweets,
     required this.goToTweetDetailsScreen,
     required this.goToEditUserScreen,
     required this.goToSettingsScreen,
     required this.routePop,
     required this.bottomNavigationRoutes,
   });
-  final String loggedUserId;
   final UserModel user;
   final int indexNavBar;
-  final List<TweetModel> postTweets;
-  final List<TweetModel> likedTweets;
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final void Function() goToEditUserScreen;
   final void Function() goToSettingsScreen;
@@ -40,19 +37,36 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreen extends State<UserScreen> {
-  ITweetController tweetController = TweetController();
-  IUserService userService = UserService();
+  final IUserController userController = UserController();
+  final ITweetController tweetController = TweetController();
+  final IUserService userService = UserService();
 
-  late List<TweetModel> tweetsList;
+  final loggedUserId = UserController().loggedUser!.id;
+
+  UserData? userDataLists;
+  List<TweetModel> tweetsList = [];
+
   late String buttonText;
   late UserModel user;
   late bool isMyAccount;
 
+  void initLists() async {
+    userDataLists = await userController.getUserData(oldUser: widget.user);
+    if (userDataLists == null) return;
+
+    setTweetsList(EListTweetsSection.publishedtTweets);
+    setState(() {
+      user = userDataLists!.user;
+    });
+  }
+
   void setTweetsList(EListTweetsSection state) {
+    if (userDataLists == null) return;
+
     setState(() {
       tweetsList = state == EListTweetsSection.publishedtTweets
-          ? widget.postTweets
-          : widget.likedTweets;
+          ? userDataLists!.postedTweets
+          : userDataLists!.likedTweets;
     });
   }
 
@@ -70,7 +84,9 @@ class _UserScreen extends State<UserScreen> {
 
   void followUser() async {
     UserModel newUser = await userService.followUser(
-        user: user, loggedUserId: widget.loggedUserId);
+      user: user,
+      loggedUserId: loggedUserId,
+    );
 
     setState(() {
       user = newUser;
@@ -80,7 +96,9 @@ class _UserScreen extends State<UserScreen> {
 
   void unfollowUser() async {
     UserModel newUser = await userService.unfollowUser(
-        user: user, loggedUserId: widget.loggedUserId);
+      user: user,
+      loggedUserId: loggedUserId,
+    );
 
     setState(() {
       user = newUser;
@@ -88,11 +106,16 @@ class _UserScreen extends State<UserScreen> {
     });
   }
 
+  bool listsIsLoaded() {
+    return userDataLists != null;
+  }
+
   @override
   void initState() {
+    if (!listsIsLoaded()) initLists();
+
     user = widget.user;
-    tweetsList = widget.postTweets;
-    isMyAccount = user.id == widget.loggedUserId;
+    isMyAccount = user.id == loggedUserId;
 
     if (isMyAccount) {
       buttonText = "Editar";
@@ -138,30 +161,41 @@ class _UserScreen extends State<UserScreen> {
               const SizedBox(height: 20),
               ChangeSectionButtonWidget(
                 onChange: setTweetsList,
+                disabled: !listsIsLoaded(),
               ),
               Expanded(
-                child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      key: Key("user-tweet-${tweetsList[index].id}"),
-                      onTap: () =>
-                          widget.goToTweetDetailsScreen(tweetsList[index]),
-                      child: TweetWidget(
-                        tweet: tweetsList[index],
-                        hasComments: true,
-                        onLikedTweet: ({required liked}) =>
-                            tweetController.onLikedTweet(
-                          loggedUserId: widget.loggedUserId,
-                          tweet: tweetsList[index],
-                          liked: liked,
+                child: !listsIsLoaded()
+                    ? const Padding(
+                        padding: EdgeInsets.only(top: 20.0),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: CircularProgressIndicator(
+                            color: ColorConsts.primaryColor,
+                          ),
                         ),
+                      )
+                    : ListView.separated(
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            key: Key("user-tweet-${tweetsList[index].id}"),
+                            onTap: () => widget
+                                .goToTweetDetailsScreen(tweetsList[index]),
+                            child: TweetWidget(
+                              tweet: tweetsList[index],
+                              hasComments: true,
+                              onLikedTweet: ({required liked}) =>
+                                  tweetController.onLikedTweet(
+                                loggedUserId: loggedUserId,
+                                tweet: tweetsList[index],
+                                liked: liked,
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(),
+                        itemCount: tweetsList.length,
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(),
-                  itemCount: tweetsList.length,
-                ),
               ),
             ],
           ),

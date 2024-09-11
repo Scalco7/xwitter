@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class TweetDetailsWidget extends StatefulWidget {
@@ -13,7 +14,7 @@ class TweetDetailsWidget extends StatefulWidget {
   });
   final TweetModel tweet;
   final FocusNode commentTextFieldFocus;
-  final void Function(String userId) goToUserScreen;
+  final void Function(UserModel user) goToUserScreen;
   final Future<TweetModel> Function({
     required TweetModel tweet,
     required bool liked,
@@ -63,7 +64,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             GestureDetector(
-              onTap: () => widget.goToUserScreen(tweet.user.id),
+              onTap: () => widget.goToUserScreen(tweet.user),
               child: UserWidget(user: tweet.user),
             ),
             Padding(

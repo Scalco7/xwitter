@@ -10,8 +10,10 @@ class ChangeSectionButtonWidget extends StatefulWidget {
   const ChangeSectionButtonWidget({
     super.key,
     required this.onChange,
+    required this.disabled,
   });
   final Function(EListTweetsSection list) onChange;
+  final bool disabled;
 
   @override
   State<ChangeSectionButtonWidget> createState() =>
@@ -42,8 +44,9 @@ class _ChangeSectionButtonWidgetState extends State<ChangeSectionButtonWidget> {
       children: <Widget>[
         Expanded(
           child: GestureDetector(
-            onTap: () =>
-                changeSelectedSection(EListTweetsSection.publishedtTweets),
+            onTap: () => widget.disabled
+                ? null
+                : changeSelectedSection(EListTweetsSection.publishedtTweets),
             child: Container(
               width: double.maxFinite,
               alignment: Alignment.center,
@@ -75,7 +78,9 @@ class _ChangeSectionButtonWidgetState extends State<ChangeSectionButtonWidget> {
         ),
         Expanded(
           child: GestureDetector(
-            onTap: () => changeSelectedSection(EListTweetsSection.likedTweets),
+            onTap: widget.disabled
+                ? null
+                : () => changeSelectedSection(EListTweetsSection.likedTweets),
             child: Container(
               width: double.maxFinite,
               alignment: Alignment.center,

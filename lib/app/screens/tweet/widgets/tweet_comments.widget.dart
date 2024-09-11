@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 
 class TweetCommentsWidget extends StatefulWidget {
@@ -15,7 +16,7 @@ class TweetCommentsWidget extends StatefulWidget {
   final int commentsQuantity;
   final String tweetId;
   final List<TweetModel> comments;
-  final void Function(String userId) goToUserScreen;
+  final void Function(UserModel user) goToUserScreen;
   final Future<TweetModel> Function({
     required TweetModel tweet,
     required bool liked,
@@ -39,7 +40,7 @@ class _TweetCommentsWidgetState extends State<TweetCommentsWidget> {
           itemBuilder: (BuildContext context, int index) {
             TweetModel comment = widget.comments[index];
             return GestureDetector(
-              onTap: () => widget.goToUserScreen(comment.user.id),
+              onTap: () => widget.goToUserScreen(comment.user),
               child: TweetWidget(
                 tweet: comment,
                 hasComments: false,

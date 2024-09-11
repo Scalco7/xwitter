@@ -13,7 +13,7 @@ class SearchScreen extends StatefulWidget {
     required this.goToUserScreen,
     required this.bottomNavigationRoutes,
   });
-  final void Function(String userId) goToUserScreen;
+  final void Function(UserModel user) goToUserScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
@@ -33,8 +33,8 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  void onClickUser(String acessedUserId) {
-    widget.goToUserScreen(acessedUserId);
+  void onClickUser(UserModel acesseduser) {
+    widget.goToUserScreen(acesseduser);
   }
 
   @override
@@ -73,7 +73,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     key: Key("search-user-${listUsers[index].id}"),
-                    onTap: () => onClickUser(listUsers[index].id),
+                    onTap: () => onClickUser(listUsers[index]),
                     child: UserWidget(user: listUsers[index]),
                   );
                 },

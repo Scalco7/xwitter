@@ -13,7 +13,8 @@ class TweetWidget extends StatefulWidget {
   });
   final TweetModel tweet;
   final bool hasComments;
-  final Future<TweetModel> Function({required bool liked}) onLikedTweet;
+  final Future<TweetModel> Function({required bool liked})
+      onLikedTweet; // refatorar para não passar a função por cima
 
   @override
   State<StatefulWidget> createState() => _TweetWidget();

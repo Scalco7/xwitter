@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_comments.widget.dart';
@@ -20,7 +21,7 @@ class TweetScreen extends StatefulWidget {
   });
   final TweetModel tweet;
   final int indexNavBar;
-  final void Function(String userId) goToUserScreen;
+  final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
   final void Function() updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
