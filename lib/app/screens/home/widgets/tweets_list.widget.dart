@@ -35,7 +35,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
       isReloading: true,
     );
 
-    print(tweetController.tweetsList[0].tweet);
     updateTweets();
   }
 
@@ -45,7 +44,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
       isReloading: false,
     );
 
-    print(tweetController.tweetsList[0].tweet);
     updateTweets();
   }
 

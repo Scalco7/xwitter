@@ -37,6 +37,8 @@ class TweetScreen extends StatefulWidget {
 
 class _TweetScreen extends State<TweetScreen> {
   TextEditingController commentController = TextEditingController();
+  FocusNode commentTextFieldFocus = FocusNode();
+
   InputBorder inputBorder = const OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(30)),
     borderSide: BorderSide(
@@ -75,6 +77,7 @@ class _TweetScreen extends State<TweetScreen> {
                     tweet: widget.tweet,
                     goToUserScreen: widget.goToUserScreen,
                     onLikedTweet: widget.onLikedTweet,
+                    commentTextFieldFocus: commentTextFieldFocus,
                   ),
                   Visibility(
                     visible: widget.tweet.comments != null,
@@ -118,6 +121,7 @@ class _TweetScreen extends State<TweetScreen> {
                   Expanded(
                     child: TextField(
                       controller: commentController,
+                      focusNode: commentTextFieldFocus,
                       onTapOutside: (event) => disableKeyboard(),
                       onSubmitted: (value) => commentOnTweet(),
                       style: const TextStyle(

@@ -7,10 +7,12 @@ class TweetDetailsWidget extends StatefulWidget {
   const TweetDetailsWidget({
     super.key,
     required this.tweet,
+    required this.commentTextFieldFocus,
     required this.goToUserScreen,
     required this.onLikedTweet,
   });
   final TweetModel tweet;
+  final FocusNode commentTextFieldFocus;
   final void Function(String userId) goToUserScreen;
   final Future<TweetModel> Function({
     required TweetModel tweet,
@@ -30,6 +32,10 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
     setState(() {
       tweet = updatedTweet;
     });
+  }
+
+  void commentFocus() {
+    widget.commentTextFieldFocus.requestFocus();
   }
 
   @override
@@ -109,7 +115,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => print("comentou"),
+                    onTap: () => commentFocus(),
                     child: Image.asset(
                       "assets/icons/comment_icon.png",
                       fit: BoxFit.contain,
