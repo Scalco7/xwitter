@@ -80,7 +80,20 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
-    await userService.getUserById(userId: "66e3513c2296a94d324f1893");
+    await userService.updateUser(
+        user: UserModel(
+            id: "66e3513c2296a94d324f1893",
+            name: "name",
+            email: "email",
+            username: "username",
+            avatarPath: "avatarPath",
+            bio: "bio",
+            numberOfFollowers: 0,
+            numberOfFollowings: 0,
+            following: false),
+        name: "luquinhas du grau",
+        bio: "oii rppzzz",
+        photoBase64: "photo");
     ValidatorFailure emailValidate = validators.validateEmail(email);
     ValidatorFailure passwordValidate =
         validators.validatePasswordForLogin(password);
@@ -213,7 +226,7 @@ class UserController implements IUserController {
       user: user,
       name: name,
       bio: bio,
-      avatarPath: avatarPath,
+      photoBase64: avatarPath,
     );
 
     if (newUser == null) {

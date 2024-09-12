@@ -21,7 +21,7 @@ abstract class IUserService {
     required UserModel user,
     required String name,
     required String bio,
-    required String avatarPath,
+    required String photoBase64,
   });
 
   Future<List<UserModel>> listUsersByText({required String text});
@@ -140,27 +140,27 @@ class UserService implements IUserService {
     required UserModel user,
     required String name,
     required String bio,
-    required String avatarPath,
+    required String photoBase64,
   }) async {
-    final ref = database.collection("users").doc(user.id);
-
-    Map<String, dynamic> updatesJson = {
+    const url = "${ApiConsts.apiUrl}/user/update";
+    Map<String, dynamic> jsonRequest = {
+      "id": user.id,
       "name": name,
-      "avatarPath": avatarPath,
       "bio": bio,
+      "photoBase64": photoBase64
     };
 
-    try {
-      await ref.update(updatesJson);
-    } catch (error) {
-      return null;
+    final response =
+        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode != 200) {
+      throw Error();
     }
 
-    user.name = name;
-    user.bio = bio;
-    user.avatarPath = avatarPath;
+    UserModel newUser = UserModel.fromJson(data);
 
-    return user;
+    return newUser;
   }
 
   @override
