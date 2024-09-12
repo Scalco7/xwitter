@@ -6,14 +6,14 @@ import 'package:xwitter/app/common/controllers/user.controller.dart';
 
 class ApiService {
   Future<Response> post(
-      {required String url, required Map<String, dynamic> jsonBody}) async {
+      {required Uri uri, required Map<String, dynamic> jsonBody}) async {
     var body = json.encode(jsonBody);
 
-    return http.post(Uri.parse(url), body: body, headers: _getHeaders());
+    return http.post(uri, body: body, headers: _getHeaders());
   }
 
-  Future<Response> get({required String url}) async {
-    return http.get(Uri.parse(url), headers: _getHeaders());
+  Future<Response> get({required Uri uri}) async {
+    return http.get(uri, headers: _getHeaders());
   }
 
   Map<String, String> _getHeaders() {

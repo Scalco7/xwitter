@@ -14,8 +14,7 @@ abstract class IUserService {
   });
 
   Future<UserModel?> getUserById({
-    required String id,
-    String? loggedUserId,
+    required String userId,
   });
 
   Future<UserModel?> updateUser({
@@ -105,7 +104,8 @@ class UserService implements IUserService {
       "password": password
     };
 
-    final response = await ApiService().post(url: url, jsonBody: jsonRequest);
+    final response =
+        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
     var data = jsonDecode(response.body.toString());
 
     if (response.statusCode != 200) {
@@ -119,21 +119,20 @@ class UserService implements IUserService {
 
   @override
   Future<UserModel?> getUserById({
-    required String id,
-    String? loggedUserId,
+    required String userId,
   }) async {
-    final docRef = database.collection('users').doc(id);
-    final DocumentSnapshot snapshot = await docRef.get();
+    Uri uri = Uri.parse("${ApiConsts.apiUrl}/user/$userId");
 
-    if (snapshot.exists) {
-      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      UserModel user =
-          await getUserFromMap(data: data, loggedUserId: loggedUserId);
+    final response = await ApiService().get(uri: uri);
+    var data = jsonDecode(response.body.toString());
 
-      return user;
-    } else {
+    if (response.statusCode != 200) {
       return null;
     }
+
+    UserModel user = UserModel.fromJson(data);
+
+    return user;
   }
 
   @override

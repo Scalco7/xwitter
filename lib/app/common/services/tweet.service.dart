@@ -64,7 +64,7 @@ class TweetService implements ITweetService {
     List<String> likes = jsonLikeList.map((e) => e as String).toList();
 
     if (user == null) {
-      user = await userService.getUserById(id: json["userId"]);
+      user = await userService.getUserById(userId: json["userId"]);
 
       if (user == null) {
         return null;

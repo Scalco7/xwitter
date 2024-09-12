@@ -71,7 +71,7 @@ class UserController implements IUserController {
       return false;
     }
 
-    loggedUser = await userService.getUserById(id: localData.id);
+    loggedUser = await userService.getUserById(userId: localData.id);
     return loggedUser != null;
   }
 
@@ -80,6 +80,7 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
+    await userService.getUserById(userId: "66e3513c2296a94d324f1893");
     ValidatorFailure emailValidate = validators.validateEmail(email);
     ValidatorFailure passwordValidate =
         validators.validatePasswordForLogin(password);
@@ -102,7 +103,7 @@ class UserController implements IUserController {
       return false;
     }
 
-    UserModel? user = await userService.getUserById(id: id);
+    UserModel? user = await userService.getUserById(userId: id);
 
     if (user == null) {
       toasts.showErrorToast("E-mail ou senha inválidos");
@@ -227,8 +228,7 @@ class UserController implements IUserController {
   @override
   Future<UserData?> getUserData({required UserModel oldUser}) async {
     UserModel? user = await userService.getUserById(
-      id: oldUser.id,
-      loggedUserId: loggedUser!.id,
+      userId: oldUser.id,
     );
 
     if (user == null) {
