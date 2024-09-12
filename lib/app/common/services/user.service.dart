@@ -18,10 +18,6 @@ abstract class IUserService {
     String? loggedUserId,
   });
 
-  Future<String?> getUserIdByEmail({required String email});
-
-  Future<String?> getUserIdByNickname({required String nickname});
-
   Future<UserModel?> updateUser({
     required UserModel user,
     required String name,
@@ -94,39 +90,6 @@ class UserService implements IUserService {
     );
   }
 
-  // @override
-  // Future<UserModel> createUser({
-  //   required String id,
-  //   required String name,
-  //   required String email,
-  //   required String nickname,
-  // }) async {
-  //   Map<String, dynamic> userJson = {
-  //     "id": id,
-  //     "name": name,
-  //     "email": email,
-  //     "nickname": nickname,
-  //     "avatarPath": "assets/avatars/man_1.png",
-  //     "bio": "",
-  //     "followList": [],
-  //   };
-
-  //   await database.collection("users").doc(id).set(userJson);
-
-  //   UserModel newUser = UserModel(
-  //     id: id,
-  //     name: name,
-  //     email: email,
-  //     nickname: nickname,
-  //     avatarPath: "assets/avatars/man_1.png",
-  //     bio: "",
-  //     numberOfFollowers: 0,
-  //     numberOfFollowings: 0,
-  //     following: false,
-  //   );
-  //   return newUser;
-  // }
-
   @override
   Future<UserModel> createUser({
     required String name,
@@ -178,50 +141,6 @@ class UserService implements IUserService {
     } else {
       return null;
     }
-  }
-
-  @override
-  Future<String?> getUserIdByEmail({required String email}) async {
-    final usersRef = database.collection('users');
-    final query = usersRef.where('email', isEqualTo: email);
-    late QuerySnapshot snapshot;
-
-    try {
-      snapshot = await query.get();
-    } catch (error) {
-      return null;
-    }
-
-    if (snapshot.docs.firstOrNull == null) {
-      return null;
-    }
-
-    final data = snapshot.docs.firstOrNull;
-    String? id = data!.id;
-
-    return id;
-  }
-
-  @override
-  Future<String?> getUserIdByNickname({required String nickname}) async {
-    final usersRef = database.collection('users');
-    final query = usersRef.where('nickname', isEqualTo: nickname);
-    late QuerySnapshot snapshot;
-
-    try {
-      snapshot = await query.get();
-    } catch (error) {
-      return null;
-    }
-
-    if (snapshot.docs.firstOrNull == null) {
-      return null;
-    }
-
-    final data = snapshot.docs.firstOrNull;
-    String? id = data!.id;
-
-    return id;
   }
 
   @override

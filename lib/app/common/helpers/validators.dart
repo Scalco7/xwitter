@@ -88,19 +88,4 @@ class Validators {
 
     return ValidatorFailure(error: error, valid: valid);
   }
-
-  Future<ValidatorFailure> validadeAccount(
-      String nickname, String email) async {
-    String? id = await userService.getUserIdByEmail(email: email);
-    if (id != null) {
-      return ValidatorFailure(error: "Email já está em uso", valid: false);
-    }
-
-    id = await userService.getUserIdByNickname(nickname: nickname);
-    if (id != null) {
-      return ValidatorFailure(error: "Nickname já está em uso", valid: false);
-    }
-
-    return ValidatorFailure(error: "", valid: true);
-  }
 }

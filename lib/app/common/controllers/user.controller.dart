@@ -165,13 +165,6 @@ class UserController implements IUserController {
       return false;
     }
 
-    ValidatorFailure accountValidation =
-        await validators.validadeAccount(nickname, email);
-    if (!accountValidation.valid) {
-      toasts.showErrorToast(accountValidation.error);
-      return false;
-    }
-
     String? id = await authenticateService.registerUser(
       nickname: nickname,
       email: email,
