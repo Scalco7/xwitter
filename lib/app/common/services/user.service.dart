@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xwitter/app/common/consts/api.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/api.service.dart';
 
 abstract class IUserService {
   Future<UserModel> createUser({
@@ -105,14 +105,7 @@ class UserService implements IUserService {
       "password": password
     };
 
-    var body = json.encode(jsonRequest);
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    };
-
-    final response =
-        await http.post(Uri.parse(url), body: body, headers: headers);
+    final response = await ApiService().post(url: url, jsonBody: jsonRequest);
     var data = jsonDecode(response.body.toString());
 
     if (response.statusCode != 200) {
