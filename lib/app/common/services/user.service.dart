@@ -1,12 +1,16 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:xwitter/app/common/consts/api.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 
 abstract class IUserService {
   Future<UserModel> createUser({
-    required String id,
     required String name,
     required String email,
     required String nickname,
+    required String password,
   });
 
   Future<UserModel?> getUserById({
@@ -80,7 +84,7 @@ class UserService implements IUserService {
       id: userId,
       name: data['name'],
       email: data['email'],
-      nickname: data['nickname'],
+      username: data['nickname'],
       avatarPath: data['avatarPath'],
       bio: data['bio'],
       numberOfFollowers: followersSnapshot.count!,
@@ -90,36 +94,70 @@ class UserService implements IUserService {
     );
   }
 
+  // @override
+  // Future<UserModel> createUser({
+  //   required String id,
+  //   required String name,
+  //   required String email,
+  //   required String nickname,
+  // }) async {
+  //   Map<String, dynamic> userJson = {
+  //     "id": id,
+  //     "name": name,
+  //     "email": email,
+  //     "nickname": nickname,
+  //     "avatarPath": "assets/avatars/man_1.png",
+  //     "bio": "",
+  //     "followList": [],
+  //   };
+
+  //   await database.collection("users").doc(id).set(userJson);
+
+  //   UserModel newUser = UserModel(
+  //     id: id,
+  //     name: name,
+  //     email: email,
+  //     nickname: nickname,
+  //     avatarPath: "assets/avatars/man_1.png",
+  //     bio: "",
+  //     numberOfFollowers: 0,
+  //     numberOfFollowings: 0,
+  //     following: false,
+  //   );
+  //   return newUser;
+  // }
+
   @override
   Future<UserModel> createUser({
-    required String id,
     required String name,
     required String email,
     required String nickname,
+    required String password,
   }) async {
-    Map<String, dynamic> userJson = {
-      "id": id,
+    const url = "${ApiConsts.apiUrl}/user/create";
+    Map<String, dynamic> jsonRequest = {
       "name": name,
       "email": email,
-      "nickname": nickname,
-      "avatarPath": "assets/avatars/man_1.png",
-      "bio": "",
-      "followList": [],
+      "username": nickname,
+      "password": password
     };
 
-    await database.collection("users").doc(id).set(userJson);
+    var body = json.encode(jsonRequest);
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
 
-    UserModel newUser = UserModel(
-      id: id,
-      name: name,
-      email: email,
-      nickname: nickname,
-      avatarPath: "assets/avatars/man_1.png",
-      bio: "",
-      numberOfFollowers: 0,
-      numberOfFollowings: 0,
-      following: false,
-    );
+    final response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode != 200) {
+      throw Error();
+    }
+
+    UserModel newUser = UserModel.fromJson(data);
+
     return newUser;
   }
 

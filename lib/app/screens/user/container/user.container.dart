@@ -31,7 +31,7 @@ class UserContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(user.nickname);
+    print(user.username);
 
     return FutureBuilder(
       future: userController.getUserData(oldUser: user),

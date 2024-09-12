@@ -40,7 +40,7 @@ class UserWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "@${user.nickname}",
+                    "@${user.username}",
                     style: const TextStyle(
                       color: ColorConsts.secondaryColor,
                       fontSize: 14,

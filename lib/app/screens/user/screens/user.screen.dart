@@ -135,7 +135,7 @@ class _UserScreen extends State<UserScreen> {
 
     return Scaffold(
       appBar: UserAppBarWidget(
-        nickname: user.nickname,
+        nickname: user.username,
         height: appBarHeight,
         routePop: widget.routePop,
         goToSettingsScreen: isMyAccount ? widget.goToSettingsScreen : null,

@@ -184,12 +184,14 @@ class UserController implements IUserController {
       return false;
     }
 
-    UserModel user = await userService.createUser(
-      id: id,
-      name: name,
-      email: email,
-      nickname: nickname,
-    );
+    UserModel user;
+
+    try {
+      user = await userService.createUser(
+          name: name, email: email, nickname: nickname, password: password);
+    } catch (e) {
+      return false;
+    }
 
     bool success = await localDataService.saveUserLogin(id);
     if (!success) {

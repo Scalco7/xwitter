@@ -78,7 +78,7 @@ class _TweetWidget extends State<TweetWidget> {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        '@${tweet.user.nickname}',
+                        '@${tweet.user.username}',
                         style: const TextStyle(
                           fontSize: 16,
                           color: ColorConsts.secondaryColor,
