@@ -50,48 +50,6 @@ class UserService implements IUserService {
 
   UserService._internal();
 
-  Future<UserModel> getUserFromMap({
-    required Map<String, dynamic> data,
-    String? loggedUserId,
-  }) async {
-    List<dynamic> jsonFollowList = data["followList"] as List<dynamic>;
-    List<String> followingsList =
-        jsonFollowList.map((e) => e as String).toList();
-    int numberOfFollowings = followingsList.length;
-
-    String userId = data["id"];
-
-    final followersQuery = database
-        .collection('users')
-        .where("id", isNotEqualTo: userId)
-        .where("followList", arrayContains: userId);
-    AggregateQuerySnapshot followersSnapshot =
-        await followersQuery.count().get();
-
-    AggregateQuerySnapshot? followSnapshot;
-    if (loggedUserId != null) {
-      final followQuery = database
-          .collection('users')
-          .where("id", isEqualTo: loggedUserId)
-          .where("followList", arrayContains: userId);
-
-      followSnapshot = await followQuery.count().get();
-    }
-
-    return UserModel(
-      id: userId,
-      name: data['name'],
-      email: data['email'],
-      username: data['nickname'],
-      avatarPath: data['avatarPath'],
-      bio: data['bio'],
-      numberOfFollowers: followersSnapshot.count!,
-      numberOfFollowings: numberOfFollowings,
-      following:
-          followSnapshot == null ? false : (followSnapshot.count ?? 0) > 0,
-    );
-  }
-
   String get getApiUrl => "${ApiConsts.apiUrl}/user";
 
   @override
@@ -203,24 +161,7 @@ class UserService implements IUserService {
 
   @override
   Future<List<UserModel>> listUsersByText({required String text}) async {
-    final usersRef = database.collection('users');
-    final query = usersRef.where(Filter.or(
-      Filter("name", isEqualTo: text),
-      Filter("nickname", isEqualTo: text),
-    ));
-    final QuerySnapshot snapshot = await query.get();
-
-    List<UserModel> userList = [];
-
-    for (var docSnapshot in snapshot.docs) {
-      Map<String, dynamic> jsonData =
-          docSnapshot.data() as Map<String, dynamic>;
-
-      UserModel user = await getUserFromMap(data: jsonData);
-      userList.add(user);
-    }
-
-    return userList;
+    return [];
   }
 
   @override
