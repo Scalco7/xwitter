@@ -27,7 +27,7 @@ class TweetModel {
         text: json["text"],
         likes: json["likes"],
         liked: json["liked"],
-        isPinned: json["isPinned"],
+        isPinned: json["isPinned"] ?? false,
         commentsQuantity: json["commentsQuantity"] ?? 0,
         comments: json["comments"] ?? [],
       );

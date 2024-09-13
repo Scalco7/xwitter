@@ -45,6 +45,8 @@ class _TweetWidget extends State<TweetWidget> {
     double tweetWidth =
         screenWidth - (paddingHorizontalWidth * 2) - gapWidth - avatarWidth;
 
+    double pinWidth = tweet.isPinned ? 30 : 0;
+
     return SizedBox(
       width: screenWidth,
       child: Padding(
@@ -68,20 +70,38 @@ class _TweetWidget extends State<TweetWidget> {
               children: <Widget>[
                 SizedBox(
                   width: tweetWidth,
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  child: Row(
                     children: <Widget>[
-                      Text(
-                        tweet.user.name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                      SizedBox(
+                        width: tweetWidth - pinWidth,
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              tweet.user.name,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              '@${tweet.user.username}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: ColorConsts.secondaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '@${tweet.user.username}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: ColorConsts.secondaryColor,
+                      Visibility(
+                        visible: tweet.isPinned,
+                        child: Transform.rotate(
+                          angle: 3.17 / 12,
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: pinWidth,
+                            color: ColorConsts.secondaryColor,
+                          ),
                         ),
                       ),
                     ],
