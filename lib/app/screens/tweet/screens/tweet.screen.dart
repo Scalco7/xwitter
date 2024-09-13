@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
+import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -15,14 +16,12 @@ class TweetScreen extends StatefulWidget {
     required this.indexNavBar,
     required this.goToUserScreen,
     required this.routePop,
-    required this.updateTweetScreen,
     required this.bottomNavigationRoutes,
   });
   final TweetModel tweet;
   final int indexNavBar;
   final void Function(UserModel user) goToUserScreen;
   final void Function() routePop;
-  final void Function() updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
@@ -31,6 +30,8 @@ class TweetScreen extends StatefulWidget {
 
 class _TweetScreen extends State<TweetScreen> {
   final ITweetController tweetController = TweetController();
+  final Toasts toasts = Toasts();
+
   TextEditingController commentController = TextEditingController();
   FocusNode commentTextFieldFocus = FocusNode();
 
@@ -41,10 +42,6 @@ class _TweetScreen extends State<TweetScreen> {
       width: 0,
     ),
   );
-
-  void publishComment({required String comment}) {
-    tweetController.publishTweet(tweet: comment);
-  }
 
   Future<TweetModel> onLikedTweet({
     required TweetModel tweet,
@@ -61,9 +58,44 @@ class _TweetScreen extends State<TweetScreen> {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
-  void commentOnTweet() {
-    publishComment(comment: commentController.text);
-    widget.updateTweetScreen();
+  void commentOnTweet() async {
+    String comment = commentController.text;
+
+    try {
+      TweetModel newComment = await tweetController.publishComment(
+        text: comment,
+        parentTweetId: widget.tweet.id,
+      );
+
+      setState(() {
+        widget.tweet.comments!.insert(0, newComment);
+        widget.tweet.commentsQuantity++;
+      });
+
+      commentController.clear();
+    } catch (e) {
+      toasts.showErrorToast((e as Exception).toString());
+    }
+  }
+
+  void loadComments() async {
+    List<TweetModel> comments =
+        await tweetController.listComments(tweetId: widget.tweet.id);
+
+    setState(() {
+      widget.tweet.comments = comments;
+    });
+  }
+
+  bool commentsIsLoaded() {
+    return widget.tweet.comments!.length == widget.tweet.commentsQuantity;
+  }
+
+  @override
+  void initState() {
+    if (!commentsIsLoaded()) loadComments();
+
+    super.initState();
   }
 
   @override
@@ -93,6 +125,7 @@ class _TweetScreen extends State<TweetScreen> {
                     visible: widget.tweet.commentsQuantity > 0 &&
                         widget.tweet.comments != null,
                     child: TweetCommentsWidget(
+                      commentsList: widget.tweet.comments!,
                       commentsQuantity: widget.tweet.commentsQuantity,
                       tweetId: widget.tweet.id,
                       goToUserScreen: widget.goToUserScreen,

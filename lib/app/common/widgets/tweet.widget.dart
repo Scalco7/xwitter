@@ -143,7 +143,7 @@ class _TweetWidget extends State<TweetWidget> {
                             ),
                             const SizedBox(width: 3),
                             Text(
-                              formatQuantity(tweet.comments?.length ?? 0),
+                              formatQuantity(tweet.commentsQuantity),
                               style: const TextStyle(
                                 color: ColorConsts.secondaryColor,
                                 fontSize: 12,

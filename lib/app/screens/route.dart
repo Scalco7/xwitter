@@ -58,9 +58,6 @@ class BigTalkRoute extends StatelessWidget {
     void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
 
-    void updateTweetScreen(BuildContext context, TweetModel tweet) =>
-        Navigator.of(context).pushReplacementNamed("/tweet", arguments: tweet);
-
     void updateUserScreenAfterEdit(BuildContext context, UserModel user) =>
         Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
             arguments: user);
@@ -154,7 +151,6 @@ class BigTalkRoute extends StatelessWidget {
                 indexNavBar: indexNavBar,
                 goToUserScreen: (user) => goToUserScreen(context, user),
                 routePop: () => routePop(context),
-                updateTweetScreen: () => updateTweetScreen(context, tweet),
                 bottomNavigationRoutes: bottomNavigationRoutes,
               ),
             );

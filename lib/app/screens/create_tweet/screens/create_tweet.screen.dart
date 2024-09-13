@@ -27,7 +27,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   late bool disabledTweetButton;
 
   void publishTweet() {
-    tweetController.publishTweet(tweet: tweetTextController.text);
+    tweetController.publishTweet(text: tweetTextController.text);
 
     widget.goToHomeScreen();
   }

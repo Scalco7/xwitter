@@ -10,11 +10,11 @@ abstract class ITweetController {
   final List<TweetModel> _tweetsList = [];
   List<TweetModel> get tweetsList => _tweetsList;
 
-  void publishTweet({required String tweet});
+  void publishTweet({required String text});
 
-  void publishComment({
+  Future<TweetModel> publishComment({
     required String parentTweetId,
-    required String tweet,
+    required String text,
   });
 
   Future<TweetModel> onLikedTweet({
@@ -50,8 +50,8 @@ class TweetController extends ChangeNotifier implements ITweetController {
   TweetController._internal();
 
   @override
-  void publishTweet({required String tweet}) async {
-    ValidatorFailure tweetValidate = validators.validateTweet(tweet);
+  void publishTweet({required String text}) async {
+    ValidatorFailure tweetValidate = validators.validateTweet(text);
     if (!tweetValidate.valid) {
       toasts.showErrorToast(tweetValidate.error);
       return;
@@ -59,7 +59,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
     TweetModel newTweet;
     try {
-      newTweet = await tweetService.createTweet(text: tweet);
+      newTweet = await tweetService.createTweet(text: text);
     } catch (e) {
       toasts.showErrorToast("Erro");
       return;
@@ -72,22 +72,18 @@ class TweetController extends ChangeNotifier implements ITweetController {
   @override
   Future<TweetModel> publishComment({
     required String parentTweetId,
-    required String tweet,
+    required String text,
   }) async {
-    ValidatorFailure tweetValidate = validators.validateTweet(tweet);
+    ValidatorFailure tweetValidate = validators.validateTweet(text);
     if (!tweetValidate.valid) {
-      toasts.showErrorToast(tweetValidate
-          .error); //mostrar esse toast emm outro lugar, não no controller
       throw Exception(tweetValidate.error);
     }
 
     TweetModel newTweet;
     try {
-      newTweet =
-          await tweetService.comment(tweetId: parentTweetId, text: tweet);
+      newTweet = await tweetService.comment(tweetId: parentTweetId, text: text);
       return newTweet;
     } catch (e) {
-      toasts.showErrorToast("Erro");
       throw Exception('Erro ao comentar');
     }
   }
