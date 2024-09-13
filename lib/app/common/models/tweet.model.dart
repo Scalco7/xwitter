@@ -6,6 +6,7 @@ class TweetModel {
   final String text;
   int likes;
   bool liked;
+  bool isPinned;
   int commentsQuantity;
   List<TweetModel>? comments;
 
@@ -15,6 +16,7 @@ class TweetModel {
     required this.text,
     required this.likes,
     required this.liked,
+    required this.isPinned,
     this.commentsQuantity = 0,
     this.comments,
   });
@@ -25,6 +27,7 @@ class TweetModel {
         text: json["text"],
         likes: json["likes"],
         liked: json["liked"],
+        isPinned: json["isPinned"],
         commentsQuantity: json["commentsQuantity"] ?? 0,
         comments: json["comments"] ?? [],
       );
@@ -35,6 +38,7 @@ class TweetModel {
         "text": text,
         "likes": likes,
         "liked": liked,
+        "isPinned": isPinned,
         "commentsQuantity": commentsQuantity,
         "comments": comments,
       };

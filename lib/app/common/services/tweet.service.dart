@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xwitter/app/common/consts/api.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/api.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
@@ -26,11 +25,6 @@ abstract class ITweetService {
   });
 
   Future<List<TweetModel>> listComments({required String tweetId});
-
-  Future<TweetModel> updateLoadedTweet({
-    required TweetModel tweet,
-    required String loggedUserId,
-  });
 }
 
 class TweetService implements ITweetService {
@@ -44,65 +38,6 @@ class TweetService implements ITweetService {
   }
 
   TweetService._internal();
-
-  Future<TweetModel?> getTweetFromMap({
-    required Map<dynamic, dynamic> json,
-    required String loggedUserId,
-    bool withComments = false,
-    UserModel? user,
-  }) async {
-    CollectionReference commentsRef =
-        database.collection('tweets').doc(json["id"]).collection("comments");
-    List<dynamic> jsonLikeList = json["likes"] as List<dynamic>;
-    List<String> likes = jsonLikeList.map((e) => e as String).toList();
-
-    if (user == null) {
-      user = await userService.getUserById(userId: json["userId"]);
-
-      if (user == null) {
-        return null;
-      }
-    }
-
-    List<TweetModel> comments = [];
-    late int commentsQuantity;
-
-    if (withComments) {
-      final QuerySnapshot commentSnapshot =
-          await commentsRef.orderBy("date", descending: true).get();
-
-      for (var docSnapshot in commentSnapshot.docs) {
-        Map<String, dynamic> jsonData =
-            docSnapshot.data() as Map<String, dynamic>;
-
-        TweetModel? tweet =
-            await getTweetFromMap(json: jsonData, loggedUserId: loggedUserId);
-
-        if (tweet != null) {
-          comments.add(tweet);
-        }
-      }
-
-      commentsQuantity = comments.length;
-    } else {
-      AggregateQuerySnapshot aggregateSnapshot =
-          await commentsRef.count().get();
-
-      commentsQuantity = aggregateSnapshot.count ?? 0;
-    }
-
-    TweetModel tweet = TweetModel(
-      id: json["id"],
-      text: json["tweet"],
-      user: user,
-      likes: likes.length,
-      liked: likes.contains(loggedUserId),
-      comments: comments,
-      commentsQuantity: commentsQuantity,
-    );
-
-    return tweet;
-  }
 
   String get getApiUrl => "${ApiConsts.apiUrl}/tweet";
 
@@ -306,29 +241,5 @@ class TweetService implements ITweetService {
     } catch (e) {
       rethrow;
     }
-  }
-
-  @override
-  Future<TweetModel> updateLoadedTweet(
-      {required TweetModel tweet, required String loggedUserId}) async {
-    final ref = database.collection('tweets').doc(tweet.id);
-    final DocumentSnapshot snapshot = await ref.get();
-
-    if (!snapshot.exists) {
-      return tweet;
-    }
-
-    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-    TweetModel? newTweet = await getTweetFromMap(
-      json: data,
-      loggedUserId: loggedUserId,
-      withComments: true,
-    );
-
-    if (newTweet == null) {
-      return tweet;
-    }
-
-    return newTweet;
   }
 }
