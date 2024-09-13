@@ -8,9 +8,7 @@ import 'package:xwitter/app/common/services/api.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class ITweetService {
-  Future<TweetModel> createTweet({
-    required String text,
-  });
+  Future<TweetModel> createTweet({required String text});
 
   Future<TweetModel> likeTweet({required TweetModel tweet});
 
@@ -21,6 +19,13 @@ abstract class ITweetService {
   Future<List<TweetModel>> listPostedTweets({required String userId});
 
   Future<List<TweetModel>> listLikedTweets({required String userId});
+
+  Future<TweetModel> comment({
+    required String tweetId,
+    required String text,
+  });
+
+  Future<List<TweetModel>> listComments({required String tweetId});
 
   Future<TweetModel> updateLoadedTweet({
     required TweetModel tweet,
@@ -239,6 +244,57 @@ class TweetService implements ITweetService {
 
       if (response.statusCode != 200) {
         throw Exception("Erro ao buscar tweets");
+      }
+      List<TweetModel> tweets = [];
+
+      for (Map<String, dynamic> index in data) {
+        tweets.add(TweetModel.fromJson(index));
+      }
+
+      return tweets;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<TweetModel> comment({
+    required String tweetId,
+    required String text,
+  }) async {
+    final url = "$getApiUrl/comment";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweetId,
+      "text": text,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception(response);
+      }
+
+      TweetModel newTweet = TweetModel.fromJson(data);
+
+      return newTweet;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<TweetModel>> listComments({required String tweetId}) async {
+    Uri uri = Uri.parse("$getApiUrl/comments/$tweetId");
+
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar comentários");
       }
       List<TweetModel> tweets = [];
 

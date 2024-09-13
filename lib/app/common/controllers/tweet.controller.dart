@@ -10,11 +10,11 @@ abstract class ITweetController {
   final List<TweetModel> _tweetsList = [];
   List<TweetModel> get tweetsList => _tweetsList;
 
-  void publishTweet({
-    required String loggedUserId,
-    required BuildContext context,
+  void publishTweet({required String tweet});
+
+  void publishComment({
+    required String parentTweetId,
     required String tweet,
-    String? parentTweetId,
   });
 
   Future<TweetModel> onLikedTweet({
@@ -48,12 +48,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
   TweetController._internal();
 
   @override
-  void publishTweet({
-    required String loggedUserId,
-    required BuildContext context,
-    required String tweet,
-    String? parentTweetId,
-  }) async {
+  void publishTweet({required String tweet}) async {
     ValidatorFailure tweetValidate = validators.validateTweet(tweet);
     if (!tweetValidate.valid) {
       toasts.showErrorToast(tweetValidate.error);
@@ -70,7 +65,29 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
     tweetsList.add(newTweet);
     notifyListeners();
-    // fillTweetsList(loggedUserId: loggedUserId, isReloading: true);
+  }
+
+  @override
+  Future<TweetModel> publishComment({
+    required String parentTweetId,
+    required String tweet,
+  }) async {
+    ValidatorFailure tweetValidate = validators.validateTweet(tweet);
+    if (!tweetValidate.valid) {
+      toasts.showErrorToast(tweetValidate
+          .error); //mostrar esse toast emm outro lugar, não no controller
+      throw Exception(tweetValidate.error);
+    }
+
+    TweetModel newTweet;
+    try {
+      newTweet =
+          await tweetService.comment(tweetId: parentTweetId, text: tweet);
+      return newTweet;
+    } catch (e) {
+      toasts.showErrorToast("Erro");
+      throw Exception('Erro ao comentar');
+    }
   }
 
   @override

@@ -50,12 +50,7 @@ class TweetContainer extends StatelessWidget {
             updateTweetScreen: () => updateTweetScreen(tweet: snapshot.data!),
             bottomNavigationRoutes: bottomNavigationRoutes,
             publishComment: ({required comment}) =>
-                tweetController.publishTweet(
-              loggedUserId: loggedUserId,
-              context: context,
-              tweet: comment,
-              parentTweetId: snapshot.data!.id,
-            ),
+                tweetController.publishTweet(tweet: comment),
             onLikedTweet: ({required liked, parentTweetId, required tweet}) =>
                 tweetController.onLikedTweet(
               tweet: tweet,
