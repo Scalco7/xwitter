@@ -83,11 +83,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
     String? parentTweetId,
   }) async {
     if (liked) {
-      tweet = await tweetService.likeTweet(
-        tweet: tweet,
-        loggedUserId: loggedUserId,
-        parentTweetId: parentTweetId,
-      );
+      tweet = await tweetService.likeTweet(tweet: tweet);
     } else {
       tweet = await tweetService.deslikeTweet(
         tweet: tweet,

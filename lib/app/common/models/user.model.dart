@@ -30,7 +30,7 @@ class UserModel {
       following: json["following"] ?? false,
       numberOfFollowings: json["numberOfFollowings"] ?? 0,
       numberOfFollowers: json["numberOfFollowers"] ?? 0,
-      avatarPath: "assets/avatars/apagao_1.png");
+      avatarPath: "assets/avatars/apagao_1.png"); //colocar caminho ft de perfil
 
   Map<String, dynamic> toJson() => {
         "id": id,

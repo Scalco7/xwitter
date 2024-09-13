@@ -12,11 +12,7 @@ abstract class ITweetService {
     required String text,
   });
 
-  Future<TweetModel> likeTweet({
-    required TweetModel tweet,
-    required String loggedUserId,
-    String? parentTweetId,
-  });
+  Future<TweetModel> likeTweet({required TweetModel tweet});
 
   Future<TweetModel> deslikeTweet({
     required TweetModel tweet,
@@ -144,31 +140,32 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<TweetModel> likeTweet({
-    required TweetModel tweet,
-    required String loggedUserId,
-    String? parentTweetId,
-  }) async {
-    final bool isComment = parentTweetId != null;
-    late DocumentReference refTweet;
-    if (isComment) {
-      refTweet = database
-          .collection("tweets")
-          .doc(parentTweetId)
-          .collection("comments")
-          .doc(tweet.id);
-    } else {
-      refTweet = database.collection("tweets").doc(tweet.id);
+  Future<TweetModel> likeTweet({required TweetModel tweet}) async {
+    final url = "$getApiUrl/like";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweet.id,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception(response);
+      }
+
+      print(data);
+
+      if (!data) throw Exception("Erro ao curtir");
+
+      tweet.liked = true;
+      tweet.likes++;
+
+      return tweet;
+    } catch (e) {
+      rethrow;
     }
-
-    await refTweet.update({
-      "likes": FieldValue.arrayUnion([loggedUserId])
-    });
-
-    tweet.liked = true;
-    tweet.likes++;
-
-    return tweet;
   }
 
   @override
