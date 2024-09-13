@@ -30,7 +30,7 @@ class UserModel {
       following: json["following"] ?? false,
       numberOfFollowings: json["numberOfFollowings"] ?? 0,
       numberOfFollowers: json["numberOfFollowers"] ?? 0,
-      avatarPath: "");
+      avatarPath: "assets/avatars/apagao_1.png");
 
   Map<String, dynamic> toJson() => {
         "id": id,
