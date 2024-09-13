@@ -209,11 +209,17 @@ class UserService implements IUserService {
   Future<UserModel> unfollowUser({
     required UserModel user,
   }) async {
-    // DocumentReference refUser = database.collection("users").doc(loggedUserId);
+    const url = "${ApiConsts.apiUrl}/user/unfollow";
+    Map<String, dynamic> jsonRequest = {
+      "followingId": user.id,
+    };
 
-    // await refUser.update({
-    //   "followList": FieldValue.arrayRemove([user.id])
-    // });
+    final response =
+        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+    if (response.statusCode != 200) {
+      throw Error();
+    }
 
     user.numberOfFollowers--;
     user.following = false;

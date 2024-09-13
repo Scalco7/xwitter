@@ -80,7 +80,7 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
-    await userService.followUser(
+    await userService.unfollowUser(
         user: UserModel(
             id: "66e3513c2296a94d324f1893",
             name: "name",
