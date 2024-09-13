@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:xwitter/app/common/consts/api.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/api.service.dart';
@@ -42,7 +41,6 @@ abstract class IUserService {
 
 class UserService implements IUserService {
   static final UserService _singleton = UserService._internal();
-  final FirebaseFirestore database = FirebaseFirestore.instance;
 
   factory UserService() {
     return _singleton;
