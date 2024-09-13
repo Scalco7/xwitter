@@ -92,6 +92,8 @@ class UserService implements IUserService {
     );
   }
 
+  String get getApiUrl => "${ApiConsts.apiUrl}/user";
+
   @override
   Future<UserModel> createUser({
     required String name,
@@ -99,7 +101,7 @@ class UserService implements IUserService {
     required String nickname,
     required String password,
   }) async {
-    const url = "${ApiConsts.apiUrl}/user/create";
+    final url = "$getApiUrl/create";
     Map<String, dynamic> jsonRequest = {
       "name": name,
       "email": email,
@@ -129,7 +131,7 @@ class UserService implements IUserService {
     required String email,
     required String password,
   }) async {
-    const url = "${ApiConsts.apiUrl}/user/login";
+    final url = "$getApiUrl/login";
     Map<String, dynamic> jsonRequest = {"email": email, "password": password};
 
     try {
@@ -153,7 +155,7 @@ class UserService implements IUserService {
   Future<UserModel?> getUserById({
     required String userId,
   }) async {
-    Uri uri = Uri.parse("${ApiConsts.apiUrl}/user/$userId");
+    Uri uri = Uri.parse("$getApiUrl/$userId");
 
     try {
       final response = await ApiService().get(uri: uri);
@@ -178,7 +180,7 @@ class UserService implements IUserService {
     required String bio,
     required String photoBase64,
   }) async {
-    const url = "${ApiConsts.apiUrl}/user/update";
+    final url = "$getApiUrl/update";
     Map<String, dynamic> jsonRequest = {
       "id": user.id,
       "name": name,
@@ -225,7 +227,7 @@ class UserService implements IUserService {
   Future<UserModel> followUser({
     required UserModel user,
   }) async {
-    const url = "${ApiConsts.apiUrl}/user/follow";
+    final url = "$getApiUrl/follow";
     Map<String, dynamic> jsonRequest = {
       "followingId": user.id,
     };
@@ -247,7 +249,7 @@ class UserService implements IUserService {
   Future<UserModel> unfollowUser({
     required UserModel user,
   }) async {
-    const url = "${ApiConsts.apiUrl}/user/unfollow";
+    final url = "$getApiUrl/unfollow";
     Map<String, dynamic> jsonRequest = {
       "followingId": user.id,
     };
