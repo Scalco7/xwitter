@@ -80,17 +80,9 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
-    await userService.unfollowUser(
-        user: UserModel(
-            id: "66e3513c2296a94d324f1893",
-            name: "name",
-            email: "email",
-            username: "username",
-            avatarPath: "avatarPath",
-            bio: "bio",
-            numberOfFollowers: 0,
-            numberOfFollowings: 0,
-            following: false));
+    await userService.userLogin(
+        email: "felipinho@gmail.com", password: "123456");
+
     ValidatorFailure emailValidate = validators.validateEmail(email);
     ValidatorFailure passwordValidate =
         validators.validatePasswordForLogin(password);

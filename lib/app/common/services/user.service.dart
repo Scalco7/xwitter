@@ -13,6 +13,11 @@ abstract class IUserService {
     required String password,
   });
 
+  Future<UserModel> userLogin({
+    required String email,
+    required String password,
+  });
+
   Future<UserModel?> getUserById({
     required String userId,
   });
@@ -113,6 +118,29 @@ class UserService implements IUserService {
     UserModel newUser = UserModel.fromJson(data);
 
     return newUser;
+  }
+
+  @override
+  Future<UserModel> userLogin({
+    required String email,
+    required String password,
+  }) async {
+    const url = "${ApiConsts.apiUrl}/user/login";
+    Map<String, dynamic> jsonRequest = {"email": email, "password": password};
+
+    final response =
+        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+    var data = jsonDecode(response.body.toString());
+
+    if (response.statusCode != 200) {
+      throw Error();
+    }
+
+    UserModel loggedUser = UserModel.fromJson(data);
+
+    print(loggedUser.name);
+
+    return loggedUser;
   }
 
   @override
