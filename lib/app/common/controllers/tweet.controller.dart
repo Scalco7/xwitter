@@ -18,10 +18,8 @@ abstract class ITweetController {
   });
 
   Future<TweetModel> onLikedTweet({
-    required String loggedUserId,
     required TweetModel tweet,
     required bool liked,
-    String? parentTweetId,
   });
 
   Future<bool> fillTweetsList({
@@ -77,19 +75,13 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
   @override
   Future<TweetModel> onLikedTweet({
-    required String loggedUserId,
     required TweetModel tweet,
     required bool liked,
-    String? parentTweetId,
   }) async {
     if (liked) {
       tweet = await tweetService.likeTweet(tweet: tweet);
     } else {
-      tweet = await tweetService.deslikeTweet(
-        tweet: tweet,
-        loggedUserId: loggedUserId,
-        parentTweetId: parentTweetId,
-      );
+      tweet = await tweetService.deslikeTweet(tweet: tweet);
     }
 
     return tweet;

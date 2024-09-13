@@ -58,10 +58,8 @@ class TweetContainer extends StatelessWidget {
             ),
             onLikedTweet: ({required liked, parentTweetId, required tweet}) =>
                 tweetController.onLikedTweet(
-              loggedUserId: loggedUserId,
               tweet: tweet,
               liked: liked,
-              parentTweetId: parentTweetId,
             ),
           );
         }

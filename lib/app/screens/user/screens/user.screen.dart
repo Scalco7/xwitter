@@ -179,7 +179,6 @@ class _UserScreen extends State<UserScreen> {
                               hasComments: true,
                               onLikedTweet: ({required liked}) =>
                                   tweetController.onLikedTweet(
-                                loggedUserId: loggedUserId,
                                 tweet: tweetsList[index],
                                 liked: liked,
                               ),

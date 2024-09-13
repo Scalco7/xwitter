@@ -25,7 +25,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
     return tweetController.onLikedTweet(
       tweet: tweet,
       liked: liked,
-      loggedUserId: userController.loggedUser!.id,
     );
   }
 
