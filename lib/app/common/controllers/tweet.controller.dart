@@ -65,7 +65,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
       return;
     }
 
-    tweetsList.add(newTweet);
+    tweetsList.insert(0, newTweet);
     notifyListeners();
   }
 
