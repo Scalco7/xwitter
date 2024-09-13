@@ -28,12 +28,10 @@ abstract class IUserService {
 
   Future<UserModel> followUser({
     required UserModel user,
-    required String loggedUserId,
   });
 
   Future<UserModel> unfollowUser({
     required UserModel user,
-    required String loggedUserId,
   });
 }
 
@@ -188,13 +186,18 @@ class UserService implements IUserService {
   @override
   Future<UserModel> followUser({
     required UserModel user,
-    required String loggedUserId,
   }) async {
-    DocumentReference refUser = database.collection("users").doc(loggedUserId);
+    const url = "${ApiConsts.apiUrl}/user/follow";
+    Map<String, dynamic> jsonRequest = {
+      "followingId": user.id,
+    };
 
-    await refUser.update({
-      "followList": FieldValue.arrayUnion([user.id])
-    });
+    final response =
+        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+    if (response.statusCode != 200) {
+      throw Error();
+    }
 
     user.numberOfFollowers++;
     user.following = true;
@@ -205,13 +208,12 @@ class UserService implements IUserService {
   @override
   Future<UserModel> unfollowUser({
     required UserModel user,
-    required String loggedUserId,
   }) async {
-    DocumentReference refUser = database.collection("users").doc(loggedUserId);
+    // DocumentReference refUser = database.collection("users").doc(loggedUserId);
 
-    await refUser.update({
-      "followList": FieldValue.arrayRemove([user.id])
-    });
+    // await refUser.update({
+    //   "followList": FieldValue.arrayRemove([user.id])
+    // });
 
     user.numberOfFollowers--;
     user.following = false;

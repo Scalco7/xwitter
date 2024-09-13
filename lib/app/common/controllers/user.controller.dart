@@ -80,7 +80,7 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
-    await userService.updateUser(
+    await userService.followUser(
         user: UserModel(
             id: "66e3513c2296a94d324f1893",
             name: "name",
@@ -90,10 +90,7 @@ class UserController implements IUserController {
             bio: "bio",
             numberOfFollowers: 0,
             numberOfFollowings: 0,
-            following: false),
-        name: "luquinhas du grau",
-        bio: "oii rppzzz",
-        photoBase64: "photo");
+            following: false));
     ValidatorFailure emailValidate = validators.validateEmail(email);
     ValidatorFailure passwordValidate =
         validators.validatePasswordForLogin(password);

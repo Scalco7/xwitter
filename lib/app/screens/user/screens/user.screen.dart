@@ -83,10 +83,7 @@ class _UserScreen extends State<UserScreen> {
   }
 
   void followUser() async {
-    UserModel newUser = await userService.followUser(
-      user: user,
-      loggedUserId: loggedUserId,
-    );
+    UserModel newUser = await userService.followUser(user: user);
 
     setState(() {
       user = newUser;
@@ -95,10 +92,7 @@ class _UserScreen extends State<UserScreen> {
   }
 
   void unfollowUser() async {
-    UserModel newUser = await userService.unfollowUser(
-      user: user,
-      loggedUserId: loggedUserId,
-    );
+    UserModel newUser = await userService.unfollowUser(user: user);
 
     setState(() {
       user = newUser;
