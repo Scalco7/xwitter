@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -16,8 +17,6 @@ class TweetScreen extends StatefulWidget {
     required this.routePop,
     required this.updateTweetScreen,
     required this.bottomNavigationRoutes,
-    required this.publishComment,
-    required this.onLikedTweet,
   });
   final TweetModel tweet;
   final int indexNavBar;
@@ -25,18 +24,13 @@ class TweetScreen extends StatefulWidget {
   final void Function() routePop;
   final void Function() updateTweetScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
-  final void Function({required String comment}) publishComment;
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-    String? parentTweetId,
-  }) onLikedTweet;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
 }
 
 class _TweetScreen extends State<TweetScreen> {
+  final ITweetController tweetController = TweetController();
   TextEditingController commentController = TextEditingController();
   FocusNode commentTextFieldFocus = FocusNode();
 
@@ -48,12 +42,27 @@ class _TweetScreen extends State<TweetScreen> {
     ),
   );
 
+  void publishComment({required String comment}) {
+    tweetController.publishTweet(tweet: comment);
+  }
+
+  Future<TweetModel> onLikedTweet({
+    required TweetModel tweet,
+    required bool liked,
+    String? parentTweetId,
+  }) {
+    return tweetController.onLikedTweet(
+      tweet: tweet,
+      liked: liked,
+    );
+  }
+
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
   void commentOnTweet() {
-    widget.publishComment(comment: commentController.text);
+    publishComment(comment: commentController.text);
     widget.updateTweetScreen();
   }
 
@@ -77,18 +86,17 @@ class _TweetScreen extends State<TweetScreen> {
                   TweetDetailsWidget(
                     tweet: widget.tweet,
                     goToUserScreen: widget.goToUserScreen,
-                    onLikedTweet: widget.onLikedTweet,
+                    onLikedTweet: onLikedTweet,
                     commentTextFieldFocus: commentTextFieldFocus,
                   ),
                   Visibility(
                     visible: widget.tweet.commentsQuantity > 0 &&
                         widget.tweet.comments != null,
                     child: TweetCommentsWidget(
-                      comments: widget.tweet.comments!,
                       commentsQuantity: widget.tweet.commentsQuantity,
                       tweetId: widget.tweet.id,
                       goToUserScreen: widget.goToUserScreen,
-                      onLikedTweet: widget.onLikedTweet,
+                      onLikedTweet: onLikedTweet,
                     ),
                   ),
                 ],

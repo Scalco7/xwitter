@@ -26,6 +26,8 @@ abstract class ITweetController {
     required String loggedUserId,
     required bool isReloading,
   });
+
+  Future<List<TweetModel>> listComments({required String tweetId});
 }
 
 class TweetController extends ChangeNotifier implements ITweetController {
@@ -125,5 +127,10 @@ class TweetController extends ChangeNotifier implements ITweetController {
       isReloadingTweetList = false;
       return false;
     }
+  }
+
+  @override
+  Future<List<TweetModel>> listComments({required String tweetId}) async {
+    return tweetService.listComments(tweetId: tweetId);
   }
 }

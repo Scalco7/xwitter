@@ -49,13 +49,6 @@ class TweetContainer extends StatelessWidget {
             routePop: routePop,
             updateTweetScreen: () => updateTweetScreen(tweet: snapshot.data!),
             bottomNavigationRoutes: bottomNavigationRoutes,
-            publishComment: ({required comment}) =>
-                tweetController.publishTweet(tweet: comment),
-            onLikedTweet: ({required liked, parentTweetId, required tweet}) =>
-                tweetController.onLikedTweet(
-              tweet: tweet,
-              liked: liked,
-            ),
           );
         }
         if (snapshot.hasError) {
