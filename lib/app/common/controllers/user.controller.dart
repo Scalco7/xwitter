@@ -5,7 +5,6 @@ import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/models/user_local_data.model.dart';
-import 'package:xwitter/app/common/services/authenticate.service.dart';
 import 'package:xwitter/app/common/services/local_data.service.dart';
 import 'package:xwitter/app/common/services/tweet.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
@@ -42,7 +41,6 @@ abstract class IUserController {
 
 class UserController implements IUserController {
   static final UserController _singleton = UserController._internal();
-  final IAuthenticateService authenticateService = AuthenticateService();
   final IUserService userService = UserService();
   final ILocalData localDataService = LocalData();
   final ITweetService tweetService = TweetService();
@@ -97,22 +95,16 @@ class UserController implements IUserController {
       return false;
     }
 
-    String? id =
-        await authenticateService.loginUser(email: email, password: password);
+    UserModel? user;
 
-    if (id == null) {
+    try {
+      user = await userService.userLogin(email: email, password: password);
+    } catch (e) {
       toasts.showErrorToast("E-mail ou senha inválidos");
       return false;
     }
 
-    UserModel? user = await userService.getUserById(userId: id);
-
-    if (user == null) {
-      toasts.showErrorToast("E-mail ou senha inválidos");
-      return false;
-    }
-
-    bool success = await localDataService.saveUserLogin(id);
+    bool success = await localDataService.saveUserLogin(user.id);
     if (!success) {
       return false;
     }
@@ -124,7 +116,6 @@ class UserController implements IUserController {
 
   @override
   Future<bool> signOut() async {
-    await authenticateService.logoutUser();
     bool success = await localDataService.removeUserLogin();
 
     if (!success) {
@@ -168,28 +159,19 @@ class UserController implements IUserController {
       return false;
     }
 
-    String? id = await authenticateService.registerUser(
-      nickname: nickname,
-      email: email,
-      name: name,
-      password: password,
-    );
-
-    if (id == null) {
-      toasts.showErrorToast("Erro ao criar conta");
-      return false;
-    }
-
     UserModel user;
 
     try {
+      print("ta aqui");
       user = await userService.createUser(
           name: name, email: email, nickname: nickname, password: password);
+      print("ta aqui");
     } catch (e) {
+      print("ta aqui");
       return false;
     }
 
-    bool success = await localDataService.saveUserLogin(id);
+    bool success = await localDataService.saveUserLogin(user.id);
     if (!success) {
       return false;
     }

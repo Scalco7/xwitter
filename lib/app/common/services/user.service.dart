@@ -107,17 +107,21 @@ class UserService implements IUserService {
       "password": password
     };
 
-    final response =
-        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
-    var data = jsonDecode(response.body.toString());
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+      var data = jsonDecode(response.body.toString());
 
-    if (response.statusCode != 200) {
-      throw Error();
+      if (response.statusCode != 200) {
+        throw Exception(response);
+      }
+
+      UserModel newUser = UserModel.fromJson(data);
+
+      return newUser;
+    } catch (e) {
+      rethrow;
     }
-
-    UserModel newUser = UserModel.fromJson(data);
-
-    return newUser;
   }
 
   @override
@@ -128,19 +132,21 @@ class UserService implements IUserService {
     const url = "${ApiConsts.apiUrl}/user/login";
     Map<String, dynamic> jsonRequest = {"email": email, "password": password};
 
-    final response =
-        await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
-    var data = jsonDecode(response.body.toString());
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+      var data = jsonDecode(response.body.toString());
 
-    if (response.statusCode != 200) {
-      throw Error();
+      if (response.statusCode != 200) {
+        throw Error();
+      }
+
+      UserModel loggedUser = UserModel.fromJson(data);
+
+      return loggedUser;
+    } catch (e) {
+      rethrow;
     }
-
-    UserModel loggedUser = UserModel.fromJson(data);
-
-    print(loggedUser.name);
-
-    return loggedUser;
   }
 
   @override
@@ -149,16 +155,20 @@ class UserService implements IUserService {
   }) async {
     Uri uri = Uri.parse("${ApiConsts.apiUrl}/user/$userId");
 
-    final response = await ApiService().get(uri: uri);
-    var data = jsonDecode(response.body.toString());
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
 
-    if (response.statusCode != 200) {
-      return null;
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      UserModel user = UserModel.fromJson(data);
+
+      return user;
+    } catch (e) {
+      rethrow;
     }
-
-    UserModel user = UserModel.fromJson(data);
-
-    return user;
   }
 
   @override
