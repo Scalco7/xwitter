@@ -69,7 +69,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Text(tweet.tweet),
+              child: Text(tweet.text),
             ),
             Container(
               width: double.maxFinite,

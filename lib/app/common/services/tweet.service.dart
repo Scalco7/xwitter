@@ -1,13 +1,15 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:xwitter/app/common/consts/api.consts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/services/api.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class ITweetService {
-  Future<bool> createTweet({
-    required String userId,
-    required String tweet,
-    String? parentTweetId,
+  Future<TweetModel> createTweet({
+    required String text,
   });
 
   Future<TweetModel> likeTweet({
@@ -100,7 +102,7 @@ class TweetService implements ITweetService {
 
     TweetModel tweet = TweetModel(
       id: json["id"],
-      tweet: json["tweet"],
+      text: json["tweet"],
       user: user,
       likes: likes.length,
       liked: likes.contains(loggedUserId),
@@ -111,40 +113,34 @@ class TweetService implements ITweetService {
     return tweet;
   }
 
-  @override
-  Future<bool> createTweet({
-    required String userId,
-    required String tweet,
-    String? parentTweetId,
-  }) async {
-    final bool isComment = parentTweetId != null;
-    late DocumentReference refTweet;
-    if (isComment) {
-      refTweet = database
-          .collection("tweets")
-          .doc(parentTweetId)
-          .collection("comments")
-          .doc();
-    } else {
-      refTweet = database.collection("tweets").doc();
-    }
-    String? id = refTweet.id;
+  String get getApiUrl => "${ApiConsts.apiUrl}/tweet";
 
-    Map<String, dynamic> dataJson = {
-      "id": id,
-      "userId": userId,
-      "tweet": tweet,
-      "date": Timestamp.now(),
-      "likes": [],
+  @override
+  Future<TweetModel> createTweet({
+    required String text,
+  }) async {
+    final url = "$getApiUrl/create";
+    Map<String, dynamic> jsonRequest = {
+      "text": text,
+      "canRetweet": true,
+      "location": "",
     };
 
-    if (!isComment) {
-      dataJson["comments"] = [];
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception(response);
+      }
+
+      TweetModel newTweet = TweetModel.fromJson(data);
+
+      return newTweet;
+    } catch (e) {
+      rethrow;
     }
-
-    await refTweet.set(dataJson);
-
-    return true;
   }
 
   @override

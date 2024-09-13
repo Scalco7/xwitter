@@ -90,7 +90,7 @@ class _TweetWidget extends State<TweetWidget> {
                 SizedBox(
                   width: tweetWidth,
                   child: Text(
-                    tweet.tweet,
+                    tweet.text,
                     overflow: TextOverflow.clip,
                     softWrap: true,
                   ),

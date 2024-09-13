@@ -62,18 +62,17 @@ class TweetController extends ChangeNotifier implements ITweetController {
       return;
     }
 
-    bool success = await tweetService.createTweet(
-      userId: loggedUserId,
-      tweet: tweet,
-      parentTweetId: parentTweetId,
-    );
-
-    if (!success) {
+    TweetModel newTweet;
+    try {
+      newTweet = await tweetService.createTweet(text: tweet);
+    } catch (e) {
       toasts.showErrorToast("Erro");
       return;
     }
 
-    fillTweetsList(loggedUserId: loggedUserId, isReloading: true);
+    tweetsList.add(newTweet);
+    notifyListeners();
+    // fillTweetsList(loggedUserId: loggedUserId, isReloading: true);
   }
 
   @override

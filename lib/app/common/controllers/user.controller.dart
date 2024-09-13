@@ -78,9 +78,6 @@ class UserController implements IUserController {
     required String email,
     required String password,
   }) async {
-    await userService.userLogin(
-        email: "felipinho@gmail.com", password: "123456");
-
     ValidatorFailure emailValidate = validators.validateEmail(email);
     ValidatorFailure passwordValidate =
         validators.validatePasswordForLogin(password);
@@ -162,12 +159,9 @@ class UserController implements IUserController {
     UserModel user;
 
     try {
-      print("ta aqui");
       user = await userService.createUser(
           name: name, email: email, nickname: nickname, password: password);
-      print("ta aqui");
     } catch (e) {
-      print("ta aqui");
       return false;
     }
 
