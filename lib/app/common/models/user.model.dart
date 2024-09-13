@@ -26,7 +26,7 @@ class UserModel {
       name: json["name"],
       email: json["email"],
       username: json["username"],
-      bio: json["bio"],
+      bio: json["bio"] ?? "",
       following: json["following"] ?? false,
       numberOfFollowings: json["numberOfFollowings"] ?? 0,
       numberOfFollowers: json["numberOfFollowers"] ?? 0,

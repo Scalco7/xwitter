@@ -24,7 +24,7 @@ abstract class ITweetService {
     String? parentTweetId,
   });
 
-  Future<List<TweetModel>> listTweets({required String loggedUserId});
+  Future<List<TweetModel>> listTweets();
 
   Future<List<TweetModel>> listPostedTweets({
     required UserModel user,
@@ -200,28 +200,26 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<List<TweetModel>> listTweets({required String loggedUserId}) async {
-    final ref = database
-        .collection('tweets')
-        .orderBy("date", descending: true)
-        .limit(20);
-    final QuerySnapshot snapshot = await ref.get();
+  Future<List<TweetModel>> listTweets() async {
+    Uri uri = Uri.parse("$getApiUrl/list");
 
-    List<TweetModel> tweetList = [];
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
 
-    for (var docSnapshot in snapshot.docs) {
-      Map<String, dynamic> jsonData =
-          docSnapshot.data() as Map<String, dynamic>;
-
-      TweetModel? tweet = await getTweetFromMap(
-          json: jsonData, loggedUserId: loggedUserId, withComments: true);
-
-      if (tweet != null) {
-        tweetList.add(tweet);
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar tweets");
       }
-    }
+      List<TweetModel> tweets = [];
 
-    return tweetList;
+      for (Map<String, dynamic> index in data) {
+        tweets.add(TweetModel.fromJson(index));
+      }
+
+      return tweets;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

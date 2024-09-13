@@ -21,7 +21,8 @@ class ApiService {
   }
 
   Map<String, String> _getHeaders() {
-    String? loggedUserId = UserController().loggedUser?.id;
+    String? loggedUserId =
+        "66e0b681c0ca13c7c44740a0"; //UserController().loggedUser?.id;
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',

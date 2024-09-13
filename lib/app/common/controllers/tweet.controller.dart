@@ -108,8 +108,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
     try {
       isReloadingTweetList = true;
-      List<TweetModel> list =
-          await tweetService.listTweets(loggedUserId: loggedUserId);
+      List<TweetModel> list = await tweetService.listTweets();
 
       if (isReloading) _tweetsList.clear();
       _tweetsList.addAll(list);
