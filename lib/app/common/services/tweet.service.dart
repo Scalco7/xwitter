@@ -18,15 +18,9 @@ abstract class ITweetService {
 
   Future<List<TweetModel>> listTweets();
 
-  Future<List<TweetModel>> listPostedTweets({
-    required UserModel user,
-    required String loggedUserId,
-  });
+  Future<List<TweetModel>> listPostedTweets({required String userId});
 
-  Future<List<TweetModel>> listLikedTweets({
-    required UserModel user,
-    required String loggedUserId,
-  });
+  Future<List<TweetModel>> listLikedTweets({required String userId});
 
   Future<TweetModel> updateLoadedTweet({
     required TweetModel tweet,
@@ -213,57 +207,49 @@ class TweetService implements ITweetService {
   }
 
   @override
-  Future<List<TweetModel>> listPostedTweets({
-    required UserModel user,
-    required String loggedUserId,
-  }) async {
-    final tweetRef =
-        database.collection('tweets').orderBy("date", descending: true);
-    final query = tweetRef.where("userId", isEqualTo: user.id);
-    final QuerySnapshot snapshot = await query.get();
+  Future<List<TweetModel>> listPostedTweets({required String userId}) async {
+    Uri uri = Uri.parse("$getApiUrl/listPosted/$userId");
 
-    List<TweetModel> tweetList = [];
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
 
-    for (var docSnapshot in snapshot.docs) {
-      Map<String, dynamic> jsonData =
-          docSnapshot.data() as Map<String, dynamic>;
-
-      TweetModel? tweet = await getTweetFromMap(
-          json: jsonData, loggedUserId: loggedUserId, user: user);
-
-      if (tweet != null) {
-        tweetList.add(tweet);
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar tweets");
       }
-    }
+      List<TweetModel> tweets = [];
 
-    return tweetList;
+      for (Map<String, dynamic> index in data) {
+        tweets.add(TweetModel.fromJson(index));
+      }
+
+      return tweets;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<List<TweetModel>> listLikedTweets({
-    required UserModel user,
-    required String loggedUserId,
-  }) async {
-    final tweetRef =
-        database.collection('tweets').orderBy("date", descending: true);
-    final query = tweetRef.where("likes", arrayContains: user.id);
-    final QuerySnapshot snapshot = await query.get();
+  Future<List<TweetModel>> listLikedTweets({required String userId}) async {
+    Uri uri = Uri.parse("$getApiUrl/listLiked/$userId");
 
-    List<TweetModel> tweetList = [];
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
 
-    for (var docSnapshot in snapshot.docs) {
-      Map<String, dynamic> jsonData =
-          docSnapshot.data() as Map<String, dynamic>;
-
-      TweetModel? tweet =
-          await getTweetFromMap(json: jsonData, loggedUserId: loggedUserId);
-
-      if (tweet != null) {
-        tweetList.add(tweet);
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar tweets");
       }
-    }
+      List<TweetModel> tweets = [];
 
-    return tweetList;
+      for (Map<String, dynamic> index in data) {
+        tweets.add(TweetModel.fromJson(index));
+      }
+
+      return tweets;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
