@@ -96,7 +96,7 @@ class UserService implements IUserService {
       var data = jsonDecode(response.body.toString());
 
       if (response.statusCode != 200) {
-        throw Error();
+        throw Exception("Erro na api");
       }
 
       UserModel loggedUser = UserModel.fromJson(data);
@@ -149,7 +149,7 @@ class UserService implements IUserService {
     var data = jsonDecode(response.body.toString());
 
     if (response.statusCode != 200) {
-      throw Error();
+      throw Exception("Erro na api");
     }
 
     UserModel newUser = UserModel.fromJson(data);
@@ -175,7 +175,7 @@ class UserService implements IUserService {
         await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
 
     if (response.statusCode != 200) {
-      throw Error();
+      throw Exception("Erro na api");
     }
 
     user.numberOfFollowers++;
@@ -197,7 +197,7 @@ class UserService implements IUserService {
         await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
 
     if (response.statusCode != 200) {
-      throw Error();
+      throw Exception("Erro na api");
     }
 
     user.numberOfFollowers--;
