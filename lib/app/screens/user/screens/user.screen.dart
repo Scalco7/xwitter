@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
@@ -45,6 +46,7 @@ class _UserScreen extends State<UserScreen> {
 
   UserData? userDataLists;
   List<TweetModel> tweetsList = [];
+  Offset _tapPosition = Offset.zero;
 
   late String buttonText;
   late UserModel user;
@@ -102,6 +104,56 @@ class _UserScreen extends State<UserScreen> {
 
   bool listsIsLoaded() {
     return userDataLists != null;
+  }
+
+  void getTapPosition(LongPressDownDetails tapPosition) {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    _tapPosition = renderBox.globalToLocal(tapPosition.globalPosition);
+  }
+
+  void tooglePinTweet(TweetModel tweet) async {
+    List<TweetModel> postedTweets =
+        await tweetController.tooglePinTweet(tweet: tweet);
+    userDataLists!.postedTweets = postedTweets;
+
+    setTweetsList(EListTweetsSection.publishedtTweets);
+  }
+
+  void showContextMenu(BuildContext context, TweetModel tweet) async {
+    String text = tweet.isPinned ? "Desfixar" : "Fixar";
+    final RenderObject? overlay =
+        Overlay.of(context).context.findRenderObject();
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 10, 10),
+        Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
+            overlay.paintBounds.size.height),
+      ),
+      items: [
+        PopupMenuItem(
+          value: 'Fix',
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          height: 10,
+          onTap: () => tooglePinTweet(tweet),
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: ColorConsts.primaryColor,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  void handleTweetLongPress(BuildContext context, TweetModel tweet) {
+    if (tweet.isPinned ||
+        userDataLists!.postedTweets.every((t) => !t.isPinned)) {
+      showContextMenu(context, tweet);
+    }
   }
 
   @override
@@ -170,16 +222,20 @@ class _UserScreen extends State<UserScreen> {
                       )
                     : ListView.separated(
                         itemBuilder: (BuildContext context, int index) {
+                          TweetModel tweet = tweetsList[index];
                           return GestureDetector(
-                            key: Key("user-tweet-${tweetsList[index].id}"),
-                            onTap: () => widget
-                                .goToTweetDetailsScreen(tweetsList[index]),
+                            key: Key("user-tweet-${tweet.id}"),
+                            onTap: () => widget.goToTweetDetailsScreen(tweet),
+                            onLongPress: () =>
+                                handleTweetLongPress(context, tweet),
+                            onLongPressDown: (position) =>
+                                getTapPosition(position),
                             child: TweetWidget(
-                              tweet: tweetsList[index],
+                              tweet: tweet,
                               hasComments: true,
                               onLikedTweet: ({required liked}) =>
                                   tweetController.onLikedTweet(
-                                tweet: tweetsList[index],
+                                tweet: tweet,
                                 liked: liked,
                               ),
                             ),

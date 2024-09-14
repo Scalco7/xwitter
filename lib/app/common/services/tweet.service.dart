@@ -25,6 +25,10 @@ abstract class ITweetService {
   });
 
   Future<List<TweetModel>> listComments({required String tweetId});
+
+  Future<bool> pinTweet({required String tweetId});
+
+  Future<bool> unpinTweet({required String tweetId});
 }
 
 class TweetService implements ITweetService {
@@ -240,6 +244,48 @@ class TweetService implements ITweetService {
       return tweets;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<bool> pinTweet({required String tweetId}) async {
+    final url = "$getApiUrl/pin";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweetId,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> unpinTweet({required String tweetId}) async {
+    final url = "$getApiUrl/unpin";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweetId,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

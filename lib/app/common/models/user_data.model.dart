@@ -3,8 +3,8 @@ import 'package:xwitter/app/common/models/user.model.dart';
 
 class UserData {
   final UserModel user;
-  final List<TweetModel> postedTweets;
-  final List<TweetModel> likedTweets;
+  List<TweetModel> postedTweets;
+  List<TweetModel> likedTweets;
 
   UserData({
     required this.user,

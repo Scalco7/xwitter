@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/error/validatorFailure.model.dart';
 import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/helpers/validators.dart';
@@ -25,6 +26,10 @@ abstract class ITweetController {
   Future<bool> fillTweetsList({
     required String loggedUserId,
     required bool isReloading,
+  });
+
+  Future<List<TweetModel>> tooglePinTweet({
+    required TweetModel tweet,
   });
 
   Future<List<TweetModel>> listComments({required String tweetId});
@@ -128,5 +133,22 @@ class TweetController extends ChangeNotifier implements ITweetController {
   @override
   Future<List<TweetModel>> listComments({required String tweetId}) async {
     return tweetService.listComments(tweetId: tweetId);
+  }
+
+  @override
+  Future<List<TweetModel>> tooglePinTweet({
+    required TweetModel tweet,
+  }) async {
+    if (tweet.isPinned) {
+      await tweetService.unpinTweet(tweetId: tweet.id);
+    } else {
+      await tweetService.pinTweet(tweetId: tweet.id);
+    }
+
+    String loggedUserId = UserController().loggedUser!.id;
+    List<TweetModel> postedTweets =
+        await tweetService.listPostedTweets(userId: loggedUserId);
+
+    return postedTweets;
   }
 }
