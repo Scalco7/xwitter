@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
@@ -83,8 +85,35 @@ class _EditUserScreen extends State<EditUserScreen> {
 
     if (returnedFile == null) return;
 
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: returnedFile.path,
+        compressFormat: ImageCompressFormat.png,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cortar',
+            toolbarColor: ColorConsts.primaryColor,
+            toolbarWidgetColor: Colors.white,
+            cropStyle: CropStyle.circle,
+            lockAspectRatio: true,
+            showCropGrid: true,
+            hideBottomControls: true,
+            initAspectRatio: CropAspectRatioPreset.square,
+            aspectRatioPresets: [CropAspectRatioPreset.square],
+          ),
+          IOSUiSettings(
+            //testar IOS ###
+            title: 'Cortar',
+            cropStyle: CropStyle.circle,
+            aspectRatioPickerButtonHidden: true,
+            resetAspectRatioEnabled: false,
+            aspectRatioPresets: [CropAspectRatioPreset.square],
+          ),
+        ]);
+
+    if (croppedFile == null) return;
+
     setState(() {
-      perfilPhotoFile = File(returnedFile.path);
+      perfilPhotoFile = File(croppedFile.path);
     });
   }
 

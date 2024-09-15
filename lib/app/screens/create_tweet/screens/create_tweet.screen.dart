@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
@@ -79,8 +80,36 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
 
     if (returnedFile == null) return;
 
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: returnedFile.path,
+        compressFormat: ImageCompressFormat.png,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cortar',
+            toolbarColor: ColorConsts.primaryColor,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: ColorConsts.primaryColor,
+            cropStyle: CropStyle.rectangle,
+            lockAspectRatio: true,
+            showCropGrid: true,
+            hideBottomControls: false,
+            initAspectRatio: CropAspectRatioPreset.ratio4x3,
+            aspectRatioPresets: [CropAspectRatioPreset.ratio4x3],
+          ),
+          IOSUiSettings(
+            //testar IOS ###
+            title: 'Cortar',
+            cropStyle: CropStyle.rectangle,
+            aspectRatioPickerButtonHidden: true,
+            resetAspectRatioEnabled: false,
+            aspectRatioPresets: [CropAspectRatioPreset.ratio4x3],
+          ),
+        ]);
+
+    if (croppedFile == null) return;
+
     setState(() {
-      tweetFile = File(returnedFile.path);
+      tweetFile = File(croppedFile.path);
     });
   }
 
