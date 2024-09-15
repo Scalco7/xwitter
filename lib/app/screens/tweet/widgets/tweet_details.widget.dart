@@ -103,8 +103,25 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                 ),
               ],
             ),
+            if (tweet.location != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    const Icon(
+                      Icons.location_on_rounded,
+                      color: ColorConsts.primaryColor,
+                      size: 25,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      tweet.location!,
+                    ),
+                  ],
+                ),
+              ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Text(tweet.text),
             ),
             Container(
