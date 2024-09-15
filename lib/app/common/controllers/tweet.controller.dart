@@ -154,6 +154,6 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
   @override
   Future<List<TweetModel>> listSavedTweets() async {
-    return [];
+    return tweetService.listSavedTweets();
   }
 }

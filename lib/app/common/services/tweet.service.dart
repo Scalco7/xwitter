@@ -19,6 +19,8 @@ abstract class ITweetService {
 
   Future<List<TweetModel>> listLikedTweets({required String userId});
 
+  Future<List<TweetModel>> listSavedTweets();
+
   Future<TweetModel> comment({
     required String tweetId,
     required String text,
@@ -183,6 +185,29 @@ class TweetService implements ITweetService {
 
       if (response.statusCode != 200) {
         throw Exception("Erro ao buscar tweets");
+      }
+      List<TweetModel> tweets = [];
+
+      for (Map<String, dynamic> index in data) {
+        tweets.add(TweetModel.fromJson(index));
+      }
+
+      return tweets;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<TweetModel>> listSavedTweets() async {
+    Uri uri = Uri.parse("$getApiUrl/listSave");
+
+    try {
+      final response = await ApiService().get(uri: uri);
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar tweets salvos");
       }
       List<TweetModel> tweets = [];
 
