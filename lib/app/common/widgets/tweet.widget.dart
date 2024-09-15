@@ -11,9 +11,11 @@ class TweetWidget extends StatefulWidget {
     required this.tweet,
     required this.hasComments,
     required this.onLikedTweet,
+    required this.isComment,
   });
   final TweetModel tweet;
   final bool hasComments;
+  final bool isComment;
   final Future<TweetModel> Function({required bool liked})
       onLikedTweet; // refatorar para não passar a função por cima
 
@@ -57,7 +59,8 @@ class _TweetWidget extends State<TweetWidget> {
     double screenWidth = MediaQuery.of(context).size.width;
     double tweetWidth =
         screenWidth - (paddingHorizontalWidth * 2) - gapWidth - avatarWidth;
-    double paddingRight = tweet.isPinned ? 2 * iconWidth : 30;
+    double paddingRight =
+        (tweet.isPinned ? iconWidth : 0) + (!widget.isComment ? iconWidth : 0);
 
     return SizedBox(
       width: screenWidth,
@@ -104,18 +107,21 @@ class _TweetWidget extends State<TweetWidget> {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        width: iconWidth,
-                        height: iconWidth,
-                        child: IconButton(
-                          onPressed: toogleSaveTweet,
-                          padding: const EdgeInsets.all(1),
-                          icon: Icon(
-                            tweet.isSaved
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            size: iconWidth - 2,
-                            color: ColorConsts.secondaryColor,
+                      Visibility(
+                        visible: !widget.isComment,
+                        child: SizedBox(
+                          width: iconWidth,
+                          height: iconWidth,
+                          child: IconButton(
+                            onPressed: toogleSaveTweet,
+                            padding: const EdgeInsets.all(1),
+                            icon: Icon(
+                              tweet.isSaved
+                                  ? Icons.bookmark
+                                  : Icons.bookmark_border,
+                              size: iconWidth - 2,
+                              color: ColorConsts.secondaryColor,
+                            ),
                           ),
                         ),
                       ),

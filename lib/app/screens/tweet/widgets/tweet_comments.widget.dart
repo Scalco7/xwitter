@@ -51,6 +51,7 @@ class TweetCommentsWidget extends StatelessWidget {
                     child: TweetWidget(
                       tweet: comment,
                       hasComments: false,
+                      isComment: true,
                       onLikedTweet: ({required liked}) => onLikedTweet(
                         liked: liked,
                         tweet: comment,

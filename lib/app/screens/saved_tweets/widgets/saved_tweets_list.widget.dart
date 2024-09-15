@@ -62,6 +62,7 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
                   key: Key("saved-tweet-${tweets![index].id}"),
                   tweet: tweets![index],
                   hasComments: true,
+                  isComment: false,
                   onLikedTweet: ({required bool liked}) =>
                       onLikedTweet(tweet: tweets![index], liked: liked),
                 ),

@@ -238,6 +238,7 @@ class _UserScreen extends State<UserScreen> {
                             child: TweetWidget(
                               tweet: tweet,
                               hasComments: true,
+                              isComment: false,
                               onLikedTweet: ({required liked}) =>
                                   tweetController.onLikedTweet(
                                 tweet: tweet,

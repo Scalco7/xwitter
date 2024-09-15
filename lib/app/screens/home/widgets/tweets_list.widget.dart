@@ -76,6 +76,7 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
                   key: Key("home-tweet-${tweets[index].id}"),
                   tweet: tweets[index],
                   hasComments: true,
+                  isComment: false,
                   onLikedTweet: ({required bool liked}) =>
                       onLikedTweet(tweet: tweets[index], liked: liked),
                 ),
