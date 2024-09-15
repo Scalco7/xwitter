@@ -24,7 +24,7 @@ class UserWidget extends StatelessWidget {
           children: <Widget>[
             ProfilePhotoWidget(
               photoUrl: user.photoUrl,
-              width: 60,
+              size: 60,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 15),

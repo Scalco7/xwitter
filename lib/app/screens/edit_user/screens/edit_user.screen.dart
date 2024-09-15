@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
+import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
+import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
@@ -22,11 +28,56 @@ class EditUserScreen extends StatefulWidget {
 }
 
 class _EditUserScreen extends State<EditUserScreen> {
-  final IUserController userController = UserController();
-  final UserModel user = UserController().loggedUser!;
+  static final IUserController userController = UserController();
+  static final UserModel user = UserController().loggedUser!;
+  static const double headerHeight = 80;
+  static const double perfilPhotoSize = 130;
 
   late TextEditingController nameController;
   late TextEditingController bioController;
+
+  String? editingPhotoUrl = user.photoUrl;
+  File? perfilPhotoFile;
+
+  void onSave() async {
+    String name = nameController.text;
+    String bio = bioController.text;
+
+    String? photoBase64 = perfilPhotoFile != null
+        ? await fileToBase64(perfilPhotoFile!)
+        : editingPhotoUrl == null
+            ? ""
+            : null;
+
+    bool success = await userController.editUser(
+      user: user,
+      name: name,
+      bio: bio,
+      photoBase64: photoBase64,
+    );
+
+    if (success) {
+      widget.updateUserScreen(userController.loggedUser!);
+    }
+  }
+
+  void handleRemovePhoto() {
+    setState(() {
+      perfilPhotoFile = null;
+      editingPhotoUrl = null;
+    });
+  }
+
+  void selectImageFromGallery() async {
+    XFile? returnedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (returnedFile == null) return;
+
+    setState(() {
+      perfilPhotoFile = File(returnedFile.path);
+    });
+  }
 
   @override
   void initState() {
@@ -35,26 +86,9 @@ class _EditUserScreen extends State<EditUserScreen> {
     super.initState();
   }
 
-  void onSave() async {
-    String name = nameController.text;
-    String bio = bioController.text;
-
-    bool success = await userController.editUser(
-      user: user,
-      name: name,
-      bio: bio,
-      avatarPath: "",
-    );
-
-    if (success) {
-      widget.updateUserScreen(userController.loggedUser!);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    const double headerHeight = 80;
 
     const InputBorder inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -76,13 +110,51 @@ class _EditUserScreen extends State<EditUserScreen> {
       ),
       body: SizedBox(
         width: screenWidth,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  perfilPhotoFile != null
+                      ? ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100)),
+                          child: Image.file(
+                            perfilPhotoFile!,
+                            width: perfilPhotoSize,
+                            height: perfilPhotoSize,
+                            fit: BoxFit.fill,
+                          ),
+                        )
+                      : ProfilePhotoWidget(
+                          photoUrl: editingPhotoUrl,
+                          size: perfilPhotoSize,
+                        ),
+                  const SizedBox(width: 20),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      PrimaryButtonWidget(
+                        text: "Remover",
+                        onPressed: handleRemovePhoto,
+                      ),
+                      const SizedBox(height: 5),
+                      PrimaryButtonWidget(
+                        text: "Selecionar nova foto",
+                        onPressed: selectImageFromGallery,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -112,10 +184,7 @@ class _EditUserScreen extends State<EditUserScreen> {
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -145,10 +214,7 @@ class _EditUserScreen extends State<EditUserScreen> {
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -158,8 +224,8 @@ class _EditUserScreen extends State<EditUserScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(

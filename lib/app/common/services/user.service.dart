@@ -25,7 +25,7 @@ abstract class IUserService {
     required UserModel user,
     required String name,
     required String bio,
-    required String photoBase64,
+    required String? photoBase64,
   });
 
   Future<List<UserModel>> listUsersByText({required String text});
@@ -134,7 +134,7 @@ class UserService implements IUserService {
     required UserModel user,
     required String name,
     required String bio,
-    required String photoBase64,
+    required String? photoBase64,
   }) async {
     final url = "$getApiUrl/update";
     Map<String, dynamic> jsonRequest = {

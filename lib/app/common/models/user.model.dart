@@ -4,7 +4,7 @@ class UserModel {
   final String username;
   final int numberOfFollowings;
   String name;
-  String? photoUrl;
+  final String? photoUrl;
   String bio;
   int numberOfFollowers;
   bool following;

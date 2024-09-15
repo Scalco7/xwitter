@@ -33,7 +33,7 @@ abstract class IUserController {
     required UserModel user,
     required String name,
     required String bio,
-    required String avatarPath,
+    required String? photoBase64,
   });
 
   Future<UserData?> getUserData({required UserModel oldUser});
@@ -179,7 +179,7 @@ class UserController implements IUserController {
     required UserModel user,
     required String name,
     required String bio,
-    required String avatarPath,
+    required String? photoBase64,
   }) async {
     ValidatorFailure nameValidate = validators.validateName(name);
     if (!nameValidate.valid) {
@@ -191,7 +191,7 @@ class UserController implements IUserController {
       user: user,
       name: name,
       bio: bio,
-      photoBase64: avatarPath,
+      photoBase64: photoBase64,
     );
 
     if (newUser == null) {

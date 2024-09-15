@@ -80,7 +80,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 decoration: InputDecoration(
                   icon: ProfilePhotoWidget(
                     photoUrl: loggedUser.photoUrl,
-                    width: 35,
+                    size: 35,
                   ),
                   border: InputBorder.none,
                   hintText: "Como você está?",

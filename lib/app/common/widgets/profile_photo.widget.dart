@@ -4,24 +4,29 @@ class ProfilePhotoWidget extends StatelessWidget {
   const ProfilePhotoWidget({
     super.key,
     required this.photoUrl,
-    this.width,
+    required this.size,
   });
 
   final String? photoUrl;
-  final double? width;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return photoUrl != null
-        ? Image.network(
-            photoUrl!,
-            width: width,
-            fit: BoxFit.contain,
-          )
-        : Image.asset(
-            "assets/profilePicure/default.png",
-            width: width,
-            fit: BoxFit.contain,
-          );
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(100)),
+      child: photoUrl != null
+          ? Image.network(
+              photoUrl!,
+              width: size,
+              height: size,
+              fit: BoxFit.fill,
+            )
+          : Image.asset(
+              "assets/profilePicure/default.png",
+              width: size,
+              height: size,
+              fit: BoxFit.fill,
+            ),
+    );
   }
 }

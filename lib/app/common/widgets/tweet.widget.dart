@@ -60,7 +60,7 @@ class _TweetWidget extends State<TweetWidget> {
           children: <Widget>[
             ProfilePhotoWidget(
               photoUrl: tweet.user.photoUrl,
-              width: avatarWidth,
+              size: avatarWidth,
             ),
             const SizedBox(width: gapWidth),
             Column(
