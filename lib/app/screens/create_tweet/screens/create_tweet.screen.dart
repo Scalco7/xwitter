@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
+import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
@@ -39,13 +40,15 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   bool canRetweet = true;
   File? tweetFile;
 
-  void publishTweet() {
-    print(tweetLocation);
+  void publishTweet() async {
+    String? mediaBase64 =
+        tweetFile != null ? await fileToBase64(tweetFile!, 'image/png') : null;
 
     tweetController.publishTweet(
       text: tweetTextController.text,
       canRetweet: canRetweet,
       location: tweetLocation,
+      mediaBase64: mediaBase64,
     );
 
     widget.goToHomeScreen();

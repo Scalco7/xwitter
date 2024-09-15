@@ -15,6 +15,7 @@ abstract class ITweetController {
     required String text,
     required bool canRetweet,
     required String? location,
+    required String? mediaBase64,
   });
 
   Future<TweetModel> publishComment({
@@ -63,6 +64,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
     required String text,
     required bool canRetweet,
     required String? location,
+    required String? mediaBase64,
   }) async {
     ValidatorFailure tweetValidate = validators.validateTweet(text);
     if (!tweetValidate.valid) {
@@ -76,6 +78,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
         text: text,
         canRetweet: canRetweet,
         location: location,
+        mediaBase64: mediaBase64,
       );
     } catch (e) {
       toasts.showErrorToast("Erro");

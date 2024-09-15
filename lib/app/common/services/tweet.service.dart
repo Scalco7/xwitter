@@ -11,6 +11,7 @@ abstract class ITweetService {
     required String text,
     required bool canRetweet,
     required String? location,
+    required String? mediaBase64,
   });
 
   Future<TweetModel> likeTweet({required TweetModel tweet});
@@ -56,12 +57,14 @@ class TweetService implements ITweetService {
     required String text,
     required bool canRetweet,
     required String? location,
+    required String? mediaBase64,
   }) async {
     final url = "$getApiUrl/create";
     Map<String, dynamic> jsonRequest = {
       "text": text,
       "canRetweet": canRetweet,
       "location": location,
+      "mediaBase64": mediaBase64,
     };
 
     try {

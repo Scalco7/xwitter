@@ -47,7 +47,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     String bio = bioController.text;
 
     String? photoBase64 = perfilPhotoFile != null
-        ? await fileToBase64(perfilPhotoFile!)
+        ? await fileToBase64(perfilPhotoFile!, "image/png")
         : editingPhotoUrl == null
             ? ""
             : null;
