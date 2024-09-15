@@ -8,6 +8,7 @@ import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
 import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/screens/home.screen.dart';
+import 'package:xwitter/app/screens/saved_tweets/screens/saved_tweets.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
 import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
@@ -54,6 +55,9 @@ class BigTalkRoute extends StatelessWidget {
 
     void goToSettingsScreen(BuildContext context) =>
         Navigator.of(context).pushNamed("/settings");
+
+    void goToSavedTweetsScreen(BuildContext context) =>
+        Navigator.of(context).pushNamed("/saved-tweets");
 
     void goToHomeScreen(BuildContext context) => Navigator.of(context)
         .pushNamedAndRemoveUntil("/home", (route) => false);
@@ -118,6 +122,7 @@ class BigTalkRoute extends StatelessWidget {
                   goToEditUserScreen: () =>
                       Navigator.of(context).pushNamed("/edit-user"),
                   goToSettingsScreen: () => goToSettingsScreen(context),
+                  goToSavedTweetsScreen: () => goToSavedTweetsScreen(context),
                   routePop: () => routePop(context),
                   bottomNavigationRoutes: bottomNavigationRoutes,
                 );
@@ -160,6 +165,17 @@ class BigTalkRoute extends StatelessWidget {
               builder: (context) {
                 return SettingsScreen(
                   goToSignInScreen: () => goToSignInScreen(context),
+                );
+              },
+            );
+          }
+          if (settings.name == "/saved-tweets") {
+            return MaterialPageRoute(
+              builder: (context) {
+                return SavedTweetsScreen(
+                  goToTweetDetailsScreen: (tweet) =>
+                      goToTweetDetailsScreen(context, tweet),
+                  bottomNavigationRoutes: bottomNavigationRoutes,
                 );
               },
             );

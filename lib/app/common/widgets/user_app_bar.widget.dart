@@ -7,11 +7,13 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.nickname,
     required this.routePop,
     this.goToSettingsScreen,
+    this.goToSavedTweetsScreen,
   });
   final double height;
   final String nickname;
   final void Function() routePop;
   final void Function()? goToSettingsScreen;
+  final void Function()? goToSavedTweetsScreen;
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -33,12 +35,23 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       actions: <Widget>[
         Visibility(
           visible: goToSettingsScreen != null,
-          child: IconButton(
-            onPressed: goToSettingsScreen,
-            icon: const Icon(
-              Icons.settings_rounded,
-              color: Colors.white,
-            ),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                onPressed: goToSavedTweetsScreen,
+                icon: const Icon(
+                  Icons.bookmark,
+                  color: Colors.white,
+                ),
+              ),
+              IconButton(
+                onPressed: goToSettingsScreen,
+                icon: const Icon(
+                  Icons.settings_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ],
