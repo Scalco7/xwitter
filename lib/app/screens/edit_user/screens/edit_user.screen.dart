@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:xwitter/app/common/consts/avatars_path.consts.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
-import 'package:xwitter/app/screens/edit_user/widgets/avatar_carousel.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({
@@ -29,13 +27,11 @@ class _EditUserScreen extends State<EditUserScreen> {
 
   late TextEditingController nameController;
   late TextEditingController bioController;
-  late String avatarPathController;
 
   @override
   void initState() {
     nameController = TextEditingController(text: user.name);
     bioController = TextEditingController(text: user.bio);
-    avatarPathController = user.avatarPath;
     super.initState();
   }
 
@@ -47,7 +43,7 @@ class _EditUserScreen extends State<EditUserScreen> {
       user: user,
       name: name,
       bio: bio,
-      avatarPath: avatarPathController,
+      avatarPath: "",
     );
 
     if (success) {
@@ -72,10 +68,6 @@ class _EditUserScreen extends State<EditUserScreen> {
       FocusScope.of(context).requestFocus(FocusNode());
     }
 
-    void setAvatarPathSelected(int index) {
-      avatarPathController = AvatarPathConsts.avatarPaths[index];
-    }
-
     return Scaffold(
       appBar: UserAppBarWidget(
         height: headerHeight,
@@ -88,12 +80,6 @@ class _EditUserScreen extends State<EditUserScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            AvatarCarouselWidget(
-              changeSelected: setAvatarPathSelected,
-              list: AvatarPathConsts.avatarPaths,
-              initialPage: AvatarPathConsts.avatarPaths
-                  .indexWhere((ap) => ap == avatarPathController),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(

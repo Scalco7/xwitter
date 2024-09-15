@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
+import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 
 class TweetWidget extends StatefulWidget {
   const TweetWidget({
@@ -58,10 +58,9 @@ class _TweetWidget extends State<TweetWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.asset(
-              tweet.user.avatarPath,
+            ProfilePhotoWidget(
+              photoUrl: tweet.user.photoUrl,
               width: avatarWidth,
-              fit: BoxFit.contain,
             ),
             const SizedBox(width: gapWidth),
             Column(

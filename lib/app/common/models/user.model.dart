@@ -4,7 +4,7 @@ class UserModel {
   final String username;
   final int numberOfFollowings;
   String name;
-  String avatarPath;
+  String? photoUrl;
   String bio;
   int numberOfFollowers;
   bool following;
@@ -14,7 +14,7 @@ class UserModel {
     required this.name,
     required this.email,
     required this.username,
-    required this.avatarPath,
+    required this.photoUrl,
     required this.bio,
     required this.numberOfFollowers,
     required this.numberOfFollowings,
@@ -22,15 +22,16 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      username: json["username"],
-      bio: json["bio"] ?? "",
-      following: json["following"] ?? false,
-      numberOfFollowings: json["numberOfFollowings"] ?? 0,
-      numberOfFollowers: json["numberOfFollowers"] ?? 0,
-      avatarPath: "assets/avatars/apagao_1.png"); //colocar caminho ft de perfil
+        id: json["id"],
+        name: json["name"],
+        email: json["email"],
+        username: json["username"],
+        bio: json["bio"] ?? "",
+        following: json["following"] ?? false,
+        numberOfFollowings: json["numberOfFollowings"] ?? 0,
+        numberOfFollowers: json["numberOfFollowers"] ?? 0,
+        photoUrl: json["photoUrl"],
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,

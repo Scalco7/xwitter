@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({
@@ -21,10 +22,9 @@ class UserWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Image.asset(
-              user.avatarPath,
+            ProfilePhotoWidget(
+              photoUrl: user.photoUrl,
               width: 60,
-              fit: BoxFit.contain,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 15),

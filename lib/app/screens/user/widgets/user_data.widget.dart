@@ -3,6 +3,7 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/primary_button.widget.dart';
+import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 
 class UserDataWidget extends StatelessWidget {
   const UserDataWidget({
@@ -43,9 +44,8 @@ class UserDataWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                child: Image.asset(
-                  user.avatarPath,
-                  fit: BoxFit.contain,
+                child: ProfilePhotoWidget(
+                  photoUrl: user.photoUrl,
                 ),
               ),
               PrimaryButtonWidget(

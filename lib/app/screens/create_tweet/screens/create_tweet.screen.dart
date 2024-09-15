@@ -3,6 +3,7 @@ import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
+import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
@@ -77,10 +78,9 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 controller: tweetTextController,
                 onChanged: (value) => disabledButton(),
                 decoration: InputDecoration(
-                  icon: Image.asset(
-                    loggedUser.avatarPath,
+                  icon: ProfilePhotoWidget(
+                    photoUrl: loggedUser.photoUrl,
                     width: 35,
-                    fit: BoxFit.contain,
                   ),
                   border: InputBorder.none,
                   hintText: "Como você está?",
