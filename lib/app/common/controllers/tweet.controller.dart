@@ -11,7 +11,7 @@ abstract class ITweetController {
   final List<TweetModel> _tweetsList = [];
   List<TweetModel> get tweetsList => _tweetsList;
 
-  void publishTweet({required String text});
+  void publishTweet({required String text, required bool canRetweet});
 
   Future<TweetModel> publishComment({
     required String parentTweetId,
@@ -55,7 +55,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
   TweetController._internal();
 
   @override
-  void publishTweet({required String text}) async {
+  void publishTweet({required String text, required bool canRetweet}) async {
     ValidatorFailure tweetValidate = validators.validateTweet(text);
     if (!tweetValidate.valid) {
       toasts.showErrorToast(tweetValidate.error);
@@ -64,7 +64,8 @@ class TweetController extends ChangeNotifier implements ITweetController {
 
     TweetModel newTweet;
     try {
-      newTweet = await tweetService.createTweet(text: text);
+      newTweet =
+          await tweetService.createTweet(text: text, canRetweet: canRetweet);
     } catch (e) {
       toasts.showErrorToast("Erro");
       return;
