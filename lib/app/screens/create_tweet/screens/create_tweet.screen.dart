@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
@@ -33,6 +36,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   late bool disabledTweetButton;
   String? tweetLocation;
   bool canRetweet = true;
+  File? tweetFile;
 
   void publishTweet() {
     print(tweetLocation);
@@ -62,6 +66,30 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
     setState(() {
       tweetLocation = location;
     });
+  }
+
+  void removeTweetFile() {
+    setState(() {
+      tweetFile = null;
+    });
+  }
+
+  void selectImageFromGallery() async {
+    XFile? returnedFile = await ImagePicker().pickMedia();
+
+    if (returnedFile == null) return;
+
+    setState(() {
+      tweetFile = File(returnedFile.path);
+    });
+  }
+
+  void handleImageButtonClicked() {
+    if (tweetFile == null) {
+      selectImageFromGallery();
+    } else {
+      removeTweetFile();
+    }
   }
 
   @override
@@ -204,13 +232,39 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                       size: 35,
                     ),
                     border: InputBorder.none,
-                    hintText: "Como você está?",
+                    hintText: "Eu queria...",
                   ),
                   maxLines: null,
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
                   maxLength: 280,
                 ),
               ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: <Widget>[
+                    if (tweetFile != null)
+                      Image.file(
+                        tweetFile!,
+                        height: 350,
+                        fit: BoxFit.contain,
+                      ),
+                    TextButton(
+                      onPressed: handleImageButtonClicked,
+                      child: Text(
+                        tweetFile == null
+                            ? "Adicionar foto/vídeo"
+                            : "Remover foto/vídeo",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: ColorConsts.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),

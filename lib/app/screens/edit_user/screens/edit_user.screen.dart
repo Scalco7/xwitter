@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
