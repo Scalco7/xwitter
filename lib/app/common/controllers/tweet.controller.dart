@@ -33,6 +33,8 @@ abstract class ITweetController {
   });
 
   Future<List<TweetModel>> listComments({required String tweetId});
+
+  Future<List<TweetModel>> listSavedTweets();
 }
 
 class TweetController extends ChangeNotifier implements ITweetController {
@@ -150,5 +152,10 @@ class TweetController extends ChangeNotifier implements ITweetController {
         await tweetService.listPostedTweets(userId: loggedUserId);
 
     return postedTweets;
+  }
+
+  @override
+  Future<List<TweetModel>> listSavedTweets() async {
+    return [];
   }
 }

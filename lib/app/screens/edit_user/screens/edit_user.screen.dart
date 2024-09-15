@@ -105,7 +105,7 @@ class _EditUserScreen extends State<EditUserScreen> {
     return Scaffold(
       appBar: UserAppBarWidget(
         height: headerHeight,
-        nickname: user.username,
+        text: "@${user.username}",
         routePop: widget.routePop,
       ),
       body: SizedBox(

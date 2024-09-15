@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
-import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
-import 'package:xwitter/app/screens/home/widgets/home_app_bar.widget.dart';
+import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
+import 'package:xwitter/app/screens/saved_tweets/widgets/saved_tweets_list.widget.dart';
 
 class SavedTweetsScreen extends StatelessWidget {
   const SavedTweetsScreen({
     super.key,
     required this.goToTweetDetailsScreen,
     required this.bottomNavigationRoutes,
+    required this.routePop,
   });
 
   final void Function(TweetModel tweet) goToTweetDetailsScreen;
   final BottomNavigationRoutesModel bottomNavigationRoutes;
+  final void Function() routePop;
 
   @override
   Widget build(BuildContext context) {
+    const double appBarHeight = 64;
+
     return Scaffold(
-      appBar: const HomeAppBarWidget(),
-      body: const Center(
-        child: Text("tweets salvosd"),
+      appBar: UserAppBarWidget(
+        text: "Tweets Salvos",
+        height: appBarHeight,
+        routePop: routePop,
       ),
-      floatingActionButton: const CreateTweetButtonWidget(),
+      body: SavedTweetsListWidget(
+        goToTweetDetailsScreen: goToTweetDetailsScreen,
+      ),
       bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: 1,
+        currentIndex: 2,
         bottomNavigationRoutes: bottomNavigationRoutes,
       ),
     );

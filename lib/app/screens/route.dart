@@ -176,6 +176,7 @@ class BigTalkRoute extends StatelessWidget {
                   goToTweetDetailsScreen: (tweet) =>
                       goToTweetDetailsScreen(context, tweet),
                   bottomNavigationRoutes: bottomNavigationRoutes,
+                  routePop: () => routePop(context),
                 );
               },
             );

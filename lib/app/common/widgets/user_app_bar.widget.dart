@@ -4,13 +4,13 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const UserAppBarWidget({
     super.key,
     required this.height,
-    required this.nickname,
+    required this.text,
     required this.routePop,
     this.goToSettingsScreen,
     this.goToSavedTweetsScreen,
   });
   final double height;
-  final String nickname;
+  final String text;
   final void Function() routePop;
   final void Function()? goToSettingsScreen;
   final void Function()? goToSavedTweetsScreen;
@@ -25,7 +25,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: height,
       centerTitle: true,
       title: Text(
-        "@$nickname",
+        text,
         style: TextStyle(
           color: Colors.blueGrey.shade50,
           fontSize: 21,
