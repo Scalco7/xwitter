@@ -51,7 +51,12 @@ class _SearchScreenState extends State<SearchScreen> {
         decoration: const BoxDecoration(color: ColorConsts.backgroundColor),
         child: Column(
           children: <Widget>[
-            SearchWidget(onSubmitted: search),
+            SearchWidget(
+              onSubmitted: search,
+              paddingHorizontal: 20,
+              width: screenWidth,
+              hintText: "Buscar usuário",
+            ),
             SizedBox(
               width: screenWidth,
               height: 50,

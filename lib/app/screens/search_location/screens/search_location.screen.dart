@@ -51,7 +51,34 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
         decoration: const BoxDecoration(color: ColorConsts.backgroundColor),
         child: Column(
           children: <Widget>[
-            SearchWidget(onSubmitted: search),
+            Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: IconButton(
+                      alignment: Alignment.bottomCenter,
+                      onPressed: widget.routePop,
+                      splashRadius: 1,
+                      icon: const Icon(
+                        Icons.close,
+                        color: ColorConsts.secondaryColor,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                  SearchWidget(
+                    onSubmitted: search,
+                    paddingHorizontal: 5,
+                    width: screenWidth - 50,
+                    hintText: "Buscar localização",
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               width: screenWidth,
               height: 50,

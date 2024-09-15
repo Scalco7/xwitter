@@ -2,9 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({super.key, required this.onSubmitted});
+  const SearchWidget({
+    super.key,
+    required this.onSubmitted,
+    required this.width,
+    required this.paddingHorizontal,
+    required this.hintText,
+  });
 
   final Function(String text) onSubmitted;
+  final String hintText;
+  final double paddingHorizontal;
+  final double width;
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
@@ -41,12 +50,16 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: widget.width,
       height: 70,
       decoration: const BoxDecoration(color: Colors.white),
       child: Padding(
-        padding:
-            const EdgeInsets.only(top: 25, left: 20, right: 20, bottom: 10),
+        padding: EdgeInsets.only(
+          top: 25,
+          left: widget.paddingHorizontal,
+          right: widget.paddingHorizontal,
+          bottom: 10,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +98,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     Icons.search_rounded,
                     size: 17,
                   ),
-                  hintText: "Search user",
+                  hintText: widget.hintText,
                   filled: true,
                   fillColor: ColorConsts.backgroundColor,
                   enabledBorder: inputBorder,
