@@ -4,6 +4,8 @@ class TweetModel {
   final String id;
   final UserModel user;
   final String text;
+  final bool canRetweet;
+  final String? location;
   int likes;
   bool liked;
   bool isPinned;
@@ -15,6 +17,8 @@ class TweetModel {
     required this.id,
     required this.user,
     required this.text,
+    required this.canRetweet,
+    required this.location,
     required this.likes,
     required this.liked,
     required this.isPinned,
@@ -29,6 +33,8 @@ class TweetModel {
         text: json["text"],
         likes: json["likes"],
         liked: json["liked"],
+        canRetweet: json["canRetweet"],
+        location: json["location"],
         isPinned: json["isPinned"] ?? false,
         isSaved: json["isSaved"] ?? false,
         commentsQuantity: json["commentsQuantity"] ?? 0,
@@ -39,6 +45,8 @@ class TweetModel {
         "id": id,
         "user": user,
         "text": text,
+        "location": location,
+        "canRetweet": canRetweet,
         "likes": likes,
         "liked": liked,
         "isPinned": isPinned,
