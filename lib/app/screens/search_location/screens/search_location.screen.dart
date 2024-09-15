@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/services/location.service.dart';
 import 'package:xwitter/app/common/widgets/search.widget.dart';
+import 'package:xwitter/app/screens/search_location/widgets/city.widget.dart';
 
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({
@@ -16,15 +18,15 @@ class SearchLocationScreen extends StatefulWidget {
 }
 
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
-  List<String> listLocations = [];
+  List<String>? listLocations;
 
   void search(String searchText) async {
-    // List<UserModel> newList =
-    //     await userService.listUsersByText(text: searchText);
+    List<String> newLocations =
+        await LocationService().listLocations(searchText: searchText);
 
-    // setState(() {
-    //   listUsers = newList;
-    // });
+    setState(() {
+      listLocations = newLocations;
+    });
   }
 
   void goBack() {
@@ -35,6 +37,12 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   void onClick(String? location) {
     widget.setLocation(location);
     widget.routePop();
+  }
+
+  @override
+  void initState() {
+    search('');
+    super.initState();
   }
 
   @override
@@ -95,6 +103,33 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                 ),
               ),
             ),
+            const Divider(),
+            listLocations == null
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: CircularProgressIndicator(
+                        color: ColorConsts.primaryColor,
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          key: Key("search-location-$index"),
+                          onTap: () => onClick(listLocations![index]),
+                          child: CityWidget(
+                            text: listLocations![index],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                      itemCount: listLocations!.length,
+                    ),
+                  ),
           ],
         ),
       ),
