@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -28,12 +29,16 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   ITweetController tweetController = TweetController();
   TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
-  bool? canRetweet = true;
+  String? tweetLocation = "arraial do cabo";
+  bool canRetweet = true;
 
   void publishTweet() {
+    print(tweetLocation);
+
     tweetController.publishTweet(
       text: tweetTextController.text,
-      canRetweet: canRetweet ?? false,
+      canRetweet: canRetweet,
+      location: tweetLocation,
     );
 
     widget.goToHomeScreen();
@@ -45,10 +50,22 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
     });
   }
 
-  void setCanRetweet(bool? value) {
+  void setCanRetweet(bool value) {
     setState(() {
       canRetweet = value;
     });
+  }
+
+  void setTweetLocation(String? location) {
+    //abrir tela de search passando esse função como parametro
+    setState(() {
+      tweetLocation = location;
+    });
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
@@ -90,31 +107,90 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Checkbox(
-                      activeColor: ColorConsts.primaryColor,
-                      value: canRetweet,
-                      onChanged: (bool? value) => setCanRetweet(value),
-                    ),
                     GestureDetector(
-                      onTap: () => setCanRetweet(
-                        canRetweet != null ? !canRetweet! : true,
+                      onTap: () => setCanRetweet(!canRetweet),
+                      child: const Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.repeat,
+                            color: ColorConsts.primaryColor,
+                            size: 30,
+                          ),
+                          SizedBox(width: 7),
+                          Text(
+                            "Pode retweetar",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: ColorConsts.secondaryColor,
+                            ),
+                          ),
+                        ],
                       ),
-                      child: const Text(
-                        "Pode retweetar",
-                        style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                    SizedBox(
+                      width: 35,
+                      height: 35,
+                      child: Switch(
+                        activeColor: ColorConsts.primaryColor,
+                        value: canRetweet,
+                        onChanged: (bool value) => setCanRetweet(value),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: GestureDetector(
+                  onTap: () => print('tela de location'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          const Icon(
+                            Icons.location_on_rounded,
+                            color: ColorConsts.primaryColor,
+                            size: 30,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            tweetLocation ?? "Adiconar localização",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: tweetLocation != null
+                                  ? Colors.black
+                                  : ColorConsts.secondaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () => tweetLocation != null
+                            ? setTweetLocation(null)
+                            : print('open tweet search'),
+                        child: Icon(
+                          tweetLocation != null
+                              ? Icons.close
+                              : Icons.chevron_right_outlined,
+                          color: ColorConsts.secondaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: TextField(

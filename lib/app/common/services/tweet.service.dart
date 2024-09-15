@@ -7,8 +7,11 @@ import 'package:xwitter/app/common/services/api.service.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 
 abstract class ITweetService {
-  Future<TweetModel> createTweet(
-      {required String text, required bool canRetweet});
+  Future<TweetModel> createTweet({
+    required String text,
+    required bool canRetweet,
+    required String? location,
+  });
 
   Future<TweetModel> likeTweet({required TweetModel tweet});
 
@@ -52,12 +55,13 @@ class TweetService implements ITweetService {
   Future<TweetModel> createTweet({
     required String text,
     required bool canRetweet,
+    required String? location,
   }) async {
     final url = "$getApiUrl/create";
     Map<String, dynamic> jsonRequest = {
       "text": text,
       "canRetweet": canRetweet,
-      "location": "",
+      "location": location,
     };
 
     try {
