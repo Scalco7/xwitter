@@ -6,9 +6,12 @@ class PrimaryButtonWidget extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
+    this.isLoading = false,
   });
+
   final String text;
   final Function() onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +32,22 @@ class PrimaryButtonWidget extends StatelessWidget {
           EdgeInsets.symmetric(horizontal: 15, vertical: 2),
         ),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          color: ColorConsts.primaryColor,
-        ),
-      ),
+      child: isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: ColorConsts.primaryColor,
+              ),
+            )
+          : Text(
+              text,
+              style: const TextStyle(
+                fontSize: 14,
+                color: ColorConsts.primaryColor,
+              ),
+            ),
     );
   }
 }

@@ -29,17 +29,19 @@ class EditUserScreen extends StatefulWidget {
 
 class _EditUserScreen extends State<EditUserScreen> {
   static final IUserController userController = UserController();
-  static final UserModel user = UserController().loggedUser!;
   static const double headerHeight = 80;
   static const double perfilPhotoSize = 130;
 
+  late UserModel user;
+  late bool savingLoading;
   late TextEditingController nameController;
   late TextEditingController bioController;
-
-  String? editingPhotoUrl = user.photoUrl;
-  File? perfilPhotoFile;
+  late String? editingPhotoUrl;
+  late File? perfilPhotoFile;
 
   void onSave() async {
+    setSavingLoading(true);
+
     String name = nameController.text;
     String bio = bioController.text;
 
@@ -59,6 +61,14 @@ class _EditUserScreen extends State<EditUserScreen> {
     if (success) {
       widget.updateUserScreen(userController.loggedUser!);
     }
+
+    setSavingLoading(false);
+  }
+
+  void setSavingLoading(bool value) {
+    setState(() {
+      savingLoading = value;
+    });
   }
 
   void handleRemovePhoto() {
@@ -81,6 +91,10 @@ class _EditUserScreen extends State<EditUserScreen> {
 
   @override
   void initState() {
+    user = userController.loggedUser!;
+    savingLoading = false;
+    editingPhotoUrl = user.photoUrl;
+    perfilPhotoFile = null;
     nameController = TextEditingController(text: user.name);
     bioController = TextEditingController(text: user.bio);
     super.initState();
@@ -219,6 +233,7 @@ class _EditUserScreen extends State<EditUserScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   PrimaryButtonWidget(
+                    isLoading: savingLoading,
                     text: "Save",
                     onPressed: onSave,
                   ),

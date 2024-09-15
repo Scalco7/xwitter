@@ -46,6 +46,10 @@ class _UserScreen extends State<UserScreen> {
 
   final loggedUserId = UserController().loggedUser!.id;
 
+  static const double appBarHeight = 64;
+  static const double headerHeight = 16;
+  static const double avatarHeight = 70;
+
   UserData? userDataLists;
   List<TweetModel> tweetsList = [];
   Offset _tapPosition = Offset.zero;
@@ -177,9 +181,6 @@ class _UserScreen extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    const double appBarHeight = 64;
-    const double headerHeight = 16;
-    const double avatarHeight = 70;
 
     return Scaffold(
       appBar: UserAppBarWidget(
