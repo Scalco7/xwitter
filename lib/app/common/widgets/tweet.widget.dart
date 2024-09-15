@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
@@ -21,10 +22,25 @@ class TweetWidget extends StatefulWidget {
 }
 
 class _TweetWidget extends State<TweetWidget> {
+  static IUserController userController = UserController();
+  static const double paddingHorizontalWidth = 15;
+  static const double avatarWidth = 55;
+  static const double gapWidth = 5;
+  static const double iconWidth = 30;
+
   late TweetModel tweet;
 
   void likeTweet() async {
     TweetModel updatedTweet = await widget.onLikedTweet(liked: !tweet.liked);
+    setState(() {
+      tweet = updatedTweet;
+    });
+  }
+
+  void toogleSaveTweet() async {
+    TweetModel updatedTweet =
+        await userController.toogleSaveTweet(tweet: tweet);
+
     setState(() {
       tweet = updatedTweet;
     });
@@ -39,13 +55,9 @@ class _TweetWidget extends State<TweetWidget> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    const double paddingHorizontalWidth = 15;
-    const double avatarWidth = 55;
-    const double gapWidth = 5;
     double tweetWidth =
         screenWidth - (paddingHorizontalWidth * 2) - gapWidth - avatarWidth;
-
-    double pinWidth = tweet.isPinned ? 30 : 0;
+    double paddingRight = tweet.isPinned ? 2 * iconWidth : 30;
 
     return SizedBox(
       width: screenWidth,
@@ -72,7 +84,7 @@ class _TweetWidget extends State<TweetWidget> {
                   child: Row(
                     children: <Widget>[
                       SizedBox(
-                        width: tweetWidth - pinWidth,
+                        width: tweetWidth - paddingRight,
                         child: Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: <Widget>[
@@ -92,13 +104,28 @@ class _TweetWidget extends State<TweetWidget> {
                           ],
                         ),
                       ),
+                      SizedBox(
+                        width: iconWidth,
+                        height: iconWidth,
+                        child: IconButton(
+                          onPressed: toogleSaveTweet,
+                          padding: const EdgeInsets.all(1),
+                          icon: Icon(
+                            tweet.isSaved
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            size: iconWidth - 2,
+                            color: ColorConsts.secondaryColor,
+                          ),
+                        ),
+                      ),
                       Visibility(
                         visible: tweet.isPinned,
                         child: Transform.rotate(
                           angle: 3.17 / 12,
-                          child: Icon(
+                          child: const Icon(
                             Icons.push_pin_rounded,
-                            size: pinWidth,
+                            size: iconWidth,
                             color: ColorConsts.secondaryColor,
                           ),
                         ),

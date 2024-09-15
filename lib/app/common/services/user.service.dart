@@ -37,6 +37,10 @@ abstract class IUserService {
   Future<UserModel> unfollowUser({
     required UserModel user,
   });
+
+  Future<bool> saveTweet({required String tweetId});
+
+  Future<bool> unsaveTweet({required String tweetId});
 }
 
 class UserService implements IUserService {
@@ -204,5 +208,47 @@ class UserService implements IUserService {
     user.following = false;
 
     return user;
+  }
+
+  @override
+  Future<bool> saveTweet({required String tweetId}) async {
+    final url = "$getApiUrl/savetweet";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweetId,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> unsaveTweet({required String tweetId}) async {
+    final url = "$getApiUrl/savetweet/remove";
+    Map<String, dynamic> jsonRequest = {
+      "tweetId": tweetId,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

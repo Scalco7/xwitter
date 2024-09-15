@@ -15,7 +15,7 @@ class SavedTweetsListWidget extends StatefulWidget {
 
 class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
   static final ITweetController tweetController = TweetController();
-  List<TweetModel> tweets = [];
+  List<TweetModel>? tweets;
 
   Future<TweetModel> onLikedTweet({
     required TweetModel tweet,
@@ -37,14 +37,14 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
 
   @override
   void initState() {
-    if (tweets.isEmpty) loadTweets();
+    if (tweets == null) loadTweets();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return tweets.isEmpty
+    return tweets == null
         ? const Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: Align(
@@ -57,19 +57,19 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
         : ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () => widget.goToTweetDetailsScreen(tweets[index]),
+                onTap: () => widget.goToTweetDetailsScreen(tweets![index]),
                 child: TweetWidget(
-                  key: Key("saved-tweet-${tweets[index].id}"),
-                  tweet: tweets[index],
+                  key: Key("saved-tweet-${tweets![index].id}"),
+                  tweet: tweets![index],
                   hasComments: true,
                   onLikedTweet: ({required bool liked}) =>
-                      onLikedTweet(tweet: tweets[index], liked: liked),
+                      onLikedTweet(tweet: tweets![index], liked: liked),
                 ),
               );
             },
             separatorBuilder: (BuildContext context, int index) =>
                 const Divider(),
-            itemCount: tweets.length,
+            itemCount: tweets!.length,
           );
   }
 }

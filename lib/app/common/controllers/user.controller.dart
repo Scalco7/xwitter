@@ -37,6 +37,8 @@ abstract class IUserController {
   });
 
   Future<UserData?> getUserData({required UserModel oldUser});
+
+  Future<TweetModel> toogleSaveTweet({required TweetModel tweet});
 }
 
 class UserController implements IUserController {
@@ -226,5 +228,25 @@ class UserController implements IUserController {
     );
 
     return userData;
+  }
+
+  @override
+  Future<TweetModel> toogleSaveTweet({required TweetModel tweet}) async {
+    bool success = false;
+
+    if (tweet.isSaved) {
+      success = await userService.unsaveTweet(tweetId: tweet.id);
+    } else {
+      success = await userService.saveTweet(tweetId: tweet.id);
+    }
+
+    if (!success) {
+      String text = tweet.isSaved ? "deixar de salvar" : "salvar";
+      toasts.showErrorToast("Erro ao $text post");
+      return tweet;
+    }
+
+    tweet.isSaved = !tweet.isSaved;
+    return tweet;
   }
 }

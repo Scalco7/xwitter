@@ -74,7 +74,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   return GestureDetector(
                     key: Key("search-user-${listUsers[index].id}"),
                     onTap: () => onClickUser(listUsers[index]),
-                    child: UserWidget(user: listUsers[index]),
+                    child: UserWidget(
+                      user: listUsers[index],
+                      width: MediaQuery.of(context).size.width,
+                    ),
                   );
                 },
                 itemCount: listUsers.length,

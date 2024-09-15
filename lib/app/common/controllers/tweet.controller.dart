@@ -28,9 +28,7 @@ abstract class ITweetController {
     required bool isReloading,
   });
 
-  Future<List<TweetModel>> tooglePinTweet({
-    required TweetModel tweet,
-  });
+  Future<List<TweetModel>> tooglePinTweet({required TweetModel tweet});
 
   Future<List<TweetModel>> listComments({required String tweetId});
 

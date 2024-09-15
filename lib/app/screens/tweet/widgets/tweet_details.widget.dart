@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
@@ -25,6 +26,8 @@ class TweetDetailsWidget extends StatefulWidget {
 }
 
 class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
+  static final IUserController userController = UserController();
+  static const double iconWidth = 40;
   late TweetModel tweet;
 
   void likeTweet() async {
@@ -39,6 +42,15 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
     widget.commentTextFieldFocus.requestFocus();
   }
 
+  void toogleSaveTweet() async {
+    TweetModel updatedTweet =
+        await userController.toogleSaveTweet(tweet: tweet);
+
+    setState(() {
+      tweet = updatedTweet;
+    });
+  }
+
   @override
   void initState() {
     tweet = widget.tweet;
@@ -47,6 +59,8 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double perfilWidth = MediaQuery.of(context).size.width - iconWidth - 20;
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -63,9 +77,31 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            GestureDetector(
-              onTap: () => widget.goToUserScreen(tweet.user),
-              child: UserWidget(user: tweet.user),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => widget.goToUserScreen(tweet.user),
+                  child: UserWidget(
+                    user: tweet.user,
+                    width: perfilWidth,
+                  ),
+                ),
+                SizedBox(
+                  width: iconWidth,
+                  height: iconWidth,
+                  child: IconButton(
+                    onPressed: toogleSaveTweet,
+                    padding: const EdgeInsets.all(3),
+                    icon: Icon(
+                      tweet.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                      size: iconWidth - 8,
+                      color: ColorConsts.secondaryColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),

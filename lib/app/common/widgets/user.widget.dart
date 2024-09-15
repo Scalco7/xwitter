@@ -7,13 +7,15 @@ class UserWidget extends StatelessWidget {
   const UserWidget({
     super.key,
     required this.user,
+    required this.width,
   });
   final UserModel user;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: width,
       height: 75,
       decoration: const BoxDecoration(color: Colors.white),
       child: Padding(
