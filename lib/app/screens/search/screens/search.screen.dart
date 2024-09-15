@@ -4,7 +4,7 @@ import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
-import 'package:xwitter/app/screens/search/widgets/search.widget.dart';
+import 'package:xwitter/app/common/widgets/search.widget.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class SearchScreen extends StatefulWidget {

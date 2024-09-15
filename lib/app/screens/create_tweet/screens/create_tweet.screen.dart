@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
@@ -14,10 +12,14 @@ class CreateTweetScreen extends StatefulWidget {
     super.key,
     required this.routePop,
     required this.goToHomeScreen,
+    required this.goToSearchLocationScreen,
   });
 
   final void Function() routePop;
   final void Function() goToHomeScreen;
+  final void Function(
+    void Function(String? location) setLocation,
+  ) goToSearchLocationScreen;
 
   @override
   State<StatefulWidget> createState() => _CreateTweetScreen();
@@ -29,7 +31,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   ITweetController tweetController = TweetController();
   TextEditingController tweetTextController = TextEditingController();
   late bool disabledTweetButton;
-  String? tweetLocation = "arraial do cabo";
+  String? tweetLocation;
   bool canRetweet = true;
 
   void publishTweet() {
@@ -57,7 +59,6 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   }
 
   void setTweetLocation(String? location) {
-    //abrir tela de search passando esse função como parametro
     setState(() {
       tweetLocation = location;
     });
@@ -150,7 +151,8 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: GestureDetector(
-                  onTap: () => print('tela de location'),
+                  onTap: () =>
+                      widget.goToSearchLocationScreen(setTweetLocation),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -178,7 +180,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                       GestureDetector(
                         onTap: () => tweetLocation != null
                             ? setTweetLocation(null)
-                            : print('open tweet search'),
+                            : widget.goToSearchLocationScreen(setTweetLocation),
                         child: Icon(
                           tweetLocation != null
                               ? Icons.close

@@ -10,6 +10,7 @@ import 'package:xwitter/app/screens/edit_user/screens/edit_user.screen.dart';
 import 'package:xwitter/app/screens/home/screens/home.screen.dart';
 import 'package:xwitter/app/screens/saved_tweets/screens/saved_tweets.screen.dart';
 import 'package:xwitter/app/screens/search/screens/search.screen.dart';
+import 'package:xwitter/app/screens/search_location/screens/search_location.screen.dart';
 import 'package:xwitter/app/screens/settings/screens/settings.screen.dart';
 import 'package:xwitter/app/screens/tweet/screens/tweet.screen.dart';
 import 'package:xwitter/app/screens/user/screens/user.screen.dart';
@@ -52,6 +53,13 @@ class BigTalkRoute extends StatelessWidget {
 
     void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
         Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+
+    void goToSearchLocationScreen(
+      BuildContext context,
+      void Function(String? location) setLocation,
+    ) =>
+        Navigator.of(context)
+            .pushNamed("/search-location", arguments: setLocation);
 
     void goToSettingsScreen(BuildContext context) =>
         Navigator.of(context).pushNamed("/settings");
@@ -111,6 +119,15 @@ class BigTalkRoute extends StatelessWidget {
               ),
             );
           }
+          if (settings.name == "/search-location") {
+            return MaterialPageRoute(
+              builder: (context) => SearchLocationScreen(
+                routePop: () => routePop(context),
+                setLocation:
+                    settings.arguments as void Function(String? location),
+              ),
+            );
+          }
           if (settings.name == "/user") {
             return MaterialPageRoute(
               builder: (context) {
@@ -144,6 +161,8 @@ class BigTalkRoute extends StatelessWidget {
               builder: (context) => CreateTweetScreen(
                 routePop: () => routePop(context),
                 goToHomeScreen: () => goToHomeScreen(context),
+                goToSearchLocationScreen: (setLocation) =>
+                    goToSearchLocationScreen(context, setLocation),
               ),
             );
           }
