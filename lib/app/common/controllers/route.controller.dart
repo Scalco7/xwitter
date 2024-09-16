@@ -46,11 +46,14 @@ class RouteController {
   void goToUserScreen(BuildContext context, UserModel user) =>
       Navigator.of(context).pushNamed("/user", arguments: user);
 
-  // void routePopFromTweetDetails
-
   void goToTweetDetailsScreen(
-      BuildContext context, /*String actualRouteName,*/ TweetModel tweet) {
-    Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+    BuildContext context,
+    TweetModel tweet,
+    void Function() setState,
+  ) {
+    Navigator.of(context)
+        .pushNamed("/tweet", arguments: tweet)
+        .then((value) => setState());
   }
 
   void goToSearchLocationScreen(

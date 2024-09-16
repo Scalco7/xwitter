@@ -48,6 +48,10 @@ class _UserScreen extends State<UserScreen> {
   late UserModel user;
   late bool isMyAccount;
 
+  void reloadPage() {
+    setState(() {});
+  }
+
   void initLists() async {
     userDataLists = await userController.getUserData(oldUser: widget.user);
     if (userDataLists == null) return;
@@ -255,6 +259,7 @@ class _UserScreen extends State<UserScreen> {
                                     routeController.goToTweetDetailsScreen(
                                   context,
                                   tweet,
+                                  reloadPage,
                                 ),
                                 onLongPress: () =>
                                     handleTweetLongPress(context, tweet),

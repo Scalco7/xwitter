@@ -28,7 +28,11 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
   }
 
   void goToTweetDetailsScreen(TweetModel tweet) {
-    routeController.goToTweetDetailsScreen(context, tweet);
+    routeController.goToTweetDetailsScreen(context, tweet, reloadPage);
+  }
+
+  void reloadPage() {
+    setState(() {});
   }
 
   void loadTweets() async {

@@ -20,7 +20,11 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
   List<TweetModel> tweets = tweetController.tweetsList;
 
   void goToTweetDetailsScreen(TweetModel tweet) {
-    routeController.goToTweetDetailsScreen(context, tweet);
+    routeController.goToTweetDetailsScreen(context, tweet, reloadPage);
+  }
+
+  void reloadPage() {
+    setState(() {});
   }
 
   Future<TweetModel> onLikedTweet({
