@@ -36,7 +36,7 @@ class TweetModel {
         likes: json["likes"],
         liked: json["liked"],
         mediaUrl: json["mediaUrl"],
-        canRetweet: json["canRetweet"],
+        canRetweet: json["canRetweet"] ?? false,
         location: json["location"],
         isPinned: json["isPinned"] ?? false,
         isSaved: json["isSaved"] ?? false,
