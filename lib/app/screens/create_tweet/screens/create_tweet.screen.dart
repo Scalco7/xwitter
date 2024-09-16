@@ -96,8 +96,8 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
             lockAspectRatio: true,
             showCropGrid: true,
             hideBottomControls: false,
-            initAspectRatio: CropAspectRatioPreset.ratio4x3,
-            aspectRatioPresets: [CropAspectRatioPreset.ratio4x3],
+            initAspectRatio: CropAspectRatioPreset.ratio5x3,
+            aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
           ),
           IOSUiSettings(
             //testar IOS ###
@@ -105,7 +105,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
             cropStyle: CropStyle.rectangle,
             aspectRatioPickerButtonHidden: true,
             resetAspectRatioEnabled: false,
-            aspectRatioPresets: [CropAspectRatioPreset.ratio4x3],
+            aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
           ),
         ]);
 

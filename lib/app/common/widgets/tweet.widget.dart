@@ -147,6 +147,21 @@ class _TweetWidget extends State<TweetWidget> {
                     softWrap: true,
                   ),
                 ),
+                if (tweet.mediaUrl != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SizedBox(
+                      width: tweetWidth,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Image.network(
+                          tweet.mediaUrl!,
+                          height: 100,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
                 const SizedBox(
                   height: 10,
                 ),

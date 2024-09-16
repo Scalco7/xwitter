@@ -121,9 +121,17 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.only(bottom: 10),
               child: Text(tweet.text),
             ),
+            if (tweet.mediaUrl != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 15),
+                child: Image.network(
+                  tweet.mediaUrl!,
+                  fit: BoxFit.contain,
+                ),
+              ),
             Container(
               width: double.maxFinite,
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
