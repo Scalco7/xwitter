@@ -58,23 +58,49 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
               ),
             ),
           )
-        : ListView.separated(
-            itemBuilder: (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () => goToTweetDetailsScreen(tweets![index]),
-                child: TweetWidget(
-                  key: Key("saved-tweet-${tweets![index].id}"),
-                  tweet: tweets![index],
-                  hasComments: true,
-                  isComment: false,
-                  onLikedTweet: ({required bool liked}) =>
-                      onLikedTweet(tweet: tweets![index], liked: liked),
-                ),
+        : tweets!.isEmpty
+            ? const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Você não tem nenhum Tweet salvo",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      color: ColorConsts.secondaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Salve seu primeiro Tweet na aba príncipal",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: ColorConsts.secondaryColor,
+                    ),
+                  ),
+                ],
+              )
+            : ListView.separated(
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () => goToTweetDetailsScreen(tweets![index]),
+                    child: TweetWidget(
+                      key: Key("saved-tweet-${tweets![index].id}"),
+                      tweet: tweets![index],
+                      hasComments: true,
+                      isComment: false,
+                      onLikedTweet: ({required bool liked}) =>
+                          onLikedTweet(tweet: tweets![index], liked: liked),
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(),
+                itemCount: tweets!.length,
               );
-            },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-            itemCount: tweets!.length,
-          );
   }
 }

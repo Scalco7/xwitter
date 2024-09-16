@@ -42,6 +42,8 @@ class _UserScreen extends State<UserScreen> {
   List<TweetModel> tweetsList = [];
   Offset _tapPosition = Offset.zero;
 
+  EListTweetsSection actualListState = EListTweetsSection.publishedtTweets;
+
   late String buttonText;
   late UserModel user;
   late bool isMyAccount;
@@ -60,7 +62,8 @@ class _UserScreen extends State<UserScreen> {
     if (userDataLists == null) return;
 
     setState(() {
-      tweetsList = state == EListTweetsSection.publishedtTweets
+      actualListState = state;
+      tweetsList = actualListState == EListTweetsSection.publishedtTweets
           ? userDataLists!.postedTweets
           : userDataLists!.likedTweets;
     });
@@ -210,35 +213,69 @@ class _UserScreen extends State<UserScreen> {
                           ),
                         ),
                       )
-                    : ListView.separated(
-                        itemBuilder: (BuildContext context, int index) {
-                          TweetModel tweet = tweetsList[index];
-                          return GestureDetector(
-                            key: Key("user-tweet-${tweet.id}"),
-                            onTap: () => routeController.goToTweetDetailsScreen(
-                              context,
-                              tweet,
-                            ),
-                            onLongPress: () =>
-                                handleTweetLongPress(context, tweet),
-                            onLongPressDown: (position) =>
-                                getTapPosition(position),
-                            child: TweetWidget(
-                              tweet: tweet,
-                              hasComments: true,
-                              isComment: false,
-                              onLikedTweet: ({required liked}) =>
-                                  tweetController.onLikedTweet(
-                                tweet: tweet,
-                                liked: liked,
+                    : tweetsList.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                actualListState ==
+                                        EListTweetsSection.publishedtTweets
+                                    ? "Você não postou nenhum Tweet ainda"
+                                    : "Você não curtiu nenhum tweet ainda",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConsts.secondaryColor,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const Divider(),
-                        itemCount: tweetsList.length,
-                      ),
+                              const SizedBox(height: 10),
+                              Text(
+                                actualListState ==
+                                        EListTweetsSection.publishedtTweets
+                                    ? "Poste seu primeiro tweet clicando no botão azul no canto inferior direito"
+                                    : "Curta seu primeiro tweet clicando no coração em baixo de algum tweet",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorConsts.secondaryColor,
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.separated(
+                            itemBuilder: (BuildContext context, int index) {
+                              TweetModel tweet = tweetsList[index];
+                              return GestureDetector(
+                                key: Key("user-tweet-${tweet.id}"),
+                                onTap: () =>
+                                    routeController.goToTweetDetailsScreen(
+                                  context,
+                                  tweet,
+                                ),
+                                onLongPress: () =>
+                                    handleTweetLongPress(context, tweet),
+                                onLongPressDown: (position) =>
+                                    getTapPosition(position),
+                                child: TweetWidget(
+                                  tweet: tweet,
+                                  hasComments: true,
+                                  isComment: false,
+                                  onLikedTweet: ({required liked}) =>
+                                      tweetController.onLikedTweet(
+                                    tweet: tweet,
+                                    liked: liked,
+                                  ),
+                                ),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Divider(),
+                            itemCount: tweetsList.length,
+                          ),
               ),
             ],
           ),
