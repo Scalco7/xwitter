@@ -6,11 +6,7 @@ import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 import 'package:xwitter/app/screens/auth/widgets/input.widget.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({
-    super.key,
-    required this.goToSignUpScreen,
-  });
-  final void Function() goToSignUpScreen;
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -97,7 +93,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         isPassword: true,
                       ),
                       TextButton(
-                        onPressed: widget.goToSignUpScreen,
+                        onPressed: () =>
+                            routeController.goToSignUpScreen(context),
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(

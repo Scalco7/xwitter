@@ -28,10 +28,7 @@ class BigTalkRoute extends StatelessWidget {
         if (userController.loggedUser == null) {
           if (settings.name == "/sign-in") {
             return MaterialPageRoute(
-              builder: (context) => SignInContainer(
-                goToSignUpScreen: () =>
-                    Navigator.of(context).pushNamed("/sign-up"),
-              ),
+              builder: (context) => const SignInContainer(),
             );
           }
           if (settings.name == "/sign-up") {

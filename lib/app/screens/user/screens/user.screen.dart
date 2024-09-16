@@ -178,6 +178,7 @@ class _UserScreen extends State<UserScreen> {
         text: "@${user.username}",
         height: appBarHeight,
         showActions: true,
+        routePop: () => routeController.routePop(context),
       ),
       body: Stack(
         children: <Widget>[

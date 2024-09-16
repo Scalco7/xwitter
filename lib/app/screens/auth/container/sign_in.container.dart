@@ -7,14 +7,10 @@ import 'package:xwitter/app/common/widgets/loading.widget.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_in.screen.dart';
 
 class SignInContainer extends StatelessWidget {
-  const SignInContainer({
-    super.key,
-    required this.goToSignUpScreen,
-  });
+  const SignInContainer({super.key});
 
   static final IUserController userController = UserController();
   static final RouteController routeController = RouteController();
-  final void Function() goToSignUpScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +32,7 @@ class SignInContainer extends StatelessWidget {
           return const LoadingWidget();
         }
         if (snapshot.connectionState == ConnectionState.done) {
-          return SignInScreen(
-            goToSignUpScreen: goToSignUpScreen,
-          );
+          return const SignInScreen();
         }
         if (snapshot.hasError) {
           return BTErrorWidget(error: (snapshot.error as Failure).message!);

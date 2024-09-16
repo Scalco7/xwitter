@@ -7,10 +7,12 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     required this.height,
     required this.text,
     required this.showActions,
+    required this.routePop,
   });
   final double height;
   final String text;
   final bool showActions;
+  final void Function() routePop;
 
   static final RouteController routeController = RouteController();
 
@@ -58,7 +60,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         visible: Navigator.of(context).canPop(),
         child: IconButton(
           alignment: Alignment.center,
-          onPressed: () => routeController.routePop(context),
+          onPressed: () => routePop(),
           icon: Container(
             width: 32,
             height: 32,

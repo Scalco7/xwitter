@@ -38,13 +38,20 @@ class RouteController {
 
   int get indexNavBar => _indexNavBar;
 
+  String actualRouteName = "sign-in";
+  String lastRouteName = "";
+
   void routePop(BuildContext context) => Navigator.of(context).pop();
 
   void goToUserScreen(BuildContext context, UserModel user) =>
       Navigator.of(context).pushNamed("/user", arguments: user);
 
-  void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
-      Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+  // void routePopFromTweetDetails
+
+  void goToTweetDetailsScreen(
+      BuildContext context, /*String actualRouteName,*/ TweetModel tweet) {
+    Navigator.of(context).pushNamed("/tweet", arguments: tweet);
+  }
 
   void goToSearchLocationScreen(
     BuildContext context,
@@ -71,4 +78,7 @@ class RouteController {
 
   void goToEditUserScreen(BuildContext context) =>
       Navigator.of(context).pushNamed("/edit-user");
+
+  void goToSignUpScreen(BuildContext context) =>
+      Navigator.of(context).pushNamed("/sign-up");
 }

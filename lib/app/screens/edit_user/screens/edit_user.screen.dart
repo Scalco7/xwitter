@@ -149,6 +149,7 @@ class _EditUserScreen extends State<EditUserScreen> {
         height: headerHeight,
         text: "@${user.username}",
         showActions: false,
+        routePop: () => routeController.routePop(context),
       ),
       body: SizedBox(
         width: screenWidth,
