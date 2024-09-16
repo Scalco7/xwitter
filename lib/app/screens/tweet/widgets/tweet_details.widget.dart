@@ -4,6 +4,7 @@ import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
+import 'package:xwitter/app/common/widgets/video_player_networking.widget.dart';
 
 class TweetDetailsWidget extends StatefulWidget {
   const TweetDetailsWidget({
@@ -127,10 +128,22 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
             if (tweet.mediaUrl != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 15),
-                child: Image.network(
-                  tweet.mediaUrl!,
-                  fit: BoxFit.contain,
-                ),
+                child: !tweet.mediaUrl!.contains('.mp4')
+                    ? Image.network(
+                        tweet.mediaUrl!,
+                        fit: BoxFit.contain,
+                      )
+                    : SizedBox(
+                        width: 450,
+                        height: 290,
+                        child: Flexible(
+                          child: VideoPlayerNetworkingWidget(
+                            videoUrl: tweet.mediaUrl!,
+                            iconsSize: 20,
+                            loop: false,
+                          ),
+                        ),
+                      ),
               ),
             Container(
               width: double.maxFinite,

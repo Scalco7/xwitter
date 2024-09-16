@@ -4,6 +4,7 @@ import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
+import 'package:xwitter/app/common/widgets/video_player_networking.widget.dart';
 
 class TweetWidget extends StatefulWidget {
   const TweetWidget({
@@ -154,11 +155,23 @@ class _TweetWidget extends State<TweetWidget> {
                       width: tweetWidth,
                       child: Align(
                         alignment: Alignment.topLeft,
-                        child: Image.network(
-                          tweet.mediaUrl!,
-                          height: 100,
-                          fit: BoxFit.contain,
-                        ),
+                        child: !tweet.mediaUrl!.contains('.mp4')
+                            ? Image.network(
+                                tweet.mediaUrl!,
+                                height: 100,
+                                fit: BoxFit.contain,
+                              )
+                            : SizedBox(
+                                width: 167,
+                                height: 100,
+                                child: Flexible(
+                                  child: VideoPlayerNetworkingWidget(
+                                    videoUrl: tweet.mediaUrl!,
+                                    iconsSize: 12,
+                                    loop: true,
+                                  ),
+                                ),
+                              ),
                       ),
                     ),
                   ),
