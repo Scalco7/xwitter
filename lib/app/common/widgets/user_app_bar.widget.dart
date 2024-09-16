@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 
 class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const UserAppBarWidget({
     super.key,
     required this.height,
     required this.text,
-    required this.routePop,
-    this.goToSettingsScreen,
-    this.goToSavedTweetsScreen,
+    required this.showActions,
   });
   final double height;
   final String text;
-  final void Function() routePop;
-  final void Function()? goToSettingsScreen;
-  final void Function()? goToSavedTweetsScreen;
+  final bool showActions;
+
+  static final RouteController routeController = RouteController();
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -34,18 +33,18 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         Visibility(
-          visible: goToSettingsScreen != null,
+          visible: showActions,
           child: Row(
             children: <Widget>[
               IconButton(
-                onPressed: goToSavedTweetsScreen,
+                onPressed: () => routeController.goToSavedTweetsScreen(context),
                 icon: const Icon(
                   Icons.bookmark,
                   color: Colors.white,
                 ),
               ),
               IconButton(
-                onPressed: goToSettingsScreen,
+                onPressed: () => routeController.goToSettingsScreen(context),
                 icon: const Icon(
                   Icons.settings_rounded,
                   color: Colors.white,
@@ -59,7 +58,7 @@ class UserAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         visible: Navigator.of(context).canPop(),
         child: IconButton(
           alignment: Alignment.center,
-          onPressed: routePop,
+          onPressed: () => routeController.routePop(context),
           icon: Container(
             width: 32,
             height: 32,

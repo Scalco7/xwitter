@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 import 'package:xwitter/app/screens/auth/widgets/input.widget.dart';
@@ -8,18 +9,17 @@ class SignInScreen extends StatefulWidget {
   const SignInScreen({
     super.key,
     required this.goToSignUpScreen,
-    required this.goToHomeScreen,
-    required this.userController,
   });
   final void Function() goToSignUpScreen;
-  final void Function() goToHomeScreen;
-  final IUserController userController;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  static final IUserController userController = UserController();
+  static final RouteController routeController = RouteController();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -29,6 +29,10 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       isLoading = loading;
     });
+  }
+
+  void goToHomeScreen() {
+    routeController.goToHomeScreen(context);
   }
 
   void disableKeyboard() {
@@ -41,11 +45,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
     setLoading(true);
     bool success =
-        await widget.userController.signIn(email: email, password: password);
+        await userController.signIn(email: email, password: password);
     setLoading(false);
 
     if (success) {
-      widget.goToHomeScreen();
+      goToHomeScreen();
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/services/location.service.dart';
 import 'package:xwitter/app/common/widgets/search.widget.dart';
 import 'package:xwitter/app/screens/search_location/widgets/city.widget.dart';
@@ -7,10 +8,9 @@ import 'package:xwitter/app/screens/search_location/widgets/city.widget.dart';
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({
     super.key,
-    required this.routePop,
     required this.setLocation,
   });
-  final void Function() routePop;
+
   final void Function(String? location) setLocation;
 
   @override
@@ -18,6 +18,7 @@ class SearchLocationScreen extends StatefulWidget {
 }
 
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
+  static final RouteController routeController = RouteController();
   List<String>? listLocations;
 
   void search(String searchText) async {
@@ -31,12 +32,12 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
 
   void goBack() {
     widget.setLocation(null);
-    widget.routePop();
+    routeController.routePop(context);
   }
 
   void onClick(String? location) {
     widget.setLocation(location);
-    widget.routePop();
+    routeController.routePop(context);
   }
 
   @override
@@ -69,7 +70,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                     padding: const EdgeInsets.only(top: 15),
                     child: IconButton(
                       alignment: Alignment.bottomCenter,
-                      onPressed: widget.routePop,
+                      onPressed: () => routeController.routePop(context),
                       splashRadius: 1,
                       icon: const Icon(
                         Icons.close,

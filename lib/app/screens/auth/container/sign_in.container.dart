@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/error/failure.dart';
 import 'package:xwitter/app/common/widgets/bt_error.widget.dart';
@@ -9,22 +10,25 @@ class SignInContainer extends StatelessWidget {
   const SignInContainer({
     super.key,
     required this.goToSignUpScreen,
-    required this.goToHomeScreen,
   });
 
   static final IUserController userController = UserController();
+  static final RouteController routeController = RouteController();
   final void Function() goToSignUpScreen;
-  final void Function() goToHomeScreen;
-
-  Future<void> signInFromLocalData() async {
-    bool success = await userController.signInFromLocalData();
-    if (success) {
-      goToHomeScreen();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    void goToHomeScreen() {
+      routeController.goToHomeScreen(context);
+    }
+
+    Future<void> signInFromLocalData() async {
+      bool success = await userController.signInFromLocalData();
+      if (success) {
+        goToHomeScreen();
+      }
+    }
+
     return FutureBuilder<void>(
       future: signInFromLocalData(),
       builder: (context, snapshot) {
@@ -34,8 +38,6 @@ class SignInContainer extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           return SignInScreen(
             goToSignUpScreen: goToSignUpScreen,
-            goToHomeScreen: goToHomeScreen,
-            userController: userController,
           );
         }
         if (snapshot.hasError) {

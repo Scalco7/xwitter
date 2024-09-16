@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
-import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_app_bar.widget.dart';
 import 'package:xwitter/app/screens/tweet/widgets/tweet_comments.widget.dart';
@@ -13,24 +13,17 @@ class TweetScreen extends StatefulWidget {
   const TweetScreen({
     super.key,
     required this.tweet,
-    required this.indexNavBar,
-    required this.goToUserScreen,
-    required this.routePop,
-    required this.bottomNavigationRoutes,
   });
   final TweetModel tweet;
-  final int indexNavBar;
-  final void Function(UserModel user) goToUserScreen;
-  final void Function() routePop;
-  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   State<StatefulWidget> createState() => _TweetScreen();
 }
 
 class _TweetScreen extends State<TweetScreen> {
-  final ITweetController tweetController = TweetController();
-  final Toasts toasts = Toasts();
+  static final RouteController routeController = RouteController();
+  static final ITweetController tweetController = TweetController();
+  static final Toasts toasts = Toasts();
 
   TextEditingController commentController = TextEditingController();
   FocusNode commentTextFieldFocus = FocusNode();
@@ -102,7 +95,8 @@ class _TweetScreen extends State<TweetScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorConsts.backgroundColor,
-      appBar: TweetAppBarWidget(routePop: widget.routePop),
+      appBar:
+          TweetAppBarWidget(routePop: () => routeController.routePop(context)),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -117,7 +111,8 @@ class _TweetScreen extends State<TweetScreen> {
                 children: <Widget>[
                   TweetDetailsWidget(
                     tweet: widget.tweet,
-                    goToUserScreen: widget.goToUserScreen,
+                    goToUserScreen: (user) =>
+                        routeController.goToUserScreen(context, user),
                     onLikedTweet: onLikedTweet,
                     commentTextFieldFocus: commentTextFieldFocus,
                   ),
@@ -128,7 +123,8 @@ class _TweetScreen extends State<TweetScreen> {
                       commentsList: widget.tweet.comments!,
                       commentsQuantity: widget.tweet.commentsQuantity,
                       tweetId: widget.tweet.id,
-                      goToUserScreen: widget.goToUserScreen,
+                      goToUserScreen: (user) =>
+                          routeController.goToUserScreen(context, user),
                       onLikedTweet: onLikedTweet,
                     ),
                   ),
@@ -188,8 +184,7 @@ class _TweetScreen extends State<TweetScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: widget.indexNavBar,
-        bottomNavigationRoutes: widget.bottomNavigationRoutes,
+        currentIndex: routeController.indexNavBar,
       ),
     );
   }

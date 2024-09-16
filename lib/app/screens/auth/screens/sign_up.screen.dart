@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/auth/widgets/auth_button.widget.dart';
 import 'package:xwitter/app/screens/auth/widgets/input.widget.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({
-    super.key,
-    required this.routePop,
-    required this.goToHomeScreen,
-  });
-
-  final void Function() routePop;
-  final void Function() goToHomeScreen;
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final IUserController userController = UserController();
+  static final IUserController userController = UserController();
+  static final RouteController routeController = RouteController();
 
   TextEditingController nicknameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -37,6 +32,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  void goToHomeScreen() {
+    routeController.goToHomeScreen(context);
   }
 
   void signUp() async {
@@ -57,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setLoading(false);
 
     if (success) {
-      widget.goToHomeScreen();
+      goToHomeScreen();
     }
   }
 
@@ -128,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         isPassword: true,
                       ),
                       TextButton(
-                        onPressed: widget.routePop,
+                        onPressed: () => routeController.routePop(context),
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(

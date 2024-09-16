@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 
 class SavedTweetsListWidget extends StatefulWidget {
-  const SavedTweetsListWidget(
-      {super.key, required this.goToTweetDetailsScreen});
-  final void Function(TweetModel tweet) goToTweetDetailsScreen;
+  const SavedTweetsListWidget({super.key});
 
   @override
   State<SavedTweetsListWidget> createState() => _SavedTweetsListWidgetState();
@@ -15,6 +14,7 @@ class SavedTweetsListWidget extends StatefulWidget {
 
 class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
   static final ITweetController tweetController = TweetController();
+  static final RouteController routeController = RouteController();
   List<TweetModel>? tweets;
 
   Future<TweetModel> onLikedTweet({
@@ -25,6 +25,10 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
       tweet: tweet,
       liked: liked,
     );
+  }
+
+  void goToTweetDetailsScreen(TweetModel tweet) {
+    routeController.goToTweetDetailsScreen(context, tweet);
   }
 
   void loadTweets() async {
@@ -57,7 +61,7 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
         : ListView.separated(
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () => widget.goToTweetDetailsScreen(tweets![index]),
+                onTap: () => goToTweetDetailsScreen(tweets![index]),
                 child: TweetWidget(
                   key: Key("saved-tweet-${tweets![index].id}"),
                   tweet: tweets![index],

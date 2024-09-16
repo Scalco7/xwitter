@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
-import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/screens/auth/container/sign_in.container.dart';
 import 'package:xwitter/app/screens/auth/screens/sign_up.screen.dart';
 import 'package:xwitter/app/screens/create_tweet/screens/create_tweet.screen.dart';
@@ -22,61 +21,6 @@ class BigTalkRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     final IUserController userController = UserController();
 
-    int indexNavBar = 1;
-
-    final BottomNavigationRoutesModel bottomNavigationRoutes =
-        BottomNavigationRoutesModel(
-      goToSearchScreen: (BuildContext context) {
-        indexNavBar = 0;
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil("/search", (route) => false);
-      },
-      goToHomeScreen: (BuildContext context) {
-        indexNavBar = 1;
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil("/home", (route) => false);
-      },
-      goToUserScreen: (BuildContext context) {
-        indexNavBar = 2;
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          "/user",
-          (route) => false,
-          arguments: userController.loggedUser!,
-        );
-      },
-    );
-
-    void routePop(BuildContext context) => Navigator.of(context).pop();
-
-    void goToUserScreen(BuildContext context, UserModel user) =>
-        Navigator.of(context).pushNamed("/user", arguments: user);
-
-    void goToTweetDetailsScreen(BuildContext context, TweetModel tweet) =>
-        Navigator.of(context).pushNamed("/tweet", arguments: tweet);
-
-    void goToSearchLocationScreen(
-      BuildContext context,
-      void Function(String? location) setLocation,
-    ) =>
-        Navigator.of(context)
-            .pushNamed("/search-location", arguments: setLocation);
-
-    void goToSettingsScreen(BuildContext context) =>
-        Navigator.of(context).pushNamed("/settings");
-
-    void goToSavedTweetsScreen(BuildContext context) =>
-        Navigator.of(context).pushNamed("/saved-tweets");
-
-    void goToHomeScreen(BuildContext context) => Navigator.of(context)
-        .pushNamedAndRemoveUntil("/home", (route) => false);
-
-    void updateUserScreenAfterEdit(BuildContext context, UserModel user) =>
-        Navigator.of(context).pushNamedAndRemoveUntil("/user", (route) => false,
-            arguments: user);
-
-    void goToSignInScreen(BuildContext context) => Navigator.of(context)
-        .pushNamedAndRemoveUntil("/sign-in", (route) => false);
-
     return Navigator(
       initialRoute: "/sign-in",
       // ignore: body_might_complete_normally_nullable
@@ -87,42 +31,30 @@ class BigTalkRoute extends StatelessWidget {
               builder: (context) => SignInContainer(
                 goToSignUpScreen: () =>
                     Navigator.of(context).pushNamed("/sign-up"),
-                goToHomeScreen: () => goToHomeScreen(context),
               ),
             );
           }
           if (settings.name == "/sign-up") {
             return MaterialPageRoute(
-              builder: (context) => SignUpScreen(
-                routePop: () => routePop(context),
-                goToHomeScreen: () => goToHomeScreen(context),
-              ),
+              builder: (context) => const SignUpScreen(),
             );
           }
         } else {
           if (settings.name == "/home") {
             return MaterialPageRoute(
               builder: (context) {
-                return HomeScreen(
-                  goToTweetDetailsScreen: (tweet) =>
-                      goToTweetDetailsScreen(context, tweet),
-                  bottomNavigationRoutes: bottomNavigationRoutes,
-                );
+                return const HomeScreen();
               },
             );
           }
           if (settings.name == "/search") {
             return MaterialPageRoute(
-              builder: (context) => SearchScreen(
-                goToUserScreen: (user) => goToUserScreen(context, user),
-                bottomNavigationRoutes: bottomNavigationRoutes,
-              ),
+              builder: (context) => const SearchScreen(),
             );
           }
           if (settings.name == "/search-location") {
             return MaterialPageRoute(
               builder: (context) => SearchLocationScreen(
-                routePop: () => routePop(context),
                 setLocation:
                     settings.arguments as void Function(String? location),
               ),
@@ -131,72 +63,38 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/user") {
             return MaterialPageRoute(
               builder: (context) {
-                return UserScreen(
-                  user: settings.arguments as UserModel,
-                  indexNavBar: indexNavBar,
-                  goToTweetDetailsScreen: (tweet) =>
-                      goToTweetDetailsScreen(context, tweet),
-                  goToEditUserScreen: () =>
-                      Navigator.of(context).pushNamed("/edit-user"),
-                  goToSettingsScreen: () => goToSettingsScreen(context),
-                  goToSavedTweetsScreen: () => goToSavedTweetsScreen(context),
-                  routePop: () => routePop(context),
-                  bottomNavigationRoutes: bottomNavigationRoutes,
-                );
+                return UserScreen(user: settings.arguments as UserModel);
               },
             );
           }
           if (settings.name == "/edit-user") {
             return MaterialPageRoute(
-              builder: (context) => EditUserScreen(
-                routePop: () => routePop(context),
-                updateUserScreen: (user) =>
-                    updateUserScreenAfterEdit(context, user),
-                bottomNavigationRoutes: bottomNavigationRoutes,
-              ),
+              builder: (context) => const EditUserScreen(),
             );
           }
           if (settings.name == "/create-tweet") {
             return MaterialPageRoute(
-              builder: (context) => CreateTweetScreen(
-                routePop: () => routePop(context),
-                goToHomeScreen: () => goToHomeScreen(context),
-                goToSearchLocationScreen: (setLocation) =>
-                    goToSearchLocationScreen(context, setLocation),
-              ),
+              builder: (context) => const CreateTweetScreen(),
             );
           }
           if (settings.name == "/tweet") {
             TweetModel tweet = settings.arguments as TweetModel;
 
             return MaterialPageRoute(
-              builder: (context) => TweetScreen(
-                tweet: tweet,
-                indexNavBar: indexNavBar,
-                goToUserScreen: (user) => goToUserScreen(context, user),
-                routePop: () => routePop(context),
-                bottomNavigationRoutes: bottomNavigationRoutes,
-              ),
+              builder: (context) => TweetScreen(tweet: tweet),
             );
           }
           if (settings.name == "/settings") {
             return MaterialPageRoute(
               builder: (context) {
-                return SettingsScreen(
-                  goToSignInScreen: () => goToSignInScreen(context),
-                );
+                return const SettingsScreen();
               },
             );
           }
           if (settings.name == "/saved-tweets") {
             return MaterialPageRoute(
               builder: (context) {
-                return SavedTweetsScreen(
-                  goToTweetDetailsScreen: (tweet) =>
-                      goToTweetDetailsScreen(context, tweet),
-                  bottomNavigationRoutes: bottomNavigationRoutes,
-                  routePop: () => routePop(context),
-                );
+                return const SavedTweetsScreen();
               },
             );
           }

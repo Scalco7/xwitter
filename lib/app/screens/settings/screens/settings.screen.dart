@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/screens/settings/widgets/settings_app_bar.widget.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({
     super.key,
-    required this.goToSignInScreen,
   });
+
   static final IUserController userController = UserController();
-  final void Function() goToSignInScreen;
-
-  void logout() async {
-    bool success = await userController.signOut();
-
-    if (success) {
-      goToSignInScreen();
-    }
-  }
+  static final RouteController routeController = RouteController();
 
   @override
   Widget build(BuildContext context) {
+    void goToSignInScreen() {
+      routeController.goToSignInScreen(context);
+    }
+
+    void logout() async {
+      bool success = await userController.signOut();
+
+      if (success) {
+        goToSignInScreen();
+      }
+    }
+
     return Scaffold(
       appBar: const SettingsAppBarWidget(),
       backgroundColor: ColorConsts.backgroundColor,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
@@ -13,22 +14,14 @@ import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 
 class EditUserScreen extends StatefulWidget {
-  const EditUserScreen({
-    super.key,
-    required this.routePop,
-    required this.updateUserScreen,
-    required this.bottomNavigationRoutes,
-  });
-
-  final void Function() routePop;
-  final void Function(UserModel uuser) updateUserScreen;
-  final BottomNavigationRoutesModel bottomNavigationRoutes;
+  const EditUserScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _EditUserScreen();
 }
 
 class _EditUserScreen extends State<EditUserScreen> {
+  static final RouteController routeController = RouteController();
   static final IUserController userController = UserController();
   static const double headerHeight = 80;
   static const double perfilPhotoSize = 130;
@@ -60,10 +53,17 @@ class _EditUserScreen extends State<EditUserScreen> {
     );
 
     if (success) {
-      widget.updateUserScreen(userController.loggedUser!);
+      updateUserScreen();
     }
 
     setSavingLoading(false);
+  }
+
+  void updateUserScreen() {
+    routeController.goToUserScreenAndReload(
+      context,
+      userController.loggedUser!,
+    );
   }
 
   void setSavingLoading(bool value) {
@@ -148,7 +148,7 @@ class _EditUserScreen extends State<EditUserScreen> {
       appBar: UserAppBarWidget(
         height: headerHeight,
         text: "@${user.username}",
-        routePop: widget.routePop,
+        showActions: false,
       ),
       body: SizedBox(
         width: screenWidth,
@@ -271,10 +271,7 @@ class _EditUserScreen extends State<EditUserScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: 2,
-        bottomNavigationRoutes: widget.bottomNavigationRoutes,
-      ),
+      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 2),
     );
   }
 }

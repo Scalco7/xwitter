@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
@@ -18,31 +19,18 @@ class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
     required this.user,
-    required this.indexNavBar,
-    required this.goToTweetDetailsScreen,
-    required this.goToEditUserScreen,
-    required this.goToSettingsScreen,
-    required this.goToSavedTweetsScreen,
-    required this.routePop,
-    required this.bottomNavigationRoutes,
   });
   final UserModel user;
-  final int indexNavBar;
-  final void Function(TweetModel tweet) goToTweetDetailsScreen;
-  final void Function() goToEditUserScreen;
-  final void Function() goToSettingsScreen;
-  final void Function() goToSavedTweetsScreen;
-  final void Function() routePop;
-  final BottomNavigationRoutesModel bottomNavigationRoutes;
 
   @override
   State<UserScreen> createState() => _UserScreen();
 }
 
 class _UserScreen extends State<UserScreen> {
-  final IUserController userController = UserController();
-  final ITweetController tweetController = TweetController();
-  final IUserService userService = UserService();
+  static final RouteController routeController = RouteController();
+  static final IUserController userController = UserController();
+  static final ITweetController tweetController = TweetController();
+  static final IUserService userService = UserService();
 
   final loggedUserId = UserController().loggedUser!.id;
 
@@ -80,7 +68,7 @@ class _UserScreen extends State<UserScreen> {
 
   void onClickButton() {
     if (isMyAccount) {
-      widget.goToEditUserScreen();
+      routeController.goToEditUserScreen(context);
     } else {
       if (user.following) {
         unfollowUser();
@@ -186,10 +174,7 @@ class _UserScreen extends State<UserScreen> {
       appBar: UserAppBarWidget(
         text: "@${user.username}",
         height: appBarHeight,
-        routePop: widget.routePop,
-        goToSettingsScreen: isMyAccount ? widget.goToSettingsScreen : null,
-        goToSavedTweetsScreen:
-            isMyAccount ? widget.goToSavedTweetsScreen : null,
+        showActions: true,
       ),
       body: Stack(
         children: <Widget>[
@@ -230,7 +215,10 @@ class _UserScreen extends State<UserScreen> {
                           TweetModel tweet = tweetsList[index];
                           return GestureDetector(
                             key: Key("user-tweet-${tweet.id}"),
-                            onTap: () => widget.goToTweetDetailsScreen(tweet),
+                            onTap: () => routeController.goToTweetDetailsScreen(
+                              context,
+                              tweet,
+                            ),
                             onLongPress: () =>
                                 handleTweetLongPress(context, tweet),
                             onLongPressDown: (position) =>
@@ -258,8 +246,7 @@ class _UserScreen extends State<UserScreen> {
       ),
       floatingActionButton: const CreateTweetButtonWidget(),
       bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: widget.indexNavBar,
-        bottomNavigationRoutes: widget.bottomNavigationRoutes,
+        currentIndex: routeController.indexNavBar,
       ),
     );
   }

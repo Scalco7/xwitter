@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
@@ -8,20 +9,15 @@ import 'package:xwitter/app/common/widgets/search.widget.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({
-    super.key,
-    required this.goToUserScreen,
-    required this.bottomNavigationRoutes,
-  });
-  final void Function(UserModel user) goToUserScreen;
-  final BottomNavigationRoutesModel bottomNavigationRoutes;
+  const SearchScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  IUserService userService = UserService();
+  static final RouteController routeController = RouteController();
+  static final IUserService userService = UserService();
   List<UserModel> listUsers = [];
 
   void search(String searchText) async {
@@ -34,7 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void onClickUser(UserModel acesseduser) {
-    widget.goToUserScreen(acesseduser);
+    routeController.goToUserScreen(context, acesseduser);
   }
 
   @override
@@ -92,10 +88,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       floatingActionButton: const CreateTweetButtonWidget(),
-      bottomNavigationBar: BottomNavigationBarWidget(
-        currentIndex: 0,
-        bottomNavigationRoutes: widget.bottomNavigationRoutes,
-      ),
+      bottomNavigationBar: const BottomNavigationBarWidget(currentIndex: 0),
     );
   }
 }

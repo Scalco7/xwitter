@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
@@ -13,24 +14,14 @@ import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
-  const CreateTweetScreen({
-    super.key,
-    required this.routePop,
-    required this.goToHomeScreen,
-    required this.goToSearchLocationScreen,
-  });
-
-  final void Function() routePop;
-  final void Function() goToHomeScreen;
-  final void Function(
-    void Function(String? location) setLocation,
-  ) goToSearchLocationScreen;
+  const CreateTweetScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _CreateTweetScreen();
 }
 
 class _CreateTweetScreen extends State<CreateTweetScreen> {
+  static final RouteController routeController = RouteController();
   final UserModel loggedUser = UserController().loggedUser!;
 
   ITweetController tweetController = TweetController();
@@ -39,6 +30,10 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   String? tweetLocation;
   bool canRetweet = true;
   File? tweetFile;
+
+  void goToHomeScreen() {
+    routeController.goToHomeScreen(context);
+  }
 
   void publishTweet() async {
     String? mediaBase64 =
@@ -51,7 +46,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
       mediaBase64: mediaBase64,
     );
 
-    widget.goToHomeScreen();
+    goToHomeScreen();
   }
 
   void disabledButton() {
@@ -154,7 +149,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     TextButton(
-                      onPressed: widget.routePop,
+                      onPressed: () => routeController.routePop(context),
                       child: const Text(
                         "Cancelar",
                         style: TextStyle(
@@ -211,8 +206,8 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: GestureDetector(
-                  onTap: () =>
-                      widget.goToSearchLocationScreen(setTweetLocation),
+                  onTap: () => routeController.goToSearchLocationScreen(
+                      context, setTweetLocation),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -240,7 +235,8 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                       GestureDetector(
                         onTap: () => tweetLocation != null
                             ? setTweetLocation(null)
-                            : widget.goToSearchLocationScreen(setTweetLocation),
+                            : routeController.goToSearchLocationScreen(
+                                context, setTweetLocation),
                         child: Icon(
                           tweetLocation != null
                               ? Icons.close
