@@ -16,7 +16,7 @@ class TweetsListWidget extends StatefulWidget {
 class _TweetsListWidgetState extends State<TweetsListWidget> {
   static final ITweetController tweetController = TweetController();
   static final IUserController userController = UserController();
-  List<TweetModel> tweets = [];
+  List<TweetModel> tweets = tweetController.tweetsList;
 
   Future<TweetModel> onLikedTweet({
     required TweetModel tweet,
@@ -46,6 +46,11 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
     setState(() {
       tweets = tweetController.tweetsList;
     });
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
