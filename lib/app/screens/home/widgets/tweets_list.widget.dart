@@ -71,6 +71,12 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
   }
 
   @override
+  void dispose() {
+    TweetController().removeListener(updateTweets);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return tweets.isEmpty
         ? const Padding(
