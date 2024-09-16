@@ -39,8 +39,10 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   }
 
   void publishTweet() async {
-    String? mediaBase64 =
-        tweetFile != null ? await fileToBase64(tweetFile!, 'image/png') : null;
+    String? mediaBase64 = tweetFile != null
+        ? await fileToBase64(
+            tweetFile!, tweetFileIsImg ? 'image/png' : 'video/mp4')
+        : null;
 
     tweetController.publishTweet(
       text: tweetTextController.text,
