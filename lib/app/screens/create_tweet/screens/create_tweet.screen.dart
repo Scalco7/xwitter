@@ -12,6 +12,8 @@ import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
+import 'package:mime/mime.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/video_player_file.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
   const CreateTweetScreen({super.key});
@@ -30,6 +32,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   String? tweetLocation;
   bool canRetweet = true;
   File? tweetFile;
+  bool tweetFileIsImg = false;
 
   void goToHomeScreen() {
     routeController.goToHomeScreen(context);
@@ -78,36 +81,46 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
 
     if (returnedFile == null) return;
 
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-        sourcePath: returnedFile.path,
-        compressFormat: ImageCompressFormat.png,
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Cortar',
-            toolbarColor: ColorConsts.primaryColor,
-            toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: ColorConsts.primaryColor,
-            cropStyle: CropStyle.rectangle,
-            lockAspectRatio: true,
-            showCropGrid: true,
-            hideBottomControls: false,
-            initAspectRatio: CropAspectRatioPreset.ratio5x3,
-            aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
-          ),
-          IOSUiSettings(
-            //testar IOS ###
-            title: 'Cortar',
-            cropStyle: CropStyle.rectangle,
-            aspectRatioPickerButtonHidden: true,
-            resetAspectRatioEnabled: false,
-            aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
-          ),
-        ]);
+    File? newTweetFile;
 
-    if (croppedFile == null) return;
+    final String? mime = lookupMimeType(returnedFile.path);
+    tweetFileIsImg = mime == null || mime.startsWith('image');
+
+    if (tweetFileIsImg) {
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+          sourcePath: returnedFile.path,
+          compressFormat: ImageCompressFormat.png,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Cortar',
+              toolbarColor: ColorConsts.primaryColor,
+              toolbarWidgetColor: Colors.white,
+              activeControlsWidgetColor: ColorConsts.primaryColor,
+              cropStyle: CropStyle.rectangle,
+              lockAspectRatio: true,
+              showCropGrid: true,
+              hideBottomControls: false,
+              initAspectRatio: CropAspectRatioPreset.ratio5x3,
+              aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+            ),
+            IOSUiSettings(
+              //testar IOS ###
+              title: 'Cortar',
+              cropStyle: CropStyle.rectangle,
+              aspectRatioPickerButtonHidden: true,
+              resetAspectRatioEnabled: false,
+              aspectRatioPresets: [CropAspectRatioPreset.ratio5x3],
+            ),
+          ]);
+
+      if (croppedFile == null) return;
+      newTweetFile = File(croppedFile.path);
+    } else {
+      newTweetFile = File(returnedFile.path);
+    }
 
     setState(() {
-      tweetFile = File(croppedFile.path);
+      tweetFile = newTweetFile;
     });
   }
 
@@ -273,11 +286,19 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                 child: Column(
                   children: <Widget>[
                     if (tweetFile != null)
-                      Image.file(
-                        tweetFile!,
-                        height: 350,
-                        fit: BoxFit.contain,
-                      ),
+                      tweetFileIsImg
+                          ? Image.file(
+                              tweetFile!,
+                              width: 450,
+                              height: 290,
+                              fit: BoxFit.contain,
+                            )
+                          : SizedBox(
+                              width: 450,
+                              height: 290,
+                              child:
+                                  VideoPlayerFileWidget(videoFile: tweetFile!),
+                            ),
                     TextButton(
                       onPressed: handleImageButtonClicked,
                       child: Text(
