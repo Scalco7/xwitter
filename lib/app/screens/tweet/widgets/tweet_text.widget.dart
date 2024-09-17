@@ -36,6 +36,8 @@ class TweetTextWidget extends StatelessWidget {
     }
 
     return RichText(
+      overflow: TextOverflow.clip,
+      softWrap: true,
       text: TextSpan(
         style: textStyle,
         children: spanText,
