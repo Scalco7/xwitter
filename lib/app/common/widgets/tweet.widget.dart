@@ -5,6 +5,7 @@ import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
 import 'package:xwitter/app/common/widgets/video_player_networking.widget.dart';
+import 'package:xwitter/app/common/widgets/tweet_text.widget.dart';
 
 class TweetWidget extends StatefulWidget {
   const TweetWidget({
@@ -142,10 +143,10 @@ class _TweetWidget extends State<TweetWidget> {
                 ),
                 SizedBox(
                   width: tweetWidth,
-                  child: Text(
-                    tweet.text,
-                    overflow: TextOverflow.clip,
-                    softWrap: true,
+                  child: TweetTextWidget(
+                    text: tweet.text,
+                    mentionsIds: tweet.mentionsUserIds,
+                    fontSize: 16,
                   ),
                 ),
                 if (tweet.mediaUrl != null)

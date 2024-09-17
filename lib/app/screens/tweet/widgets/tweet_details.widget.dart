@@ -5,7 +5,7 @@ import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/user.widget.dart';
 import 'package:xwitter/app/common/widgets/video_player_networking.widget.dart';
-import 'package:xwitter/app/screens/tweet/widgets/tweet_text.widget.dart';
+import 'package:xwitter/app/common/widgets/tweet_text.widget.dart';
 
 class TweetDetailsWidget extends StatefulWidget {
   const TweetDetailsWidget({
@@ -127,6 +127,7 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                 child: TweetTextWidget(
                   text: tweet.text,
                   mentionsIds: tweet.mentionsUserIds,
+                  fontSize: 18,
                 )),
             if (tweet.mediaUrl != null)
               Padding(

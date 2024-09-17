@@ -6,10 +6,12 @@ class TweetTextWidget extends StatelessWidget {
     super.key,
     required this.text,
     required this.mentionsIds,
+    required this.fontSize,
   });
 
   final String text;
   final List<String> mentionsIds;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,9 @@ class TweetTextWidget extends StatelessWidget {
         .map((e) => e[0]!.replaceFirst(":", ""))
         .toList();
 
-    TextStyle textStyle = const TextStyle(
+    TextStyle textStyle = TextStyle(
       color: ColorConsts.tweetTextColor,
-      fontSize: 18,
+      fontSize: fontSize,
       fontWeight: FontWeight.w500,
     );
     TextStyle mentionStyle = const TextStyle(color: ColorConsts.primaryColor);
