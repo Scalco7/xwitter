@@ -121,10 +121,6 @@ class _UserScreen extends State<UserScreen> {
             ? "Deixar de seguir"
             : "Seguir";
 
-    print("************************************************");
-    print(followButtonText);
-    print(user!.id);
-
     bool newIsMyAccount = user!.id == loggedUserId;
 
     setState(() {
