@@ -60,7 +60,17 @@ class BigTalkRoute extends StatelessWidget {
           if (settings.name == "/user") {
             return MaterialPageRoute(
               builder: (context) {
-                return UserScreen(user: settings.arguments as UserModel);
+                UserModel? user = settings.arguments.runtimeType == UserModel
+                    ? settings.arguments as UserModel
+                    : null;
+                String? userId = settings.arguments.runtimeType == String
+                    ? settings.arguments as String
+                    : null;
+
+                return UserScreen(
+                  user: user,
+                  userId: userId,
+                );
               },
             );
           }

@@ -46,6 +46,9 @@ class RouteController {
   void goToUserScreen(BuildContext context, UserModel user) =>
       Navigator.of(context).pushNamed("/user", arguments: user);
 
+  void goToUserScreenById(BuildContext context, String userId) =>
+      Navigator.of(context).pushNamed("/user", arguments: userId);
+
   void goToTweetDetailsScreen(
     BuildContext context,
     TweetModel tweet,

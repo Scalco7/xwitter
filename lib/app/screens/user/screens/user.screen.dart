@@ -15,9 +15,11 @@ import 'package:xwitter/app/screens/user/widgets/user_lists_widget.dart';
 class UserScreen extends StatefulWidget {
   const UserScreen({
     super.key,
-    required this.user,
+    this.user,
+    this.userId,
   });
-  final UserModel user;
+  final UserModel? user;
+  final String? userId;
 
   @override
   State<UserScreen> createState() => _UserScreen();
@@ -39,19 +41,22 @@ class _UserScreen extends State<UserScreen> {
 
   EListTweetsSection actualListState = EListTweetsSection.publishedtTweets;
 
-  late String buttonText;
-  late UserModel user;
-  late bool isMyAccount;
+  UserModel? user;
+  String buttonText = "";
+  bool isMyAccount = false;
 
-  void reloadPage() {
-    setState(() {});
-  }
-
-  void initLists() async {
-    userDataLists = await userController.getUserData(oldUser: widget.user);
+  Future<void> initData(bool doSetState) async {
+    userDataLists = await userController.getUserData(
+        userId: (widget.user?.id ?? widget.userId)!);
     if (userDataLists == null) return;
 
     setTweetsList(EListTweetsSection.publishedtTweets);
+
+    if (!doSetState) {
+      user = userDataLists!.user;
+      return;
+    }
+
     setState(() {
       user = userDataLists!.user;
     });
@@ -72,7 +77,7 @@ class _UserScreen extends State<UserScreen> {
     if (isMyAccount) {
       routeController.goToEditUserScreen(context);
     } else {
-      if (user.following) {
+      if (user!.following) {
         unfollowUser();
       } else {
         followUser();
@@ -81,40 +86,57 @@ class _UserScreen extends State<UserScreen> {
   }
 
   void followUser() async {
-    UserModel newUser = await userService.followUser(user: user);
+    UserModel newUser = await userService.followUser(user: user!);
 
     setState(() {
       user = newUser;
-      buttonText = user.following ? "Deixar de seguir" : "Seguir";
+      buttonText = user!.following ? "Deixar de seguir" : "Seguir";
     });
   }
 
   void unfollowUser() async {
-    UserModel newUser = await userService.unfollowUser(user: user);
+    UserModel newUser = await userService.unfollowUser(user: user!);
 
     setState(() {
       user = newUser;
-      buttonText = user.following ? "Deixar de seguir" : "Seguir";
+      buttonText = user!.following ? "Deixar de seguir" : "Seguir";
     });
   }
 
-  bool listsIsLoaded() {
+  bool dataIsLoaded() {
     return userDataLists != null;
+  }
+
+  void setScreenData() async {
+    if (widget.user == null) {
+      await initData(false);
+    } else if (!dataIsLoaded()) {
+      user = widget.user;
+      initData(true);
+    }
+
+    String followButtonText = user!.id == loggedUserId
+        ? "Editar"
+        : user!.following
+            ? "Deixar de seguir"
+            : "Seguir";
+
+    print("************************************************");
+    print(followButtonText);
+    print(user!.id);
+
+    bool newIsMyAccount = user!.id == loggedUserId;
+
+    setState(() {
+      user = user!;
+      isMyAccount = newIsMyAccount;
+      buttonText = followButtonText;
+    });
   }
 
   @override
   void initState() {
-    if (!listsIsLoaded()) initLists();
-
-    user = widget.user;
-    isMyAccount = user.id == loggedUserId;
-
-    if (isMyAccount) {
-      buttonText = "Editar";
-    } else {
-      buttonText = user.following ? "Deixar de seguir" : "Seguir";
-    }
-
+    setScreenData();
     super.initState();
   }
 
@@ -124,9 +146,11 @@ class _UserScreen extends State<UserScreen> {
 
     return Scaffold(
       appBar: UserAppBarWidget(
-        text: "@${user.username}",
+        text: "@${user?.username ?? ""}",
         height: appBarHeight,
-        showActions: isMyAccount && routeController.indexNavBar == 2,
+        showActions: user == null
+            ? false
+            : isMyAccount && routeController.indexNavBar == 2,
         routePop: () => routeController.routePop(context),
       ),
       body: Stack(
@@ -141,16 +165,21 @@ class _UserScreen extends State<UserScreen> {
           ),
           Column(
             children: <Widget>[
-              UserDataWidget(
-                user: user,
-                avatarHeight: avatarHeight,
-                editUser: onClickButton,
-                buttonText: buttonText,
-              ),
+              user == null
+                  ? SizedBox(
+                      width: screenWidth,
+                      height: 230,
+                    )
+                  : UserDataWidget(
+                      user: user!,
+                      avatarHeight: avatarHeight,
+                      editUser: onClickButton,
+                      buttonText: buttonText,
+                    ),
               const SizedBox(height: 20),
               ChangeSectionButtonWidget(
                 onChange: setTweetsList,
-                disabled: !listsIsLoaded(),
+                disabled: !dataIsLoaded(),
               ),
               UserListsWidget(
                 tweetsList: tweetsList,

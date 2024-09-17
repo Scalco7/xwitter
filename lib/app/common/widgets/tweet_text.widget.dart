@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 
 class TweetTextWidget extends StatelessWidget {
   const TweetTextWidget({
@@ -12,6 +14,8 @@ class TweetTextWidget extends StatelessWidget {
   final String text;
   final List<String> mentionsIds;
   final double fontSize;
+
+  static final RouteController routeController = RouteController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +38,9 @@ class TweetTextWidget extends StatelessWidget {
       spanText.add(TextSpan(
         text: i < mentionsNames.length ? mentionsNames[i] : '',
         style: mentionStyle,
+        recognizer: TapGestureRecognizer()
+          ..onTap =
+              () => routeController.goToUserScreenById(context, mentionsIds[i]),
       ));
     }
 

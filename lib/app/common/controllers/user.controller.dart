@@ -37,7 +37,7 @@ abstract class IUserController {
     required String? photoBase64,
   });
 
-  Future<UserData?> getUserData({required UserModel oldUser});
+  Future<UserData?> getUserData({required String userId});
 
   Future<TweetModel> toogleSaveTweet({required TweetModel tweet});
 
@@ -209,9 +209,9 @@ class UserController implements IUserController {
   }
 
   @override
-  Future<UserData?> getUserData({required UserModel oldUser}) async {
+  Future<UserData?> getUserData({required String userId}) async {
     UserModel? user = await userService.getUserById(
-      userId: oldUser.id,
+      userId: userId,
     );
 
     if (user == null) {
@@ -219,10 +219,10 @@ class UserController implements IUserController {
     }
 
     List<TweetModel> postedTweets =
-        await tweetService.listPostedTweets(userId: user.id);
+        await tweetService.listPostedTweets(userId: userId);
 
     List<TweetModel> likedTweets =
-        await tweetService.listLikedTweets(userId: user.id);
+        await tweetService.listLikedTweets(userId: userId);
 
     UserData userData = UserData(
       user: user,
