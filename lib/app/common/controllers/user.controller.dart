@@ -1,6 +1,7 @@
 import 'package:xwitter/app/common/error/validatorFailure.model.dart';
 import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/helpers/validators.dart';
+import 'package:xwitter/app/common/models/mention_user.model.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/models/user_data.model.dart';
@@ -39,6 +40,8 @@ abstract class IUserController {
   Future<UserData?> getUserData({required UserModel oldUser});
 
   Future<TweetModel> toogleSaveTweet({required TweetModel tweet});
+
+  Future<List<MentionUserModel>> searchMentionsUsers({required String prefix});
 }
 
 class UserController implements IUserController {
@@ -248,5 +251,10 @@ class UserController implements IUserController {
 
     tweet.isSaved = !tweet.isSaved;
     return tweet;
+  }
+
+  @override
+  Future<List<MentionUserModel>> searchMentionsUsers({required String prefix}) {
+    return userService.searchMentionsUsers(prefix: prefix);
   }
 }

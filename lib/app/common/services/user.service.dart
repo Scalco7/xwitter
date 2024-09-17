@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:xwitter/app/common/consts/api.consts.dart';
+import 'package:xwitter/app/common/models/mention_user.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/services/api.service.dart';
 
@@ -41,6 +42,8 @@ abstract class IUserService {
   Future<bool> saveTweet({required String tweetId});
 
   Future<bool> unsaveTweet({required String tweetId});
+
+  Future<List<MentionUserModel>> searchMentionsUsers({required String prefix});
 }
 
 class UserService implements IUserService {
@@ -249,6 +252,39 @@ class UserService implements IUserService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<List<MentionUserModel>> searchMentionsUsers(
+      {required String prefix}) async {
+    final url = "$getApiUrl/mention";
+    Map<String, dynamic> jsonRequest = {
+      "prefix": prefix,
+    };
+
+    try {
+      final response =
+          await ApiService().post(uri: Uri.parse(url), jsonBody: jsonRequest);
+
+      if (response.statusCode != 200) {
+        throw Exception(response);
+      }
+
+      var data = jsonDecode(response.body.toString());
+
+      if (response.statusCode != 200) {
+        throw Exception("Erro ao buscar tweets salvos");
+      }
+      List<MentionUserModel> searchResult = [];
+
+      for (Map<String, dynamic> index in data) {
+        searchResult.add(MentionUserModel.fromJson(index));
+      }
+
+      return searchResult;
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }
