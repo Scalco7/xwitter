@@ -11,9 +11,11 @@ import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
-import 'package:xwitter/app/screens/create_tweet/widgets/tweet_button.widget.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/can_retweet.widget.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/choose_location.widget.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/header.widget.dart';
 import 'package:mime/mime.dart';
-import 'package:xwitter/app/screens/create_tweet/widgets/video_player_file.widget.dart';
+import 'package:xwitter/app/screens/create_tweet/widgets/select_media.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
   const CreateTweetScreen({super.key});
@@ -159,108 +161,25 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () => routeController.routePop(context),
-                      child: const Text(
-                        "Cancelar",
-                        style: TextStyle(
-                            color: ColorConsts.primaryColor, fontSize: 17),
-                      ),
-                    ),
-                    TweetButtonWidget(
-                      disabled: disabledTweetButton,
-                      onPressButton: publishTweet,
-                    ),
-                  ],
+                child: HeaderWidget(
+                  publishTweet: publishTweet,
+                  disabledTweetButton: disabledTweetButton,
                 ),
               ),
               const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () => setCanRetweet(!canRetweet),
-                      child: const Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.repeat,
-                            color: ColorConsts.primaryColor,
-                            size: 30,
-                          ),
-                          SizedBox(width: 7),
-                          Text(
-                            "Pode retweetar",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: ColorConsts.secondaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 35,
-                      height: 35,
-                      child: Switch(
-                        activeColor: ColorConsts.primaryColor,
-                        value: canRetweet,
-                        onChanged: (bool value) => setCanRetweet(value),
-                      ),
-                    ),
-                  ],
+                child: CanRetweetWidget(
+                  canRetweet: canRetweet,
+                  setCanRetweet: setCanRetweet,
                 ),
               ),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: GestureDetector(
-                  onTap: () => routeController.goToSearchLocationScreen(
-                      context, setTweetLocation),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Icon(
-                            Icons.location_on_rounded,
-                            color: ColorConsts.primaryColor,
-                            size: 30,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            tweetLocation ?? "Adiconar localização",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: tweetLocation != null
-                                  ? Colors.black
-                                  : ColorConsts.secondaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                        onTap: () => tweetLocation != null
-                            ? setTweetLocation(null)
-                            : routeController.goToSearchLocationScreen(
-                                context, setTweetLocation),
-                        child: Icon(
-                          tweetLocation != null
-                              ? Icons.close
-                              : Icons.chevron_right_outlined,
-                          color: ColorConsts.secondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                child: ChooseLocationWidget(
+                  setTweetLocation: setTweetLocation,
+                  tweetLocation: tweetLocation,
                 ),
               ),
               const SizedBox(height: 15),
@@ -285,35 +204,10 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: <Widget>[
-                    if (tweetFile != null)
-                      tweetFileIsImg
-                          ? Image.file(
-                              tweetFile!,
-                              width: 450,
-                              height: 290,
-                              fit: BoxFit.contain,
-                            )
-                          : SizedBox(
-                              width: 450,
-                              height: 290,
-                              child:
-                                  VideoPlayerFileWidget(videoFile: tweetFile!),
-                            ),
-                    TextButton(
-                      onPressed: handleImageButtonClicked,
-                      child: Text(
-                        tweetFile == null
-                            ? "Adicionar foto/vídeo"
-                            : "Remover foto/vídeo",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: ColorConsts.primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: SelectMediaWidget(
+                  tweetFile: tweetFile,
+                  tweetFileIsImg: tweetFileIsImg,
+                  handleImageButtonClicked: handleImageButtonClicked,
                 ),
               )
             ],
