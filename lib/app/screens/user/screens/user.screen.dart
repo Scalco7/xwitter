@@ -1,8 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:xwitter/app/common/consts/style.consts.dart';
 import 'package:xwitter/app/common/controllers/route.controller.dart';
-import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
@@ -10,10 +7,10 @@ import 'package:xwitter/app/common/models/user_data.model.dart';
 import 'package:xwitter/app/common/services/user.service.dart';
 import 'package:xwitter/app/common/widgets/bottom_navigation_bar.widget.dart';
 import 'package:xwitter/app/common/widgets/create_tweet_button.widget.dart';
-import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/common/widgets/user_app_bar.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/change_section_button.widget.dart';
 import 'package:xwitter/app/screens/user/widgets/user_data.widget.dart';
+import 'package:xwitter/app/screens/user/widgets/user_lists_widget.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({
@@ -29,7 +26,6 @@ class UserScreen extends StatefulWidget {
 class _UserScreen extends State<UserScreen> {
   static final RouteController routeController = RouteController();
   static final IUserController userController = UserController();
-  static final ITweetController tweetController = TweetController();
   static final IUserService userService = UserService();
 
   final loggedUserId = UserController().loggedUser!.id;
@@ -40,7 +36,6 @@ class _UserScreen extends State<UserScreen> {
 
   UserData? userDataLists;
   List<TweetModel> tweetsList = [];
-  Offset _tapPosition = Offset.zero;
 
   EListTweetsSection actualListState = EListTweetsSection.publishedtTweets;
 
@@ -107,56 +102,6 @@ class _UserScreen extends State<UserScreen> {
     return userDataLists != null;
   }
 
-  void getTapPosition(LongPressDownDetails tapPosition) {
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    _tapPosition = renderBox.globalToLocal(tapPosition.globalPosition);
-  }
-
-  void tooglePinTweet(TweetModel tweet) async {
-    List<TweetModel> postedTweets =
-        await tweetController.tooglePinTweet(tweet: tweet);
-    userDataLists!.postedTweets = postedTweets;
-
-    setTweetsList(EListTweetsSection.publishedtTweets);
-  }
-
-  void showContextMenu(BuildContext context, TweetModel tweet) async {
-    String text = tweet.isPinned ? "Desfixar" : "Fixar";
-    final RenderObject? overlay =
-        Overlay.of(context).context.findRenderObject();
-
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromRect(
-        Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 10, 10),
-        Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
-            overlay.paintBounds.size.height),
-      ),
-      items: [
-        PopupMenuItem(
-          value: 'Fix',
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          height: 10,
-          onTap: () => tooglePinTweet(tweet),
-          child: Text(
-            text,
-            style: const TextStyle(
-              color: ColorConsts.primaryColor,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  void handleTweetLongPress(BuildContext context, TweetModel tweet) {
-    if (tweet.isPinned ||
-        userDataLists!.postedTweets.every((t) => !t.isPinned)) {
-      showContextMenu(context, tweet);
-    }
-  }
-
   @override
   void initState() {
     if (!listsIsLoaded()) initLists();
@@ -181,7 +126,7 @@ class _UserScreen extends State<UserScreen> {
       appBar: UserAppBarWidget(
         text: "@${user.username}",
         height: appBarHeight,
-        showActions: true,
+        showActions: isMyAccount && routeController.indexNavBar == 2,
         routePop: () => routeController.routePop(context),
       ),
       body: Stack(
@@ -207,81 +152,11 @@ class _UserScreen extends State<UserScreen> {
                 onChange: setTweetsList,
                 disabled: !listsIsLoaded(),
               ),
-              Expanded(
-                child: !listsIsLoaded()
-                    ? const Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: CircularProgressIndicator(
-                            color: ColorConsts.primaryColor,
-                          ),
-                        ),
-                      )
-                    : tweetsList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                actualListState ==
-                                        EListTweetsSection.publishedtTweets
-                                    ? "Você não postou nenhum Tweet ainda"
-                                    : "Você não curtiu nenhum tweet ainda",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConsts.secondaryColor,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                actualListState ==
-                                        EListTweetsSection.publishedtTweets
-                                    ? "Poste seu primeiro tweet clicando no botão azul no canto inferior direito"
-                                    : "Curta seu primeiro tweet clicando no coração em baixo de algum tweet",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorConsts.secondaryColor,
-                                ),
-                              ),
-                            ],
-                          )
-                        : ListView.separated(
-                            itemBuilder: (BuildContext context, int index) {
-                              TweetModel tweet = tweetsList[index];
-                              return GestureDetector(
-                                key: Key("user-tweet-${tweet.id}"),
-                                onTap: () =>
-                                    routeController.goToTweetDetailsScreen(
-                                  context,
-                                  tweet,
-                                  reloadPage,
-                                ),
-                                onLongPress: () =>
-                                    handleTweetLongPress(context, tweet),
-                                onLongPressDown: (position) =>
-                                    getTapPosition(position),
-                                child: TweetWidget(
-                                  tweet: tweet,
-                                  hasComments: true,
-                                  isComment: false,
-                                  onLikedTweet: ({required liked}) =>
-                                      tweetController.onLikedTweet(
-                                    tweet: tweet,
-                                    liked: liked,
-                                  ),
-                                ),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) =>
-                                    const Divider(),
-                            itemCount: tweetsList.length,
-                          ),
+              UserListsWidget(
+                tweetsList: tweetsList,
+                actualListState: actualListState,
+                setTweetsList: setTweetsList,
+                userDataLists: userDataLists,
               ),
             ],
           ),
