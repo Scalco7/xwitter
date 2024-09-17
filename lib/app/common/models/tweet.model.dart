@@ -7,6 +7,7 @@ class TweetModel {
   final bool canRetweet;
   final String? mediaUrl;
   final String? location;
+  final List<String> mentionsUserIds;
   int likes;
   bool liked;
   bool isPinned;
@@ -25,6 +26,7 @@ class TweetModel {
     required this.liked,
     required this.isPinned,
     required this.isSaved,
+    required this.mentionsUserIds,
     this.commentsQuantity = 0,
     this.comments,
   });
@@ -36,6 +38,9 @@ class TweetModel {
         likes: json["likes"],
         liked: json["liked"],
         mediaUrl: json["mediaUrl"],
+        mentionsUserIds: ((json["mentionsUserIds"] ?? []) as List<dynamic>)
+            .map((id) => id as String)
+            .toList(),
         canRetweet: json["canRetweet"] ?? false,
         location: json["location"],
         isPinned: json["isPinned"] ?? false,
