@@ -150,6 +150,8 @@ class _UserListsWidgetState extends State<UserListsWidget> {
                       child: TweetWidget(
                         tweet: tweet,
                         isComment: false,
+                        totalWidth: MediaQuery.of(context).size.width,
+                        withBorder: false,
                       ),
                     );
                   },

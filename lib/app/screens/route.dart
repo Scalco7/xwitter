@@ -80,8 +80,10 @@ class BigTalkRoute extends StatelessWidget {
             );
           }
           if (settings.name == "/create-tweet") {
+            TweetModel? retweetBy = settings.arguments as TweetModel?;
+
             return MaterialPageRoute(
-              builder: (context) => const CreateTweetScreen(),
+              builder: (context) => CreateTweetScreen(retweetBy: retweetBy),
             );
           }
           if (settings.name == "/tweet") {

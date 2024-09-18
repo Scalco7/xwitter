@@ -84,7 +84,9 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
                     onTap: () => goToTweetDetailsScreen(tweets![index]),
                     child: TweetWidget(
                       key: Key("saved-tweet-${tweets![index].id}"),
+                      withBorder: false,
                       tweet: tweets![index],
+                      totalWidth: MediaQuery.of(context).size.width,
                       isComment: false,
                     ),
                   );

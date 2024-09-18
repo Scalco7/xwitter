@@ -85,6 +85,8 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
                 child: TweetWidget(
                   key: Key("home-tweet-${tweets[index].id}"),
                   tweet: tweets[index],
+                  withBorder: false,
+                  totalWidth: MediaQuery.of(context).size.width,
                   isComment: false,
                 ),
               );

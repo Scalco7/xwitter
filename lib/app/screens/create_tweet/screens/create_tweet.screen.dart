@@ -340,9 +340,11 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   children: <Widget>[
                     const SizedBox(height: 20),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: TweetWidget(
+                        withBorder: true,
                         tweet: widget.retweetBy!,
+                        totalWidth: MediaQuery.of(context).size.width - 40,
                         isComment: false,
                       ),
                     ),

@@ -13,9 +13,13 @@ class TweetWidget extends StatefulWidget {
     super.key,
     required this.tweet,
     required this.isComment,
+    required this.withBorder,
+    required this.totalWidth,
   });
   final TweetModel tweet;
+  final double totalWidth;
   final bool isComment;
+  final bool withBorder;
 
   @override
   State<StatefulWidget> createState() => _TweetWidget();
@@ -64,14 +68,25 @@ class _TweetWidget extends State<TweetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double tweetWidth =
-        screenWidth - (paddingHorizontalWidth * 2) - gapWidth - avatarWidth;
-    double paddingRight =
-        (tweet.isPinned ? iconWidth : 0) + (!widget.isComment ? iconWidth : 0);
+    double tweetWidth = widget.totalWidth -
+        (paddingHorizontalWidth * 2) -
+        gapWidth -
+        avatarWidth -
+        3;
+    double paddingRight = (tweet.isPinned ? iconWidth : 0) +
+        (!widget.isComment ? iconWidth : 0) +
+        5;
 
-    return SizedBox(
-      width: screenWidth,
+    return Container(
+      decoration: BoxDecoration(
+        border: widget.withBorder
+            ? Border.all(
+                width: 1,
+                color: ColorConsts.secondaryColor,
+              )
+            : null,
+      ),
+      width: widget.totalWidth,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: paddingHorizontalWidth,
@@ -194,15 +209,14 @@ class _TweetWidget extends State<TweetWidget> {
               ),
             const SizedBox(height: 5),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   GestureDetector(
                     onTap: () => likeTweet(),
-                    child: SizedBox(
-                      width: 120,
+                    child: Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -229,8 +243,7 @@ class _TweetWidget extends State<TweetWidget> {
                   Visibility(
                     visible: !widget.isComment,
                     child: GestureDetector(
-                      child: SizedBox(
-                        width: 120,
+                      child: Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -256,8 +269,7 @@ class _TweetWidget extends State<TweetWidget> {
                   Visibility(
                     visible: !widget.isComment,
                     child: GestureDetector(
-                      child: SizedBox(
-                        width: 120,
+                      child: Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,

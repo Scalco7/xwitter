@@ -43,7 +43,9 @@ class TweetCommentsWidget extends StatelessWidget {
                     key: Key(comment.id),
                     onTap: () => goToUserScreen(comment.user),
                     child: TweetWidget(
+                      withBorder: false,
                       tweet: comment,
+                      totalWidth: MediaQuery.of(context).size.width,
                       isComment: true,
                     ),
                   );

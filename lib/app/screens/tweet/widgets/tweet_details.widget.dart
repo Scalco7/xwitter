@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
@@ -24,6 +25,7 @@ class TweetDetailsWidget extends StatefulWidget {
 }
 
 class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
+  static final RouteController routeController = RouteController();
   static final IUserController userController = UserController();
   static final ITweetController tweetController = TweetController();
   static const double iconWidth = 40;
@@ -208,7 +210,8 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => commentFocus(),
+                    onTap: () =>
+                        routeController.goToCreateTweetScreen(context, tweet),
                     child: const Icon(
                       Icons.repeat,
                       color: ColorConsts.secondaryColor,
