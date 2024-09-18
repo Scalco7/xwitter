@@ -149,7 +149,6 @@ class _UserListsWidgetState extends State<UserListsWidget> {
                       onLongPressDown: (position) => getTapPosition(position),
                       child: TweetWidget(
                         tweet: tweet,
-                        hasComments: true,
                         isComment: false,
                         onLikedTweet: ({required liked}) =>
                             tweetController.onLikedTweet(

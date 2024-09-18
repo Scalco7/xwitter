@@ -50,7 +50,6 @@ class TweetCommentsWidget extends StatelessWidget {
                     onTap: () => goToUserScreen(comment.user),
                     child: TweetWidget(
                       tweet: comment,
-                      hasComments: false,
                       isComment: true,
                       onLikedTweet: ({required liked}) => onLikedTweet(
                         liked: liked,

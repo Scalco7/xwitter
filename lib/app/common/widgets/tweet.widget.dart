@@ -11,12 +11,10 @@ class TweetWidget extends StatefulWidget {
   const TweetWidget({
     super.key,
     required this.tweet,
-    required this.hasComments,
     required this.onLikedTweet,
     required this.isComment,
   });
   final TweetModel tweet;
-  final bool hasComments;
   final bool isComment;
   final Future<TweetModel> Function({required bool liked})
       onLikedTweet; // refatorar para não passar a função por cima
@@ -71,172 +69,207 @@ class _TweetWidget extends State<TweetWidget> {
           horizontal: paddingHorizontalWidth,
           vertical: 10,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: <Widget>[
-            ProfilePhotoWidget(
-              photoUrl: tweet.user.photoUrl,
-              size: avatarWidth,
-            ),
-            const SizedBox(width: gapWidth),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
-                  width: tweetWidth,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: tweetWidth - paddingRight,
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              tweet.user.name,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
+                ProfilePhotoWidget(
+                  photoUrl: tweet.user.photoUrl,
+                  size: avatarWidth,
+                ),
+                const SizedBox(width: gapWidth),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: tweetWidth,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: tweetWidth - paddingRight,
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  tweet.user.name,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  '@${tweet.user.username}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: ColorConsts.secondaryColor,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 5),
-                            Text(
-                              '@${tweet.user.username}',
-                              style: const TextStyle(
-                                fontSize: 16,
+                          ),
+                          Visibility(
+                            visible: !widget.isComment,
+                            child: SizedBox(
+                              width: iconWidth,
+                              height: iconWidth,
+                              child: IconButton(
+                                onPressed: toogleSaveTweet,
+                                padding: const EdgeInsets.all(1),
+                                icon: Icon(
+                                  tweet.isSaved
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  size: iconWidth - 2,
+                                  color: ColorConsts.secondaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: tweet.isPinned,
+                            child: Transform.rotate(
+                              angle: 3.17 / 12,
+                              child: const Icon(
+                                Icons.push_pin_rounded,
+                                size: iconWidth,
                                 color: ColorConsts.secondaryColor,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Visibility(
-                        visible: !widget.isComment,
-                        child: SizedBox(
-                          width: iconWidth,
-                          height: iconWidth,
-                          child: IconButton(
-                            onPressed: toogleSaveTweet,
-                            padding: const EdgeInsets.all(1),
-                            icon: Icon(
-                              tweet.isSaved
-                                  ? Icons.bookmark
-                                  : Icons.bookmark_border,
-                              size: iconWidth - 2,
-                              color: ColorConsts.secondaryColor,
+                    ),
+                    SizedBox(
+                      width: tweetWidth,
+                      child: TweetTextWidget(
+                        text: tweet.text,
+                        mentionsIds: tweet.mentionsUserIds,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            if (tweet.mediaUrl != null)
+              SizedBox(
+                width: tweetWidth,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: !tweet.mediaUrl!.contains('.mp4')
+                      ? Image.network(
+                          tweet.mediaUrl!,
+                          width: tweetWidth,
+                          fit: BoxFit.contain,
+                        )
+                      : SizedBox(
+                          width: tweetWidth,
+                          height: 500,
+                          child: Flexible(
+                            child: VideoPlayerNetworkingWidget(
+                              videoUrl: tweet.mediaUrl!,
+                              iconsSize: 18,
+                              loop: false,
                             ),
                           ),
                         ),
-                      ),
-                      Visibility(
-                        visible: tweet.isPinned,
-                        child: Transform.rotate(
-                          angle: 3.17 / 12,
-                          child: const Icon(
-                            Icons.push_pin_rounded,
-                            size: iconWidth,
-                            color: ColorConsts.secondaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-                SizedBox(
-                  width: tweetWidth,
-                  child: TweetTextWidget(
-                    text: tweet.text,
-                    mentionsIds: tweet.mentionsUserIds,
-                    fontSize: 16,
-                  ),
-                ),
-                if (tweet.mediaUrl != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+              ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => likeTweet(),
                     child: SizedBox(
-                      width: tweetWidth,
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: !tweet.mediaUrl!.contains('.mp4')
-                            ? Image.network(
-                                tweet.mediaUrl!,
-                                height: 100,
-                                fit: BoxFit.contain,
-                              )
-                            : SizedBox(
-                                width: 167,
-                                height: 100,
-                                child: Flexible(
-                                  child: VideoPlayerNetworkingWidget(
-                                    videoUrl: tweet.mediaUrl!,
-                                    iconsSize: 12,
-                                    loop: true,
-                                  ),
-                                ),
-                              ),
+                      width: 120,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            tweet.liked
+                                ? "assets/icons/heart_fill_icon.png"
+                                : "assets/icons/heart_icon.png",
+                            fit: BoxFit.contain,
+                            width: 18,
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            formatQuantity(tweet.likes),
+                            style: const TextStyle(
+                              color: ColorConsts.secondaryColor,
+                              fontSize: 14,
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () => likeTweet(),
+                  Visibility(
+                    visible: !widget.isComment,
+                    child: GestureDetector(
                       child: SizedBox(
                         width: 120,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Image.asset(
-                              tweet.liked
-                                  ? "assets/icons/heart_fill_icon.png"
-                                  : "assets/icons/heart_icon.png",
-                              fit: BoxFit.contain,
-                              width: 15,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              formatQuantity(tweet.likes),
-                              style: const TextStyle(
-                                color: ColorConsts.secondaryColor,
-                                fontSize: 12,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.hasComments,
-                      child: GestureDetector(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Image.asset(
                               "assets/icons/comment_icon.png",
                               fit: BoxFit.contain,
-                              width: 15,
+                              width: 18,
                             ),
                             const SizedBox(width: 3),
                             Text(
                               formatQuantity(tweet.commentsQuantity),
                               style: const TextStyle(
                                 color: ColorConsts.secondaryColor,
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
                             )
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  Visibility(
+                    visible: !widget.isComment,
+                    child: GestureDetector(
+                      child: SizedBox(
+                        width: 120,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.repeat,
+                              color: ColorConsts.secondaryColor,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              formatQuantity(
+                                  20), //colocar a quantidade de retweets ###
+                              style: const TextStyle(
+                                color: ColorConsts.secondaryColor,
+                                fontSize: 14,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
