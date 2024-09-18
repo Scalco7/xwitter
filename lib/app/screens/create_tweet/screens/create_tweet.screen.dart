@@ -39,7 +39,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   FocusNode tweetTextFocus = FocusNode();
   late bool disabledTweetButton;
   String? tweetLocation;
-  bool canRetweet = true;
+  late bool canRetweet;
   File? tweetFile;
   bool tweetFileIsImg = false;
 
@@ -64,6 +64,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
       canRetweet: canRetweet,
       location: tweetLocation,
       mediaBase64: mediaBase64,
+      retweetId: widget.retweetBy?.id,
     );
 
     goToHomeScreen();
@@ -266,6 +267,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
   void initState() {
     tweetTextController.text = "";
     disabledTweetButton = true;
+    canRetweet = widget.retweetBy == null;
 
     super.initState();
   }
@@ -292,6 +294,7 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: CanRetweetWidget(
+                  disabled: widget.retweetBy != null,
                   canRetweet: canRetweet,
                   setCanRetweet: setCanRetweet,
                 ),

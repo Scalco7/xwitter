@@ -6,10 +6,12 @@ class CanRetweetWidget extends StatelessWidget {
     super.key,
     required this.setCanRetweet,
     required this.canRetweet,
+    required this.disabled,
   });
 
   final void Function(bool value) setCanRetweet;
   final bool canRetweet;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class CanRetweetWidget extends StatelessWidget {
           child: Switch(
             activeColor: ColorConsts.primaryColor,
             value: canRetweet,
-            onChanged: (bool value) => setCanRetweet(value),
+            onChanged: disabled ? null : (bool value) => setCanRetweet(value),
           ),
         ),
       ],

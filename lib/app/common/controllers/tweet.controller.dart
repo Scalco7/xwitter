@@ -14,6 +14,7 @@ abstract class ITweetController {
   void publishTweet({
     required String text,
     required bool canRetweet,
+    required String? retweetId,
     required String? location,
     required String? mediaBase64,
   });
@@ -70,6 +71,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
   void publishTweet({
     required String text,
     required bool canRetweet,
+    required String? retweetId,
     required String? location,
     required String? mediaBase64,
   }) async {
@@ -84,6 +86,7 @@ class TweetController extends ChangeNotifier implements ITweetController {
       newTweet = await tweetService.createTweet(
         text: text,
         canRetweet: canRetweet,
+        retweetId: retweetId,
         location: location,
         mediaBase64: mediaBase64,
       );

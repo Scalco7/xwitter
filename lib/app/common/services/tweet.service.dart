@@ -10,6 +10,7 @@ abstract class ITweetService {
   Future<TweetModel> createTweet({
     required String text,
     required bool canRetweet,
+    required String? retweetId,
     required String? location,
     required String? mediaBase64,
   });
@@ -56,6 +57,7 @@ class TweetService implements ITweetService {
   Future<TweetModel> createTweet({
     required String text,
     required bool canRetweet,
+    required String? retweetId,
     required String? location,
     required String? mediaBase64,
   }) async {
@@ -65,6 +67,8 @@ class TweetService implements ITweetService {
       "canRetweet": canRetweet,
       "location": location,
       "mediaBase64": mediaBase64,
+      "isRetweet": retweetId != null,
+      'retweetId': retweetId,
     };
 
     try {
