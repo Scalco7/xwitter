@@ -1,3 +1,4 @@
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/error/validatorFailure.model.dart';
 import 'package:xwitter/app/common/helpers/toasts.dart';
 import 'package:xwitter/app/common/helpers/validators.dart';
@@ -125,6 +126,7 @@ class UserController implements IUserController {
     }
 
     loggedUser = null;
+    TweetController().cleanTweetsList();
     return true;
   }
 

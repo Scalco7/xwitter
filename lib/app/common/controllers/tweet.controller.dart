@@ -38,6 +38,8 @@ abstract class ITweetController {
   Future<List<TweetModel>> listComments({required String tweetId});
 
   Future<List<TweetModel>> listSavedTweets();
+
+  void cleanTweetsList();
 }
 
 class TweetController extends ChangeNotifier implements ITweetController {
@@ -58,6 +60,11 @@ class TweetController extends ChangeNotifier implements ITweetController {
   }
 
   TweetController._internal();
+
+  @override
+  void cleanTweetsList() {
+    _tweetsList.clear();
+  }
 
   @override
   void publishTweet({
