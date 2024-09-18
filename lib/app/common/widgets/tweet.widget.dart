@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/format_quantity.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
@@ -11,20 +12,18 @@ class TweetWidget extends StatefulWidget {
   const TweetWidget({
     super.key,
     required this.tweet,
-    required this.onLikedTweet,
     required this.isComment,
   });
   final TweetModel tweet;
   final bool isComment;
-  final Future<TweetModel> Function({required bool liked})
-      onLikedTweet; // refatorar para não passar a função por cima
 
   @override
   State<StatefulWidget> createState() => _TweetWidget();
 }
 
 class _TweetWidget extends State<TweetWidget> {
-  static IUserController userController = UserController();
+  static final ITweetController tweetController = TweetController();
+  static final IUserController userController = UserController();
   static const double paddingHorizontalWidth = 15;
   static const double avatarWidth = 55;
   static const double gapWidth = 5;
@@ -32,8 +31,17 @@ class _TweetWidget extends State<TweetWidget> {
 
   late TweetModel tweet;
 
+  Future<TweetModel> onLikedTweet({
+    required bool liked,
+  }) {
+    return tweetController.onLikedTweet(
+      tweet: tweet,
+      liked: liked,
+    );
+  }
+
   void likeTweet() async {
-    TweetModel updatedTweet = await widget.onLikedTweet(liked: !tweet.liked);
+    TweetModel updatedTweet = await onLikedTweet(liked: !tweet.liked);
     setState(() {
       tweet = updatedTweet;
     });
@@ -154,32 +162,37 @@ class _TweetWidget extends State<TweetWidget> {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
             if (tweet.mediaUrl != null)
-              SizedBox(
-                width: tweetWidth,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: !tweet.mediaUrl!.contains('.mp4')
-                      ? Image.network(
-                          tweet.mediaUrl!,
-                          width: tweetWidth,
-                          fit: BoxFit.contain,
-                        )
-                      : SizedBox(
-                          width: tweetWidth,
-                          height: 500,
-                          child: Flexible(
-                            child: VideoPlayerNetworkingWidget(
-                              videoUrl: tweet.mediaUrl!,
-                              iconsSize: 18,
-                              loop: false,
+              Column(
+                children: <Widget>[
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: tweetWidth,
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: !tweet.mediaUrl!.contains('.mp4')
+                          ? Image.network(
+                              tweet.mediaUrl!,
+                              width: tweetWidth,
+                              fit: BoxFit.contain,
+                            )
+                          : SizedBox(
+                              width: tweetWidth,
+                              height: 500,
+                              child: Flexible(
+                                child: VideoPlayerNetworkingWidget(
+                                  videoUrl: tweet.mediaUrl!,
+                                  iconsSize: 18,
+                                  loop: false,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(

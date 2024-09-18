@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/route.controller.dart';
 
 class CreateTweetButtonWidget extends StatelessWidget {
   const CreateTweetButtonWidget({super.key});
+
+  static final RouteController routeController = RouteController();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,7 @@ class CreateTweetButtonWidget extends StatelessWidget {
         fit: BoxFit.contain,
         width: 23,
       ),
-      onPressed: () => Navigator.pushNamed(context, "/create-tweet"),
+      onPressed: () => routeController.goToCreateTweetScreen(context, null),
     );
   }
 }

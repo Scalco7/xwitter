@@ -27,16 +27,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
     setState(() {});
   }
 
-  Future<TweetModel> onLikedTweet({
-    required TweetModel tweet,
-    required bool liked,
-  }) {
-    return tweetController.onLikedTweet(
-      tweet: tweet,
-      liked: liked,
-    );
-  }
-
   void reloadTweets() async {
     await tweetController.fillTweetsList(
       loggedUserId: userController.loggedUser!.id,
@@ -96,8 +86,6 @@ class _TweetsListWidgetState extends State<TweetsListWidget> {
                   key: Key("home-tweet-${tweets[index].id}"),
                   tweet: tweets[index],
                   isComment: false,
-                  onLikedTweet: ({required bool liked}) =>
-                      onLikedTweet(tweet: tweets[index], liked: liked),
                 ),
               );
             },

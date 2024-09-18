@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xwitter/app/common/consts/style.consts.dart';
+import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
@@ -13,15 +14,10 @@ class TweetDetailsWidget extends StatefulWidget {
     required this.tweet,
     required this.commentTextFieldFocus,
     required this.goToUserScreen,
-    required this.onLikedTweet,
   });
   final TweetModel tweet;
   final FocusNode commentTextFieldFocus;
   final void Function(UserModel user) goToUserScreen;
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-  }) onLikedTweet;
 
   @override
   State<TweetDetailsWidget> createState() => _TweetDetailsWidgetState();
@@ -29,12 +25,22 @@ class TweetDetailsWidget extends StatefulWidget {
 
 class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
   static final IUserController userController = UserController();
+  static final ITweetController tweetController = TweetController();
   static const double iconWidth = 40;
   late TweetModel tweet;
 
+  Future<TweetModel> onLikedTweet({
+    required bool liked,
+    String? parentTweetId,
+  }) {
+    return tweetController.onLikedTweet(
+      tweet: tweet,
+      liked: liked,
+    );
+  }
+
   void likeTweet() async {
-    TweetModel updatedTweet =
-        await widget.onLikedTweet(liked: !tweet.liked, tweet: tweet);
+    TweetModel updatedTweet = await onLikedTweet(liked: !tweet.liked);
     setState(() {
       tweet = updatedTweet;
     });
@@ -199,6 +205,14 @@ class _TweetDetailsWidgetState extends State<TweetDetailsWidget> {
                       "assets/icons/comment_icon.png",
                       fit: BoxFit.contain,
                       width: 20,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => commentFocus(),
+                    child: const Icon(
+                      Icons.repeat,
+                      color: ColorConsts.secondaryColor,
+                      size: 23,
                     ),
                   ),
                 ],

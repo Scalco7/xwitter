@@ -36,17 +36,6 @@ class _TweetScreen extends State<TweetScreen> {
     ),
   );
 
-  Future<TweetModel> onLikedTweet({
-    required TweetModel tweet,
-    required bool liked,
-    String? parentTweetId,
-  }) {
-    return tweetController.onLikedTweet(
-      tweet: tweet,
-      liked: liked,
-    );
-  }
-
   void disableKeyboard() {
     FocusScope.of(context).requestFocus(FocusNode());
   }
@@ -113,7 +102,6 @@ class _TweetScreen extends State<TweetScreen> {
                     tweet: widget.tweet,
                     goToUserScreen: (user) =>
                         routeController.goToUserScreen(context, user),
-                    onLikedTweet: onLikedTweet,
                     commentTextFieldFocus: commentTextFieldFocus,
                   ),
                   Visibility(
@@ -125,7 +113,6 @@ class _TweetScreen extends State<TweetScreen> {
                       tweetId: widget.tweet.id,
                       goToUserScreen: (user) =>
                           routeController.goToUserScreen(context, user),
-                      onLikedTweet: onLikedTweet,
                     ),
                   ),
                 ],

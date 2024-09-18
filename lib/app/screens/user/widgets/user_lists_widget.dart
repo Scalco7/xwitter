@@ -150,11 +150,6 @@ class _UserListsWidgetState extends State<UserListsWidget> {
                       child: TweetWidget(
                         tweet: tweet,
                         isComment: false,
-                        onLikedTweet: ({required liked}) =>
-                            tweetController.onLikedTweet(
-                          tweet: tweet,
-                          liked: liked,
-                        ),
                       ),
                     );
                   },

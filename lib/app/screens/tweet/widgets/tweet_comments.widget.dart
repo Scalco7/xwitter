@@ -10,7 +10,6 @@ class TweetCommentsWidget extends StatelessWidget {
     required this.commentsList,
     required this.commentsQuantity,
     required this.tweetId,
-    required this.onLikedTweet,
     required this.goToUserScreen,
   });
 
@@ -18,11 +17,6 @@ class TweetCommentsWidget extends StatelessWidget {
   final int commentsQuantity;
   final String tweetId;
   final void Function(UserModel user) goToUserScreen;
-  final Future<TweetModel> Function({
-    required TweetModel tweet,
-    required bool liked,
-    String? parentTweetId,
-  }) onLikedTweet;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +45,6 @@ class TweetCommentsWidget extends StatelessWidget {
                     child: TweetWidget(
                       tweet: comment,
                       isComment: true,
-                      onLikedTweet: ({required liked}) => onLikedTweet(
-                        liked: liked,
-                        tweet: comment,
-                        parentTweetId: tweetId,
-                      ),
                     ),
                   );
                 },

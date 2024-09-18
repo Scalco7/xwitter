@@ -10,8 +10,10 @@ import 'package:xwitter/app/common/controllers/tweet.controller.dart';
 import 'package:xwitter/app/common/controllers/user.controller.dart';
 import 'package:xwitter/app/common/helpers/file_to_base64.dart';
 import 'package:xwitter/app/common/models/mention_user.model.dart';
+import 'package:xwitter/app/common/models/tweet.model.dart';
 import 'package:xwitter/app/common/models/user.model.dart';
 import 'package:xwitter/app/common/widgets/profile_photo.widget.dart';
+import 'package:xwitter/app/common/widgets/tweet.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/can_retweet.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/choose_location.widget.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/header.widget.dart';
@@ -19,7 +21,9 @@ import 'package:mime/mime.dart';
 import 'package:xwitter/app/screens/create_tweet/widgets/select_media.widget.dart';
 
 class CreateTweetScreen extends StatefulWidget {
-  const CreateTweetScreen({super.key});
+  const CreateTweetScreen({super.key, this.retweetBy});
+
+  final TweetModel? retweetBy;
 
   @override
   State<StatefulWidget> createState() => _CreateTweetScreen();
@@ -330,7 +334,20 @@ class _CreateTweetScreen extends State<CreateTweetScreen> {
                   tweetFileIsImg: tweetFileIsImg,
                   handleImageButtonClicked: handleImageButtonClicked,
                 ),
-              )
+              ),
+              if (widget.retweetBy != null)
+                Column(
+                  children: <Widget>[
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: TweetWidget(
+                        tweet: widget.retweetBy!,
+                        isComment: false,
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

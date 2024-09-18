@@ -87,4 +87,7 @@ class RouteController {
 
   void goToSignUpScreen(BuildContext context) =>
       Navigator.of(context).pushNamed("/sign-up");
+
+  void goToCreateTweetScreen(BuildContext context, TweetModel? retweetBy) =>
+      Navigator.of(context).pushNamed("/create-tweet", arguments: retweetBy);
 }

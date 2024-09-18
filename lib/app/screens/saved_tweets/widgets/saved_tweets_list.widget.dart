@@ -17,16 +17,6 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
   static final RouteController routeController = RouteController();
   List<TweetModel>? tweets;
 
-  Future<TweetModel> onLikedTweet({
-    required TweetModel tweet,
-    required bool liked,
-  }) {
-    return tweetController.onLikedTweet(
-      tweet: tweet,
-      liked: liked,
-    );
-  }
-
   void goToTweetDetailsScreen(TweetModel tweet) {
     routeController.goToTweetDetailsScreen(context, tweet, reloadPage);
   }
@@ -96,8 +86,6 @@ class _SavedTweetsListWidgetState extends State<SavedTweetsListWidget> {
                       key: Key("saved-tweet-${tweets![index].id}"),
                       tweet: tweets![index],
                       isComment: false,
-                      onLikedTweet: ({required bool liked}) =>
-                          onLikedTweet(tweet: tweets![index], liked: liked),
                     ),
                   );
                 },
